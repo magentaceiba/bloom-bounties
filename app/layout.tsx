@@ -13,6 +13,8 @@ import { cookies } from 'next/headers'
 import { initialTheme } from '../styles'
 import { Open_Sans } from 'next/font/google'
 import '../styles/global.css'
+import 'swiper/css'
+import 'swiper/css/effect-cards'
 
 const openSans = Open_Sans({
   subsets: ['cyrillic'],

@@ -5,7 +5,7 @@
 
 </div>
 
-## Inverter / Next.js Web3 Template
+## Inverter / Bounty On The Fly Dapp
 
 App Router + Chakra UI Next.js + Redux + Wagmi ( Viem ) + Dynamic + PWA + PipeLine
 

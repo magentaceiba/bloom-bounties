@@ -23,9 +23,8 @@ const openSans = Open_Sans({
 
 const title = 'Inverter Network'
 const { description, applicationName, images } = {
-  applicationName: `${title} | Web3 Template`,
-  description:
-    'Easily edit and deploy your own web3 application with this template.',
+  applicationName: `${title} | Bounty Dapp`,
+  description: 'Create Bounty => View => Submit Claim => Get Verified.',
   images: [
     {
       url: 'InverterNetwork/media/main/inverter-dark-banner.png',

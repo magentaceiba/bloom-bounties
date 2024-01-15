@@ -18,7 +18,7 @@ export default function Page() {
   return (
     <div className="items-center flex flex-col gap-6 max-w-xl mx-auto">
       {(() => {
-        if (list.isLoading) return <Loading />
+        if (list.isPending) return <Loading className={'m-4'} />
 
         if (!list.data?.length) return <NoData />
 
@@ -49,13 +49,6 @@ export default function Page() {
 
                         <Divider />
 
-                        <div className="flex gap-3">
-                          <h4>Description |</h4>
-                          <p>{bounty.details?.description ?? '...empty'}</p>
-                        </div>
-
-                        <Divider />
-
                         <div className="flex flex-wrap gap-3">
                           <Badge>
                             Min Payout | {bounty.minimumPayoutAmount}{' '}
@@ -67,10 +60,9 @@ export default function Page() {
                           </Badge>
                           <Badge>
                             Creator |{' '}
-                            {compressAddress(
-                              bounty.details?.creatorAddress ??
-                                '0x0000000000000000000000000000000000000000'
-                            )}
+                            {!!bounty.details?.creatorAddress
+                              ? compressAddress(bounty.details.creatorAddress)
+                              : '...empty'}
                           </Badge>
                         </div>
                       </div>
@@ -83,8 +75,18 @@ export default function Page() {
         )
       })()}
 
+      <Alert>
+        <div className="flex flex-col gap-3">
+          <h4>Description</h4>
+          <p>{bounty?.details.description ?? '..empty'}</p>
+          <h4>URL</h4>
+          <a href={bounty?.details.url ?? '/'} target="_blank" className="link">
+            {bounty?.details.url ?? '..empty'}
+          </a>
+        </div>
+      </Alert>
+
       <Button className="w-full">Claim Bounty</Button>
-      <Alert>Details about how to use the claim func</Alert>
     </div>
   )
 }

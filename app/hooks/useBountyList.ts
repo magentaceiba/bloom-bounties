@@ -1,57 +1,68 @@
+'use client'
+
 import { formatUnits, hexToString } from 'viem'
-import { useContractRead } from 'wagmi'
 import { useWorkflowConfig } from './useWorkflowConfig'
 import { useQuery } from '@tanstack/react-query'
-import { ParsedBountyDetails } from '@/lib/types/bounty'
-import { abis } from '@inverter-network/abis'
+import { FormattedBountyDetails } from '@/lib/types/bounty'
 
 export function useBountyList() {
   const workflowConfig = useWorkflowConfig()
 
-  const ids = useContractRead({
-    abi: abis.BountyManager.v1,
-    address: workflowConfig.data?.addresses.logic,
-    functionName: 'listBountyIds',
+  const ids = useQuery({
+    queryKey: ['bondtyIds', workflowConfig.dataUpdatedAt],
+    queryFn: () => workflowConfig.data!.contracts.logic.read.listBountyIds(),
+    enabled: workflowConfig.isSuccess,
   })
 
   const list = useQuery({
-    queryKey: ['bountyList', ids.internal.dataUpdatedAt],
-    queryFn: async () => {
-      const list = await Promise.all(
-        (ids.data || []).map(async (bountyId: bigint) => {
-          const bounty =
-            await workflowConfig.data!.contracts.logic.read.getBountyInformation(
-              [bountyId]
-            )!
-
-          const newBounty = {
-            ...bounty,
-            details: <ParsedBountyDetails>(() => {
-              try {
-                return JSON.parse(hexToString(bounty.details))
-              } catch {
-                return {}
-              }
-            }),
-            minimumPayoutAmount: formatUnits(
-              bounty.minimumPayoutAmount,
-              workflowConfig.data!.ERC20Decimals!
-            ),
-            maximumPayoutAmount: formatUnits(
-              bounty.minimumPayoutAmount,
-              workflowConfig.data!.ERC20Decimals!
-            ),
-            symbol: workflowConfig.data!.ERC20Symbol,
-          }
-
-          return newBounty
-        })
-      )
-
-      return list
-    },
+    queryKey: ['bountyList', ids.dataUpdatedAt],
+    queryFn: () => init(workflowConfig.data!, ids.data!),
     enabled: ids.isSuccess,
   })
 
   return list
+}
+
+const init = async (
+  workflowConfig: NonNullable<ReturnType<typeof useWorkflowConfig>['data']>,
+  ids: readonly bigint[]
+) => {
+  const list = (
+    await Promise.all(
+      ids.map(async (bountyId: bigint) => {
+        const bounty =
+          await workflowConfig.contracts.logic.read.getBountyInformation([
+            bountyId,
+          ])
+
+        let details: FormattedBountyDetails
+        try {
+          details = JSON.parse(hexToString(bounty.details))
+        } catch {
+          return null
+        }
+
+        const newBounty = {
+          ...bounty,
+          details,
+          minimumPayoutAmount: formatUnits(
+            bounty.minimumPayoutAmount,
+            workflowConfig.ERC20Decimals
+          ),
+          maximumPayoutAmount: formatUnits(
+            bounty.minimumPayoutAmount,
+            workflowConfig.ERC20Decimals
+          ),
+          symbol: workflowConfig.ERC20Symbol,
+        }
+
+        return newBounty
+      })
+    )
+  ).filter((bounty): bounty is NonNullable<typeof bounty> => bounty !== null)
+
+  return list.sort(
+    (a, b) =>
+      new Date(b.details.date).getTime() - new Date(a.details.date).getTime()
+  )
 }

@@ -36,7 +36,7 @@ export default function NumberInput({
     onChange(formatAmountString(newValue.toString()))
   }
 
-  props.className = cn('w-max', props?.className)
+  props.className = cn(props?.className)
 
   return (
     <div {...props}>
@@ -55,7 +55,7 @@ export default function NumberInput({
           inputMode="decimal"
           value={value}
           onChange={(e) => onChange(formatAmountString(e.target.value))}
-          className="input input-bordered"
+          className="input w-full input-bordered"
         />
         <button onClick={handleIncrement} className="btn">
           +

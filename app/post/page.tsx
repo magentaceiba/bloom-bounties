@@ -4,7 +4,7 @@ import { compressAddress, firstLetterToUpper } from '@/lib/utils'
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
 import { EditableText, NumberInput } from '@/components/ui'
-import { Badge, Button, Divider, Input, Loading } from 'react-daisyui'
+import { Badge, Button, Divider, Loading } from 'react-daisyui'
 import { useWorkflowConfig } from '@/hooks/useWorkflowConfig'
 import { parseUnits, stringToHex } from 'viem'
 import { FormattedBountyDetails } from '@/lib/types/bounty'
@@ -51,20 +51,10 @@ export default function PostPage() {
     } catch (err: any) {
       addToast({ text: err?.message, status: 'error' })
     }
-
-    // workflowConfig.data.contracts.logic.simulate
-    //   .addBounty(args, { account: address })
-    //   .then((res) => {
-    //     addToast({ text: 'Bounty Posted', status: 'success' })
-    //   })
-    //   .catch((err) => {
-    //     addToast({ text: err.message, status: 'error' })
-    //     console.error(err)
-    //   })
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 max-w-xl mx-auto">
+    <>
       {false ? (
         <Loading />
       ) : (
@@ -111,6 +101,6 @@ export default function PostPage() {
       <Button color={'primary'} onClick={onPost}>
         Post Bounty
       </Button>
-    </div>
+    </>
   )
 }

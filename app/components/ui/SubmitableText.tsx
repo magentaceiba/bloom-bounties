@@ -13,6 +13,8 @@ type EditableInputProps = {
   onSubmit: () => void
   invalid: boolean
   isPending?: boolean
+  buttonLabel?: string
+  defaultIsEditing?: boolean
 }
 
 export default function SubmitableText({
@@ -24,13 +26,15 @@ export default function SubmitableText({
   variant,
   invalid,
   isPending,
+  buttonLabel,
+  defaultIsEditing,
   ...props
 }: EditableInputProps &
   Omit<
     InputProps,
     'onChange' | 'placeholder' | 'value' | 'onSubmit' | 'color'
   >) {
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(defaultIsEditing ?? false)
   const [inputValue, setInputValue] = useState('')
 
   const toggle = () => setIsEditing((prev) => !prev)
@@ -43,7 +47,7 @@ export default function SubmitableText({
 
   const Toggler = () => (
     <Button size={'sm'} color="primary" onClick={toggle} loading={isPending}>
-      {!isEditing ? (!data ? 'Add' : variant) : 'Cancel'}
+      {!isEditing ? (!data ? 'Add' : buttonLabel ?? variant) : 'Cancel'}
     </Button>
   )
 

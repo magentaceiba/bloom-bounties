@@ -39,7 +39,7 @@ export default function Page() {
                   }}
                 >
                   {({ isActive }) => {
-                    isActive && setSwiperIndex(index)
+                    isActive && swiperIndex !== index && setSwiperIndex(index)
                     return (
                       <div className="items-center justify-center p-3">
                         <div className="flex gap-3">

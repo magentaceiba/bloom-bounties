@@ -21,11 +21,9 @@ export function useWorkflowConfig(
       !!publicClient,
       walletClient.internal.dataUpdatedAt,
     ],
-    queryFn: async () =>
-      await init(publicClient, orchestratorAddress!, walletClient),
-    enabled: !!publicClient && !!orchestratorAddress && !!walletClient,
-    gcTime: 0,
-    staleTime: 0,
+    queryFn: () => init(publicClient, orchestratorAddress!, walletClient),
+    enabled: !!publicClient && !!orchestratorAddress,
+    refetchOnWindowFocus: false,
   })
 
   return workflowConfig

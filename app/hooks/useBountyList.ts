@@ -12,12 +12,14 @@ export function useBountyList() {
     queryKey: ['bondtyIds', workflowConfig.dataUpdatedAt],
     queryFn: () => workflowConfig.data!.contracts.logic.read.listBountyIds(),
     enabled: workflowConfig.isSuccess,
+    refetchOnWindowFocus: false,
   })
 
   const list = useQuery({
     queryKey: ['bountyList', ids.dataUpdatedAt],
     queryFn: () => init(workflowConfig.data!, ids.data!),
     enabled: ids.isSuccess,
+    refetchOnWindowFocus: false,
   })
 
   return list

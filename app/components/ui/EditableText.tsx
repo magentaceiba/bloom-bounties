@@ -2,65 +2,39 @@
 
 import { useState } from 'react'
 import { Button, Input, type InputProps } from 'react-daisyui'
-import { BsCopy } from 'react-icons/bs'
+import { FiEdit } from 'react-icons/fi'
 
 type EditableInputProps = {
-  variant: 'Add' | 'Edit'
-  header: string
-  label?: string
-  data?: string
+  label: string
+  value: string
   setValue: (value: string) => void
-  onSubmit: () => void
   invalid: boolean
-  isPending?: boolean
 }
 
 export default function EditableText({
   label,
-  header,
-  data,
   setValue,
-  onSubmit,
-  variant,
   invalid,
-  isPending,
+  value,
   ...props
 }: EditableInputProps &
-  Omit<
-    InputProps,
-    'onChange' | 'placeholder' | 'value' | 'onSubmit' | 'color'
-  >) {
-  const [isEditing, setIsEditing] = useState(false)
+  Omit<InputProps, 'onChange' | 'placeholder' | 'value' | 'color'>) {
+  const [isEditing, setIsEditing] = useState(true)
   const [inputValue, setInputValue] = useState('')
 
   const toggle = () => setIsEditing((prev) => !prev)
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    onSubmit()
-    toggle()
-  }
-
-  const Toggler = () => (
-    <Button size={'sm'} color="primary" onClick={toggle} loading={isPending}>
-      {!isEditing ? (!data ? 'Add' : variant) : 'Cancel'}
-    </Button>
-  )
-
   return (
     <>
-      <div className={'w-full flex justify-between items-center'}>
-        <h4>{header}</h4>
-        <Toggler />
+      <div className={'w-full flex justify-between items-center mb-3'}>
+        <h4>{label}</h4>
+        <Button size={'xs'} color="primary" onClick={toggle}>
+          {!isEditing ? <FiEdit size={20} /> : 'Done'}
+        </Button>
       </div>
 
-      {isEditing && (
-        <form className="form-control w-full" onSubmit={handleSubmit}>
-          {!!label && (
-            <label className="label">
-              <span className="label-text">{label}</span>
-            </label>
-          )}
+      {isEditing ? (
+        <form className="form-control w-full" onSubmit={toggle}>
           <Input
             {...props}
             {...(invalid && { color: 'warning' })}
@@ -71,30 +45,9 @@ export default function EditableText({
               setInputValue(e.target.value)
             }}
           />
-
-          <Button
-            className="mt-3"
-            size={'sm'}
-            color="primary"
-            type="submit"
-            disabled={invalid}
-          >
-            Submit
-          </Button>
         </form>
-      )}
-
-      {variant === 'Edit' && !isEditing && !!data && (
-        <div className={'flex w-full gap-3 items-center'}>
-          <p>{data}</p>
-          <Button
-            variant="outline"
-            size={'sm'}
-            onClick={() => navigator.clipboard.writeText(data)}
-          >
-            <BsCopy />
-          </Button>
-        </div>
+      ) : (
+        <p>{value}</p>
       )}
     </>
   )

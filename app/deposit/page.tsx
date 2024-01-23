@@ -1,9 +1,11 @@
 'use client'
 
 import { Frame, NumberInput } from '@/components'
+import { FundingStats } from '@/components/FundingStats'
 import { useDeposit } from '@/hooks'
+import { formatToCompactNumber } from '@/lib/utils'
 import { useState } from 'react'
-import { Alert, Button } from 'react-daisyui'
+import { Alert, Button, Stats } from 'react-daisyui'
 
 export default function DepositPage() {
   const [amount, setAmount] = useState('')
@@ -21,16 +23,23 @@ export default function DepositPage() {
 
   return (
     <>
-      <Frame className="flex-row">
-        <div className="flex-col flex-1">
-          <h3>Token: {ERC20Symbol}</h3>
-          <h4>Balance: {balance.data?.formatted ?? '...'}</h4>
-        </div>
-        <div className="flex-col flex-1">
-          <h3>Allowance</h3>
-          <h4>Amount: {allowance.data?.formatted ?? '...'}</h4>
-        </div>
-      </Frame>
+      <FundingStats />
+
+      <Stats className="bg-base-200 scale-75">
+        <Stats.Stat>
+          <Stats.Stat.Item variant="title">Balance</Stats.Stat.Item>
+          <Stats.Stat.Item variant="value">
+            {ERC20Symbol} {formatToCompactNumber(balance.data?.formatted)}
+          </Stats.Stat.Item>
+        </Stats.Stat>
+
+        <Stats.Stat>
+          <Stats.Stat.Item variant="title">Allowance</Stats.Stat.Item>
+          <Stats.Stat.Item variant="value">
+            {formatToCompactNumber(allowance.data?.formatted)}
+          </Stats.Stat.Item>
+        </Stats.Stat>
+      </Stats>
 
       <NumberInput
         label={'Deposit Amount'}

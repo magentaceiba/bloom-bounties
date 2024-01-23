@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { Alert, Badge, Button, Divider, Loading } from 'react-daisyui'
 import { dark } from 'styles'
 import { Frame, NoData } from './components'
+import { FundingStats } from './components/FundingStats'
 
 export default function Page() {
   const list = useBountyList()
@@ -17,6 +18,8 @@ export default function Page() {
 
   return (
     <>
+      <FundingStats />
+
       {(() => {
         if (list.isPending) return <Loading className={'m-4'} />
 
@@ -83,7 +86,6 @@ export default function Page() {
           {bounty?.details.url ?? '..empty'}
         </a>
       </Frame>
-
       <Button className="w-full">Claim Bounty</Button>
     </>
   )

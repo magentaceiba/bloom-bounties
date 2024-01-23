@@ -1,12 +1,12 @@
 import { useToast } from '@/providers'
 import { formatUnits, parseUnits } from 'viem'
 import { useAccount, useBalance } from 'wagmi'
-import { useWorkflowConfig } from './useWorkflowConfig'
+import { useWorkflow } from './useWorkflow'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export default function useDeposit() {
   const addToast = useToast()
-  const workflow = useWorkflowConfig()
+  const workflow = useWorkflow()
   const { address } = useAccount()
 
   const balance = useBalance({

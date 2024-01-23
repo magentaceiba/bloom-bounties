@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useAccount } from 'wagmi'
 import { EditableText, NumberInput } from '@/components/ui'
 import { Badge, Button, Divider, Loading } from 'react-daisyui'
-import { useWorkflowConfig } from '@/hooks/useWorkflowConfig'
+import { useWorkflow } from '@/hooks/useWorkflow'
 import { parseUnits, stringToHex } from 'viem'
 import { FormattedBountyDetails } from '@/lib/types/bounty'
 import { useToast } from '@/providers'
@@ -23,7 +23,7 @@ export default function PostPage() {
 
   const fields = ['title', 'description', 'url'] as const
 
-  const workflowConfig = useWorkflowConfig()
+  const workflowConfig = useWorkflow()
 
   const onPost = async () => {
     if (!workflowConfig.data) return

@@ -3,14 +3,14 @@
 import { formatUnits, hexToString } from 'viem'
 import { useWorkflow } from './useWorkflow'
 import { useQuery } from '@tanstack/react-query'
-import { FormattedBountyDetails } from '@/lib/types/bounty'
+import { FormattedClaimDetails } from '@/lib/types/claim'
 
-export function useBountyList() {
+export function useVerifyList() {
   const workflowConfig = useWorkflow()
 
   const ids = useQuery({
     queryKey: ['bondtyIds', workflowConfig.dataUpdatedAt],
-    queryFn: () => workflowConfig.data!.contracts.logic.read.listBountyIds(),
+    queryFn: () => workflowConfig.data!.contracts.logic.read.listClaimIds(),
     enabled: workflowConfig.isSuccess,
     refetchOnWindowFocus: false,
   })
@@ -31,34 +31,32 @@ const init = async (
 ) => {
   const list = (
     await Promise.all(
-      ids.map(async (bountyId: bigint) => {
-        const bounty =
-          await workflowConfig.contracts.logic.read.getBountyInformation([
-            bountyId,
+      ids.map(async (claimId: bigint) => {
+        const claim =
+          await workflowConfig.contracts.logic.read.getClaimInformation([
+            claimId,
           ])
 
-        let details: FormattedBountyDetails
+        let details: FormattedClaimDetails
         try {
-          details = JSON.parse(hexToString(bounty.details))
+          details = JSON.parse(hexToString(claim.details))
         } catch {
           return null
         }
 
-        const newBounty = {
-          ...bounty,
+        const contributors = claim.contributors.map((c) => ({
+          address: c.addr,
+          amount: formatUnits(c.claimAmount, workflowConfig.ERC20Decimals),
+        }))
+
+        const formattedClaim = {
+          ...claim,
           details,
-          minimumPayoutAmount: formatUnits(
-            bounty.minimumPayoutAmount,
-            workflowConfig.ERC20Decimals
-          ),
-          maximumPayoutAmount: formatUnits(
-            bounty.minimumPayoutAmount,
-            workflowConfig.ERC20Decimals
-          ),
+          contributors,
           symbol: workflowConfig.ERC20Symbol,
         }
 
-        return newBounty
+        return formattedClaim
       })
     )
   ).filter((bounty): bounty is NonNullable<typeof bounty> => bounty !== null)

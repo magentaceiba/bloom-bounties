@@ -3,15 +3,15 @@
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCards } from 'swiper/modules'
 import { useBountyList } from '@/hooks/useBountyList'
-import { compressAddress } from '@/lib/utils'
 import { useState } from 'react'
-import { Badge, Button, Divider, Loading } from 'react-daisyui'
+import { Button, Loading } from 'react-daisyui'
 import { Frame, NoData, WalletWidget } from './components'
 import { FundingStats } from './components/FundingStats'
+import { BountyDetails } from './components/BountyDetails'
 
 export default function Page() {
   const list = useBountyList()
-  const [swiperIndex, setSwiperIndex] = useState<number>()
+  const [swiperIndex, setSwiperIndex] = useState<number>(0)
 
   const bounty = list.data?.[swiperIndex ?? 0]
   return (
@@ -41,31 +41,13 @@ export default function Page() {
                   {({ isActive }) => {
                     isActive && swiperIndex !== index && setSwiperIndex(index)
                     return (
-                      <div className="items-center justify-center p-3">
-                        <div className="flex gap-3">
-                          <h4>Title |</h4>
-                          <p>{bounty.details?.title ?? '...empty'}</p>
-                        </div>
-
-                        <Divider />
-
-                        <div className="flex flex-wrap gap-3">
-                          <Badge>
-                            Min Payout | {bounty.minimumPayoutAmount}{' '}
-                            {bounty.symbol}
-                          </Badge>
-                          <Badge>
-                            Max Payout | {bounty.maximumPayoutAmount}{' '}
-                            {bounty.symbol}
-                          </Badge>
-                          <Badge>
-                            Creator |{' '}
-                            {!!bounty.details?.creatorAddress
-                              ? compressAddress(bounty.details.creatorAddress)
-                              : '...empty'}
-                          </Badge>
-                        </div>
-                      </div>
+                      <BountyDetails.Main
+                        title={bounty.details?.title}
+                        minimumPayoutAmount={bounty.minimumPayoutAmount}
+                        maximumPayoutAmount={bounty.maximumPayoutAmount}
+                        symbol={bounty.symbol}
+                        creatorAddress={bounty.details?.creatorAddress}
+                      />
                     )
                   }}
                 </SwiperSlide>
@@ -75,14 +57,10 @@ export default function Page() {
         )
       })()}
 
-      <Frame className="max-w-xl">
-        <h4>Description</h4>
-        <p>{bounty?.details.description ?? '..empty'}</p>
-        <h4>URL</h4>
-        <a href={bounty?.details.url ?? '/'} target="_blank" className="link">
-          {bounty?.details.url ?? '..empty'}
-        </a>
-      </Frame>
+      <BountyDetails.Description
+        description={bounty?.details?.description}
+        url={bounty?.details?.url}
+      />
       {!list.isConnected ? (
         <WalletWidget />
       ) : (

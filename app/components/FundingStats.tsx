@@ -5,7 +5,7 @@ import { formatToCompactNumber } from '@/lib/utils'
 import { Stats } from 'react-daisyui'
 
 export function FundingStats() {
-  const { symbol, totalSupply, isPending } = useFundingStats()
+  const { symbol, totalSupply } = useFundingStats()
   return (
     <Stats className="bg-base-200 scale-75">
       <Stats.Stat>

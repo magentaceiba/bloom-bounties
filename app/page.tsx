@@ -5,8 +5,7 @@ import { EffectCards } from 'swiper/modules'
 import { useBountyList } from '@/hooks/useBountyList'
 import { compressAddress } from '@/lib/utils'
 import { useState } from 'react'
-import { Alert, Badge, Button, Divider, Loading } from 'react-daisyui'
-import { dark } from 'styles'
+import { Badge, Button, Divider, Loading } from 'react-daisyui'
 import { Frame, NoData, WalletWidget } from './components'
 import { FundingStats } from './components/FundingStats'
 
@@ -30,14 +29,13 @@ export default function Page() {
               {list.data.map((bounty, index) => (
                 <SwiperSlide
                   key={index}
+                  className="bg-base-200 border border-primary"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderRadius: '18px',
                     fontSize: '22px',
-                    backgroundColor: dark['base-200'],
-                    border: `1px solid ${dark.primary}`,
                   }}
                 >
                   {({ isActive }) => {
@@ -88,7 +86,7 @@ export default function Page() {
       {!list.isConnected ? (
         <WalletWidget />
       ) : (
-        <Button className="w-full max-w-xl">Claim Bounty</Button>
+        <Button color="primary">Claim Bounty</Button>
       )}
     </>
   )

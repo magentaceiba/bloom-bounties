@@ -78,8 +78,12 @@ export default function PostPage() {
         ))}
 
         <div className="flex justify-center flex-wrap gap-3">
-          <Badge>Min Payout | {minimumPayoutAmount} USDC</Badge>
-          <Badge>Max Payout | {maximumPayoutAmount} USDC</Badge>
+          <Badge>
+            Min Payout | {minimumPayoutAmount} {workflow.data?.ERC20Symbol}
+          </Badge>
+          <Badge>
+            Max Payout | {maximumPayoutAmount} {workflow.data?.ERC20Symbol}
+          </Badge>
           <Badge>
             Creator |{' '}
             {compressAddress(
@@ -89,7 +93,7 @@ export default function PostPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 h-max my-auto">
+      <div className="flex flex-col gap-6 h-max my-auto items-center">
         <NumberInput
           label="Minimum Payment Amount"
           value={minimumPayoutAmount}
@@ -102,13 +106,14 @@ export default function PostPage() {
           onChange={(e) => setMaximumPayoutAmount(e)}
         />
 
-        {!workflow.data?.isConnected ? (
+        {!workflow.isConnected ? (
           <WalletWidget />
         ) : (
           <Button
             color={'primary'}
             onClick={() => postMutation.mutate()}
             loading={postMutation.isPending}
+            disabled={postMutation.isPending}
           >
             Post Bounty
           </Button>

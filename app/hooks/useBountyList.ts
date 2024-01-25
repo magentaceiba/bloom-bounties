@@ -22,7 +22,7 @@ export function useBountyList() {
     refetchOnWindowFocus: false,
   })
 
-  return { ...list, isConnected: workflow.data?.isConnected }
+  return { ...list, isConnected: workflow.isConnected }
 }
 
 const init = async (

@@ -66,7 +66,7 @@ export default function useDeposit() {
   })
 
   const depositEnabled = (amount: string) => {
-    return Number(amount) < Number(allowance.data?.formatted!)
+    return Number(amount) <= Number(allowance.data?.formatted!)
   }
 
   return {
@@ -76,6 +76,6 @@ export default function useDeposit() {
     deposit,
     approve,
     depositEnabled,
-    isConnected: workflow.data?.isConnected,
+    isConnected: workflow.isConnected,
   }
 }

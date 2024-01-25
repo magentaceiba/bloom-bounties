@@ -21,12 +21,12 @@ export default function DepositPage() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(depositEnabled(amount))
     if (depositEnabled(amount)) deposit.mutate(amount)
-    else approve.mutate(amount)
+    else if (isConnected) approve.mutate(amount)
   }
 
   const hasNoBalance = !balance.isSuccess || balance.data?.value === BigInt(0)
+  const loading = deposit.isPending || allowance.isPending
 
   return (
     <>
@@ -61,8 +61,8 @@ export default function DepositPage() {
           <Button
             color="primary"
             type="submit"
-            disabled={hasNoBalance || !allowance.isSuccess}
-            loading={deposit.isPending || allowance.isPending}
+            disabled={hasNoBalance || !allowance.isSuccess || loading}
+            loading={loading}
           >
             Deposit
           </Button>

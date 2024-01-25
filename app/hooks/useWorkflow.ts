@@ -24,7 +24,7 @@ export function useWorkflow(orchestratorAddress = defaultOrchestratorAddress) {
     refetchOnWindowFocus: false,
   })
 
-  return workflowConfig
+  return { ...workflowConfig, isConnected: walletClient.isSuccess }
 }
 
 const init = async (
@@ -85,6 +85,5 @@ const init = async (
     },
     ERC20Decimals,
     ERC20Symbol,
-    isConnected: !!walletClient,
   }
 }

@@ -6,36 +6,35 @@ import { useQuery } from '@tanstack/react-query'
 import { FormattedClaimDetails } from '@/lib/types/claim'
 
 export function useVerifyList() {
-  const workflowConfig = useWorkflow()
+  const workflow = useWorkflow()
 
   const ids = useQuery({
-    queryKey: ['bondtyIds', workflowConfig.dataUpdatedAt],
-    queryFn: () => workflowConfig.data!.contracts.logic.read.listClaimIds(),
-    enabled: workflowConfig.isSuccess,
+    queryKey: ['bondtyIds', workflow.dataUpdatedAt],
+    queryFn: () => workflow.data!.contracts.logic.read.listClaimIds(),
+    enabled: workflow.isSuccess,
     refetchOnWindowFocus: false,
   })
 
   const list = useQuery({
     queryKey: ['bountyList', ids.dataUpdatedAt],
-    queryFn: () => init(workflowConfig.data!, ids.data!),
+    queryFn: () => init(workflow.data!, ids.data!),
     enabled: ids.isSuccess,
     refetchOnWindowFocus: false,
   })
 
-  return list
+  return { ...list, isConnected: workflow.isConnected }
 }
 
 const init = async (
-  workflowConfig: NonNullable<ReturnType<typeof useWorkflow>['data']>,
+  workflow: NonNullable<ReturnType<typeof useWorkflow>['data']>,
   ids: readonly bigint[]
 ) => {
   const list = (
     await Promise.all(
       ids.map(async (claimId: bigint) => {
-        const claim =
-          await workflowConfig.contracts.logic.read.getClaimInformation([
-            claimId,
-          ])
+        const claim = await workflow.contracts.logic.read.getClaimInformation([
+          claimId,
+        ])
 
         let details: FormattedClaimDetails
         try {
@@ -46,14 +45,14 @@ const init = async (
 
         const contributors = claim.contributors.map((c) => ({
           address: c.addr,
-          amount: formatUnits(c.claimAmount, workflowConfig.ERC20Decimals),
+          amount: formatUnits(c.claimAmount, workflow.ERC20Decimals),
         }))
 
         const formattedClaim = {
           ...claim,
           details,
           contributors,
-          symbol: workflowConfig.ERC20Symbol,
+          symbol: workflow.ERC20Symbol,
         }
 
         return formattedClaim

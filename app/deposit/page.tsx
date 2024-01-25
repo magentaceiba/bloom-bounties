@@ -1,6 +1,6 @@
 'use client'
 
-import { Frame, NumberInput } from '@/components'
+import { Frame, NumberInput, WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
 import { useDeposit } from '@/hooks'
 import { formatToCompactNumber } from '@/lib/utils'
@@ -9,8 +9,15 @@ import { Alert, Button, Stats } from 'react-daisyui'
 
 export default function DepositPage() {
   const [amount, setAmount] = useState('')
-  const { ERC20Symbol, depositEnabled, deposit, balance, approve, allowance } =
-    useDeposit()
+  const {
+    ERC20Symbol,
+    depositEnabled,
+    deposit,
+    balance,
+    approve,
+    allowance,
+    isConnected,
+  } = useDeposit()
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -48,18 +55,22 @@ export default function DepositPage() {
       />
 
       <form onSubmit={onSubmit}>
-        <Button
-          color="primary"
-          type="submit"
-          disabled={hasNoBalance || !allowance.isSuccess}
-          loading={deposit.isPending || allowance.isPending}
-        >
-          Deposit
-        </Button>
+        {!isConnected ? (
+          <WalletWidget />
+        ) : (
+          <Button
+            color="primary"
+            type="submit"
+            disabled={hasNoBalance || !allowance.isSuccess}
+            loading={deposit.isPending || allowance.isPending}
+          >
+            Deposit
+          </Button>
+        )}
       </form>
 
       {hasNoBalance && (
-        <Alert>
+        <Alert className="max-w-xl">
           You have no balance to deposit, please top up your account.
         </Alert>
       )}

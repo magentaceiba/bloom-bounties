@@ -76,5 +76,6 @@ export default function useDeposit() {
     deposit,
     approve,
     depositEnabled,
+    isConnected: workflow.data?.isConnected,
   }
 }

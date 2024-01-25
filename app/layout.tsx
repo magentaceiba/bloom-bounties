@@ -76,7 +76,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           <RouteProgressBar />
           {/* CONTENT */}
           <Navbar />
-          <div className="flex flex-col items-center gap-6 max-w-xl mx-auto">
+          <div className="flex flex-col items-center gap-6 mx-auto">
             {children}
           </div>
         </Providers>

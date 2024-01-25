@@ -85,5 +85,6 @@ const init = async (
     },
     ERC20Decimals,
     ERC20Symbol,
+    isConnected: !!walletClient,
   }
 }

@@ -7,7 +7,7 @@ import { compressAddress } from '@/lib/utils'
 import { useState } from 'react'
 import { Alert, Badge, Button, Divider, Loading } from 'react-daisyui'
 import { dark } from 'styles'
-import { Frame, NoData } from './components'
+import { Frame, NoData, WalletWidget } from './components'
 import { FundingStats } from './components/FundingStats'
 
 export default function Page() {
@@ -15,7 +15,6 @@ export default function Page() {
   const [swiperIndex, setSwiperIndex] = useState<number>()
 
   const bounty = list.data?.[swiperIndex ?? 0]
-
   return (
     <>
       <FundingStats />
@@ -78,7 +77,7 @@ export default function Page() {
         )
       })()}
 
-      <Frame>
+      <Frame className="max-w-xl">
         <h4>Description</h4>
         <p>{bounty?.details.description ?? '..empty'}</p>
         <h4>URL</h4>
@@ -86,7 +85,11 @@ export default function Page() {
           {bounty?.details.url ?? '..empty'}
         </a>
       </Frame>
-      <Button className="w-full">Claim Bounty</Button>
+      {!list.isConnected ? (
+        <WalletWidget />
+      ) : (
+        <Button className="w-full max-w-xl">Claim Bounty</Button>
+      )}
     </>
   )
 }

@@ -1,13 +1,14 @@
 import { useToast } from '@/providers'
 import { formatUnits, parseUnits } from 'viem'
-import { useAccount, useBalance } from 'wagmi'
+import { useBalance } from 'wagmi'
 import { useWorkflow } from './useWorkflow'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { waitUntilConfirmation } from '@/lib/utils'
 
 export default function useDeposit() {
   const addToast = useToast()
   const workflow = useWorkflow()
-  const { address } = useAccount()
+  const address = workflow.address
 
   const balance = useBalance({
     address,
@@ -37,10 +38,23 @@ export default function useDeposit() {
       const res = await workflow.data?.contracts.funding.write.deposit([
         parseUnits(formatted, workflow.data!.ERC20Decimals),
       ])
+
+      addToast({
+        text: `Waiting for 1 deposit confirmation`,
+        status: 'info',
+      })
+
+      await waitUntilConfirmation(workflow.publicClient, res)
+
       return res
     },
     onSuccess: () => {
+      addToast({
+        text: `Deposited ${workflow.data?.ERC20Symbol}`,
+        status: 'success',
+      })
       balance.refetch()
+      allowance.refetch()
     },
     onError: (err) => {
       addToast({ text: err?.message, status: 'error' })
@@ -54,12 +68,26 @@ export default function useDeposit() {
         workflow.data?.addresses.funding!,
         parseUnits(formatted, workflow.data!.ERC20Decimals),
       ])
-      deposit.mutate(formatted)
-      return res
+
+      addToast({
+        text: `Waiting for 1 approval confirmation`,
+        status: 'info',
+      })
+
+      await waitUntilConfirmation(workflow.publicClient, res)
+
+      return { hash: res, formatted }
     },
-    onSuccess: () => {
+
+    onSuccess: ({ formatted }) => {
+      addToast({
+        text: `Approved ${workflow.data?.ERC20Symbol}`,
+        status: 'success',
+      })
       allowance.refetch()
+      deposit.mutate(formatted)
     },
+
     onError: (err) => {
       addToast({ text: err?.message, status: 'error' })
     },

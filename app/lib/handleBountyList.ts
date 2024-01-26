@@ -1,32 +1,9 @@
-'use client'
-
+import { WorkflowQuery } from '@/hooks/useWorkflow'
+import { FormattedBountyDetails } from './types/bounty'
 import { formatUnits, hexToString } from 'viem'
-import { useWorkflow } from './useWorkflow'
-import { useQuery } from '@tanstack/react-query'
-import { FormattedBountyDetails } from '@/lib/types/bounty'
-
-export function useBountyList() {
-  const workflow = useWorkflow()
-
-  const ids = useQuery({
-    queryKey: ['bondtyIds', workflow.dataUpdatedAt],
-    queryFn: () => workflow.data!.contracts.logic.read.listBountyIds(),
-    enabled: workflow.isSuccess,
-    refetchOnWindowFocus: false,
-  })
-
-  const list = useQuery({
-    queryKey: ['bountyList', ids.dataUpdatedAt],
-    queryFn: () => handleBountyList(workflow.data!, ids.data!),
-    enabled: ids.isSuccess,
-    refetchOnWindowFocus: false,
-  })
-
-  return { ...list, isConnected: workflow.isConnected }
-}
 
 export const handleBountyList = async (
-  workflow: NonNullable<ReturnType<typeof useWorkflow>['data']>,
+  workflow: NonNullable<WorkflowQuery['data']>,
   ids: readonly bigint[]
 ) => {
   const list = (

@@ -1,14 +1,8 @@
 import { Checkbox } from 'react-daisyui'
 import { Frame, NoData, NumberInput } from './ui'
 import Copy from './ui/Copy'
-import { ClaimObject } from '@/lib/types/claim'
+import { ClaimObject, VerifyContributers } from '@/lib/types/claim'
 import { compressAddress } from '@/lib/utils'
-
-export type VerifyContributers = {
-  addr: `0x${string}`
-  claimAmount?: string
-  include?: boolean
-}[]
 
 export function VerifierInput({
   claim,

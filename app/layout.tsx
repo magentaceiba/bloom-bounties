@@ -15,6 +15,7 @@ import { Open_Sans } from 'next/font/google'
 import '../styles/global.css'
 import 'swiper/css'
 import 'swiper/css/effect-cards'
+import Analytics from './providers/Analytics'
 
 const openSans = Open_Sans({
   subsets: ['cyrillic'],
@@ -72,6 +73,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <meta name="theme-color" content="#000000" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black" />
       <body>
+        <Analytics />
         <Providers theme={theme}>
           <RouteProgressBar />
           {/* CONTENT */}

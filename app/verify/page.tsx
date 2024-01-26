@@ -4,19 +4,17 @@ import { useEffect, useState } from 'react'
 import { Button, Loading, Table } from 'react-daisyui'
 import { NoData, WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
-import { useClaimList } from '@/hooks/useClaimList'
+import useClaim from '@/hooks/useClaim'
 import Link from 'next/link'
 import cn from 'classnames'
-import useVerify from '@/hooks/useVerify'
-import { VerifierInput, VerifyContributers } from '@/components/VerifierInput'
+import { VerifierInput } from '@/components/VerifierInput'
+import { VerifyContributers } from '@/lib/types/claim'
 
 export default function VerifyPage() {
-  const list = useClaimList()
+  const { list, isConnected, ERC20Symbol, verify } = useClaim()
   const [selected, setSelected] = useState<number>(0)
 
   const claim = list.data?.[selected ?? 0]
-
-  const verify = useVerify(list.workflow)
 
   const [contributors, setContributors] = useState<VerifyContributers>(
     claim?.contributors ?? []
@@ -78,7 +76,7 @@ export default function VerifyPage() {
         )
       })()}
 
-      {!list.isConnected ? (
+      {!isConnected ? (
         <WalletWidget />
       ) : (
         <>
@@ -86,11 +84,11 @@ export default function VerifyPage() {
             claim={claim}
             contributers={contributors}
             contributersStateHandler={setContributors}
-            symbol={list.workflow.data?.ERC20Symbol}
+            symbol={ERC20Symbol}
           />
           <Button
             onClick={onVerify}
-            disabled={!list.isConnected || !!claim?.claimed}
+            disabled={!isConnected || !!claim?.claimed}
             color="primary"
           >
             Verify Claim

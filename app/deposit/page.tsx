@@ -1,6 +1,6 @@
 'use client'
 
-import { Frame, NumberInput, WalletWidget } from '@/components'
+import { NumberInput, WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
 import { useDeposit } from '@/hooks'
 import { formatToCompactNumber } from '@/lib/utils'
@@ -26,7 +26,7 @@ export default function DepositPage() {
   }
 
   const hasNoBalance = !balance.isSuccess || balance.data?.value === BigInt(0)
-  const loading = deposit.isPending || allowance.isPending
+  const loading = deposit.isPending || allowance.isPending || approve.isPending
 
   return (
     <>

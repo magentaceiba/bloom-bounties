@@ -23,15 +23,15 @@ export function useWorkflow(orchestratorAddress = defaultOrchestratorAddress) {
     enabled: !!publicClient.chain && !!orchestratorAddress,
     refetchOnWindowFocus: false,
   })
-
   return {
     ...workflowConfig,
     isConnected: walletClient.isSuccess,
     address: walletClient.data?.account.address,
+    publicClient,
   }
 }
 
-export type workflowQuery = ReturnType<typeof useWorkflow>
+export type WorkflowQuery = ReturnType<typeof useWorkflow>
 
 const init = async (
   publicClient: ReturnType<typeof usePublicClient>,

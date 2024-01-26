@@ -1,32 +1,9 @@
-'use client'
+import { WorkflowQuery } from '@/hooks/useWorkflow'
+import { hexToString, formatUnits } from 'viem'
+import { FormattedClaimDetails } from './types/claim'
 
-import { formatUnits, hexToString } from 'viem'
-import { useWorkflow } from './useWorkflow'
-import { useQuery } from '@tanstack/react-query'
-import { FormattedClaimDetails } from '@/lib/types/claim'
-
-export function useClaimList() {
-  const workflow = useWorkflow()
-
-  const ids = useQuery({
-    queryKey: ['verifyIds', workflow.dataUpdatedAt],
-    queryFn: () => workflow.data!.contracts.logic.read.listClaimIds(),
-    enabled: workflow.isSuccess,
-    refetchOnWindowFocus: false,
-  })
-
-  const list = useQuery({
-    queryKey: ['verifyList', ids.dataUpdatedAt],
-    queryFn: () => handleClaimList(workflow.data!, ids.data!),
-    enabled: ids.isSuccess,
-    refetchOnWindowFocus: false,
-  })
-
-  return { ...list, isConnected: workflow.isConnected, workflow }
-}
-
-const handleClaimList = async (
-  workflow: NonNullable<ReturnType<typeof useWorkflow>['data']>,
+export const handleClaimList = async (
+  workflow: NonNullable<WorkflowQuery['data']>,
   ids: readonly bigint[]
 ) => {
   const list = (

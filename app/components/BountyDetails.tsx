@@ -9,18 +9,17 @@ export const BountyDetails = {
     maximumPayoutAmount,
     symbol,
     creatorAddress,
+    bigTitle = false,
   }: {
     title?: string
     minimumPayoutAmount: string
     maximumPayoutAmount: string
     symbol: string
     creatorAddress?: string
+    bigTitle?: boolean
   }) => (
     <div className="items-center justify-center p-3">
-      <div className="flex gap-3 items-center">
-        <h4>Title |</h4>
-        <p>{title}</p>
-      </div>
+      {bigTitle ? <h3>{title}</h3> : <p>{title}</p>}
 
       <Divider />
 

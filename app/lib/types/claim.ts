@@ -16,3 +16,20 @@ export type ClaimObject =
       claimed: boolean
     }
   | undefined
+
+export type ClaimArgs = {
+  bountyId: string
+  contributers: {
+    addr: `0x${string}`
+    claimAmount: string
+  }[]
+  details: FormattedClaimDetails
+}
+
+export type VerifyContributers = {
+  addr: `0x${string}`
+  claimAmount?: string
+  include?: boolean
+}[]
+
+export type VerifyArgs = { claimId: string; contributors: VerifyContributers }

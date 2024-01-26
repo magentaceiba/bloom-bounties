@@ -2,7 +2,7 @@
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCards } from 'swiper/modules'
-import { useBountyList } from '@/hooks/useBountyList'
+import { useBounty } from '@/hooks/useBounty'
 import { useState } from 'react'
 import { Button, Loading } from 'react-daisyui'
 import { NoData, WalletWidget } from './components'
@@ -11,7 +11,7 @@ import { BountyDetails } from './components/BountyDetails'
 import Link from 'next/link'
 
 export default function Page() {
-  const list = useBountyList()
+  const { list, isConnected } = useBounty()
   const [swiperIndex, setSwiperIndex] = useState<number>(0)
 
   const bounty = list.data?.[swiperIndex ?? 0]
@@ -62,7 +62,7 @@ export default function Page() {
         description={bounty?.details?.description}
         url={bounty?.details?.url}
       />
-      {!list.isConnected ? (
+      {!isConnected ? (
         <WalletWidget />
       ) : (
         <>

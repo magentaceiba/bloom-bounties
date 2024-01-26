@@ -3,7 +3,7 @@
 import { FourOFour, WalletWidget } from '@/components'
 import { BountyDetails } from '@/components/BountyDetails'
 import { ContributerInput, Contributers } from '@/components/ContributerInput'
-import { handleBountyList } from '@/hooks/useBountyList'
+import { handleBountyList } from '@/lib/handleBountyList'
 import useClaim from '@/hooks/useClaim'
 import { useWorkflow } from '@/hooks/useWorkflow'
 import { useQuery } from '@tanstack/react-query'
@@ -28,7 +28,7 @@ export function ClientClaimPage({ id }: { id: string }) {
 
   const [url, setUrl] = useState('')
 
-  const claim = useClaim(workflow)
+  const { post } = useClaim()
 
   if (bountyQuery.isPending) return <Loading />
 
@@ -37,6 +37,7 @@ export function ClientClaimPage({ id }: { id: string }) {
   return (
     <>
       <BountyDetails.Main
+        bigTitle
         title={bounty.details?.title}
         minimumPayoutAmount={bounty.minimumPayoutAmount}
         maximumPayoutAmount={bounty.maximumPayoutAmount}
@@ -60,11 +61,11 @@ export function ClientClaimPage({ id }: { id: string }) {
             symbol={workflow.data?.ERC20Symbol}
           />
           <Button
-            loading={claim.isPending}
-            disabled={claim.isPending}
+            loading={post.isPending}
+            disabled={post.isPending}
             color="primary"
             onClick={() => {
-              claim.mutate({
+              post.mutate({
                 contributers: contributers.map((i) => ({
                   addr: i.addr!,
                   claimAmount: i.claimAmount!,

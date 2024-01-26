@@ -1,6 +1,6 @@
 'use client'
 
-import { useIsHydrated } from '@/hooks'
+import useIsHydrated from '@/hooks/useIsHydrated'
 import { setThemeCookie } from '@/lib/utils'
 import { createContext, useContext, useEffect } from 'react'
 import { useTheme } from '@/providers'

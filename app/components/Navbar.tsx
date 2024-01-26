@@ -33,9 +33,9 @@ const NavItems = ({
         pathname === i.href && 'bg-base-200'
       )
       return (
-        <Link href={i.href} key={index}>
-          <Dropdown.Item className={className}>{i.label}</Dropdown.Item>
-        </Link>
+        <Dropdown.Item href={i.href} key={index} className={className}>
+          {i.label}
+        </Dropdown.Item>
       )
     }
     return (

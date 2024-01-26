@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { Button, Dropdown } from 'react-daisyui'
 import WalletWidget from './WalletWidget'
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { useDisclosure } from '@/hooks'
+import cn from 'classnames'
 
 const NavItems = ({
   pathname,
@@ -26,18 +26,30 @@ const NavItems = ({
 
   if (reverse) arr.reverse()
 
-  return arr.map((i, index) => (
-    <Link href={i.href} key={index}>
-      <Button size={'sm'} {...(pathname !== i.href && { color: 'ghost' })}>
-        {i.label}
-      </Button>
-    </Link>
-  ))
+  return arr.map((i, index) => {
+    if (reverse) {
+      const className = cn(
+        'my-1 p-2 text-md',
+        pathname === i.href && 'bg-base-200'
+      )
+      return (
+        <Link href={i.href} key={index}>
+          <Dropdown.Item className={className}>{i.label}</Dropdown.Item>
+        </Link>
+      )
+    }
+    return (
+      <Link href={i.href} key={index}>
+        <Button size={'sm'} {...(pathname !== i.href && { color: 'ghost' })}>
+          {i.label}
+        </Button>
+      </Link>
+    )
+  })
 }
 
 export default function Navbar() {
   const pathname = usePathname()
-  const { toggle, isOpen } = useDisclosure()
   return (
     <div className="navbar-c bottom-0 drop-shadow-2xl rounded-tl-xl rounded-tr-xl bg-base-100 border-t border-x">
       <NextLink href="/">
@@ -67,9 +79,7 @@ export default function Navbar() {
           <Dropdown.Item className="flex gap-2">
             <ThemeSwitcher className="w-full" />
           </Dropdown.Item>
-          {NavItems({ pathname, reverse: true }).map((i, index) => (
-            <Dropdown.Item key={index}>{i}</Dropdown.Item>
-          ))}
+          {NavItems({ pathname, reverse: true })}
         </Dropdown.Menu>
       </Dropdown>
     </div>

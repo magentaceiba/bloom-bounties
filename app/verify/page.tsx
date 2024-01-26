@@ -31,7 +31,7 @@ export default function VerifyPage() {
   const onVerify = () => {
     if (!claim) return
 
-    verify.mutate({ claimId: String(selected), contributors })
+    verify.mutate({ claimId: String(claim.claimId), contributors })
   }
 
   return (

@@ -51,6 +51,7 @@ const handleClaimList = async (
 
         const formattedClaim = {
           ...claim,
+          claimId,
           details,
           contributors,
           symbol: workflow.ERC20Symbol,

@@ -65,7 +65,7 @@ export function VerifierInput({
               <p>{compressAddress(addr)}</p> <Copy data={addr} />
             </div>
             <NumberInput
-              label={`Proposal Amount ${symbol} ${standingClaimAmount}`}
+              label={`Proposal Amount ${symbol} ( max ${standingClaimAmount} )`}
               onChange={(e) => {
                 handleState({ addr, claimAmount: e })
               }}

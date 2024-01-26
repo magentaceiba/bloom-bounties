@@ -36,6 +36,11 @@ export default function NumberInput({
     onChange(formatAmountString(newValue.toString()))
   }
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (max !== undefined && Number(e.target.value) > max) return
+    onChange(formatAmountString(e.target.value))
+  }
+
   props.className = cn(props?.className)
 
   return (
@@ -54,7 +59,7 @@ export default function NumberInput({
           type="number"
           inputMode="decimal"
           value={value}
-          onChange={(e) => onChange(formatAmountString(e.target.value))}
+          onChange={handleChange}
           className="input w-full input-bordered"
         />
         <button onClick={handleIncrement} className="btn">

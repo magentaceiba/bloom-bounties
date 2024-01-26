@@ -22,7 +22,7 @@ export default function useVerify(workflow: workflowQuery) {
 
       const parsedContributors = contributors
         .map((c) => {
-          if (!c.include)
+          if (c.include)
             return {
               addr: c.addr,
               claimAmount: parseUnits(c.claimAmount!, ERC20Decimals),
@@ -30,10 +30,13 @@ export default function useVerify(workflow: workflowQuery) {
         })
         .filter((c): c is NonNullable<typeof c> => c !== undefined)
 
-      const verify = await logic.write.verifyClaim([
-        BigInt(claimId),
-        parsedContributors,
-      ])
+      if (parsedContributors.length === 0) {
+        throw new Error('No Contributors Included')
+      }
+
+      const config = [BigInt(claimId), parsedContributors] as const
+
+      const verify = await logic.write.verifyClaim(config)
 
       addToast({
         text: `Verify Proposal for ${1} ${ERC20Symbol} Has Been Submitted.\nWith TX Hash: ${verify}`,

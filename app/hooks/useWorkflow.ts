@@ -16,16 +16,22 @@ export function useWorkflow(orchestratorAddress = defaultOrchestratorAddress) {
     queryKey: [
       'workflowConfig',
       orchestratorAddress,
-      !!publicClient,
+      publicClient.chain,
       walletClient.internal.dataUpdatedAt,
     ],
     queryFn: () => init(publicClient, orchestratorAddress!, walletClient),
-    enabled: !!publicClient && !!orchestratorAddress,
+    enabled: !!publicClient.chain && !!orchestratorAddress,
     refetchOnWindowFocus: false,
   })
 
-  return { ...workflowConfig, isConnected: walletClient.isSuccess }
+  return {
+    ...workflowConfig,
+    isConnected: walletClient.isSuccess,
+    address: walletClient.data?.account.address,
+  }
 }
+
+export type workflowQuery = ReturnType<typeof useWorkflow>
 
 const init = async (
   publicClient: ReturnType<typeof usePublicClient>,

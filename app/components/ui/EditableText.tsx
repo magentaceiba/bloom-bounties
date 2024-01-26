@@ -7,28 +7,33 @@ import { FiEdit } from 'react-icons/fi'
 type EditableInputProps = {
   label: string
   value: string
-  setValue: (value: string) => void
-  invalid: boolean
+  onChange: (value: string) => void
+  invalid?: boolean
+  initialIsEditing?: boolean
 }
 
 export default function EditableText({
   label,
-  setValue,
-  invalid,
+  onChange,
   value,
+  invalid = false,
+  initialIsEditing = true,
   ...props
 }: EditableInputProps &
   Omit<InputProps, 'onChange' | 'placeholder' | 'value' | 'color'>) {
-  const [isEditing, setIsEditing] = useState(true)
+  const [isEditing, setIsEditing] = useState(initialIsEditing)
   const [inputValue, setInputValue] = useState('')
 
-  const toggle = () => setIsEditing((prev) => !prev)
+  const toggle = () => {
+    if (isEditing && !invalid) setIsEditing(false)
+    else setIsEditing(true)
+  }
 
   return (
     <>
       <div className={'w-full flex justify-between items-center mb-3'}>
-        <h4>{label}</h4>
-        <Button size={'xs'} color="primary" onClick={toggle}>
+        <h3>{label}</h3>
+        <Button size={'sm'} variant="outline" onClick={toggle}>
           {!isEditing ? <FiEdit size={20} /> : 'Done'}
         </Button>
       </div>
@@ -41,7 +46,7 @@ export default function EditableText({
             value={inputValue}
             placeholder={'Type Here'}
             onChange={(e) => {
-              setValue(e.target.value)
+              onChange(e.target.value)
               setInputValue(e.target.value)
             }}
           />

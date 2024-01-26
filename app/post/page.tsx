@@ -69,7 +69,7 @@ export default function PostPage() {
               invalid={false}
               label={firstLetterToUpper(i)}
               value={details[i]}
-              setValue={(value) =>
+              onChange={(value) =>
                 setDetails((prev) => ({ ...prev, [i]: value }))
               }
             />

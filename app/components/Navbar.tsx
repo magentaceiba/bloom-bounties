@@ -5,10 +5,9 @@ import Image from 'next/image'
 import NextLink from 'next/link'
 import ThemeSwitcher from './ThemeSwitcher'
 import Link from 'next/link'
-import { Button, Menu, Swap } from 'react-daisyui'
+import { Button, Dropdown } from 'react-daisyui'
 import WalletWidget from './WalletWidget'
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { VscChromeClose } from 'react-icons/vsc'
 import { useDisclosure } from '@/hooks'
 
 const NavItems = ({
@@ -60,30 +59,19 @@ export default function Navbar() {
         <NavItems pathname={pathname} />
       </div>
 
-      <div className="relative items-center flex lg:hidden">
-        {isOpen && (
-          <Menu className="bg-base-100 rounded-box absolute bottom-[200%] right-0">
-            <Menu.Item className="flex gap-2">
-              <ThemeSwitcher className="w-full" />
-            </Menu.Item>
-            {NavItems({ pathname, reverse: true }).map((i, index) => (
-              <Menu.Item key={index}>{i}</Menu.Item>
-            ))}
-          </Menu>
-        )}
-        <Swap
-          rotate
-          onElement={
-            <VscChromeClose className="fill-current w-5 h-5" onClick={toggle} />
-          }
-          offElement={
-            <GiHamburgerMenu
-              className="fill-current w-5 h-5"
-              onClick={toggle}
-            />
-          }
-        />
-      </div>
+      <Dropdown className="relative items-center flex lg:hidden">
+        <Button tag="label" color="ghost" className="py-0 px-1" tabIndex={0}>
+          <GiHamburgerMenu className="fill-current w-5 h-5" />
+        </Button>
+        <Dropdown.Menu className="menu-sm absolute bottom-[120%] right-0">
+          <Dropdown.Item className="flex gap-2">
+            <ThemeSwitcher className="w-full" />
+          </Dropdown.Item>
+          {NavItems({ pathname, reverse: true }).map((i, index) => (
+            <Dropdown.Item key={index}>{i}</Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
     </div>
   )
 }

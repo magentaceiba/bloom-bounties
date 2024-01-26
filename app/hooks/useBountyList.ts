@@ -17,7 +17,7 @@ export function useBountyList() {
 
   const list = useQuery({
     queryKey: ['bountyList', ids.dataUpdatedAt],
-    queryFn: () => init(workflow.data!, ids.data!),
+    queryFn: () => handleBountyList(workflow.data!, ids.data!),
     enabled: ids.isSuccess,
     refetchOnWindowFocus: false,
   })
@@ -25,7 +25,7 @@ export function useBountyList() {
   return { ...list, isConnected: workflow.isConnected }
 }
 
-const init = async (
+export const handleBountyList = async (
   workflow: NonNullable<ReturnType<typeof useWorkflow>['data']>,
   ids: readonly bigint[]
 ) => {
@@ -45,6 +45,7 @@ const init = async (
 
         const newBounty = {
           ...bounty,
+          id: String(bountyId),
           details,
           minimumPayoutAmount: formatUnits(
             bounty.minimumPayoutAmount,

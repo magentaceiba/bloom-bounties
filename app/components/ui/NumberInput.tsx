@@ -12,13 +12,13 @@ export default function NumberInput({
   label,
   ...props
 }: {
+  onChange: (string: string) => void
+  value: string | number
   step?: number
   defaultValue?: number
   min?: number
   precision?: number
   max?: number
-  onChange: (string: string) => void
-  value?: string | number
   label?: string
 } & Omit<
   React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
@@ -42,7 +42,7 @@ export default function NumberInput({
     <div {...props}>
       {!!label && (
         <>
-          <h2 className="text-sm">{label}</h2>
+          <h3>{label}</h3>
           <hr className="my-3" />
         </>
       )}

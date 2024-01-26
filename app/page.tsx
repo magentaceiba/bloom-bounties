@@ -8,6 +8,7 @@ import { Button, Loading } from 'react-daisyui'
 import { Frame, NoData, WalletWidget } from './components'
 import { FundingStats } from './components/FundingStats'
 import { BountyDetails } from './components/BountyDetails'
+import Link from 'next/link'
 
 export default function Page() {
   const list = useBountyList()
@@ -64,7 +65,13 @@ export default function Page() {
       {!list.isConnected ? (
         <WalletWidget />
       ) : (
-        <Button color="primary">Claim Bounty</Button>
+        <>
+          {!!bounty?.id && (
+            <Link href={`/claim/${bounty.id}`}>
+              <Button color="primary">Claim Bounty</Button>
+            </Link>
+          )}
+        </>
       )}
     </>
   )

@@ -17,7 +17,7 @@ export const BountyDetails = {
     creatorAddress?: string
   }) => (
     <div className="items-center justify-center p-3">
-      <div className="flex gap-3">
+      <div className="flex gap-3 items-center">
         <h4>Title |</h4>
         <p>{title}</p>
       </div>

@@ -9,19 +9,12 @@ export function FundingStats() {
   return (
     <Stats className="bg-base-200 scale-75">
       <Stats.Stat>
-        <Stats.Stat.Item variant="title">TVL</Stats.Stat.Item>
-        <Stats.Stat.Item variant="value">
-          {symbol} {formatToCompactNumber(totalSupply.formatted)}
-        </Stats.Stat.Item>
-      </Stats.Stat>
-
-      <Stats.Stat>
         <Stats.Stat.Item variant="title">Price Usd</Stats.Stat.Item>
         <Stats.Stat.Item variant="value">{'1.00 $'}</Stats.Stat.Item>
       </Stats.Stat>
 
       <Stats.Stat>
-        <Stats.Stat.Item variant="title">Usd Total</Stats.Stat.Item>
+        <Stats.Stat.Item variant="title">{symbol} TVL</Stats.Stat.Item>
         <Stats.Stat.Item variant="value">
           {formatToCompactNumber(Number(totalSupply.formatted) * 1)} $
         </Stats.Stat.Item>

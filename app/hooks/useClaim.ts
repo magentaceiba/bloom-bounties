@@ -1,10 +1,11 @@
 import { useToast } from '@/providers'
 import { parseUnits, stringToHex } from 'viem'
 import type { workflowQuery } from './useWorkflow'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FormattedClaimDetails } from '@/lib/types/claim'
 
 export default function useClaim(workflow: workflowQuery) {
+  const queryClient = useQueryClient()
   const addToast = useToast()
 
   const claim = useMutation({
@@ -39,12 +40,19 @@ export default function useClaim(workflow: workflowQuery) {
       ])
 
       addToast({
-        text: `Claim Proposal for ${1} ${ERC20Symbol} Has Been Submitted.\nWith TX Hash: ${claim}`,
+        text: `Claim Proposal for ${String(
+          bountyId
+        )} ${ERC20Symbol} Has Been Submitted.\nWith TX Hash: ${claim}`,
         status: 'success',
       })
     },
     onError: (err) => {
       addToast({ text: err?.message, status: 'error' })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['bondtyIds'],
+      })
     },
   })
 

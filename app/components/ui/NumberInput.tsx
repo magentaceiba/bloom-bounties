@@ -70,7 +70,7 @@ export default function NumberInput({
           value={value}
           onChange={handleChange}
           className="input w-full input-bordered"
-          data-index={inputIndex}
+          data-inputindex={inputIndex}
         />
         <button onClick={handleIncrement} className="btn" tabIndex={-1}>
           +

@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useWorkflow } from './useWorkflow'
-import { useToast } from '@/providers'
+import { useToast } from './'
 import { BountyPostArgs, handleBountyPost } from '@/lib/handleBountyPost'
 import { handleBountyList } from '@/lib/handleBountyList'
 
 export function useBounty() {
   const workflow = useWorkflow()
-  const addToast = useToast()
+  const { addToast } = useToast()
 
   const ids = useQuery({
     queryKey: ['bondtyIds', workflow.dataUpdatedAt],

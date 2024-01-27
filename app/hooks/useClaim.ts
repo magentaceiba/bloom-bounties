@@ -1,4 +1,4 @@
-import { useToast } from '@/providers'
+import { useToast } from './'
 import { useWorkflow } from './useWorkflow'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ClaimArgs, VerifyArgs } from '@/lib/types/claim'
@@ -9,7 +9,7 @@ import { handleVerify } from '@/lib/handleVerify'
 export default function useClaim() {
   const workflow = useWorkflow()
   const queryClient = useQueryClient()
-  const addToast = useToast()
+  const { addToast } = useToast()
 
   const ids = useQuery({
     queryKey: ['claimIds', workflow.dataUpdatedAt],

@@ -4,6 +4,7 @@ import { useInputFocus } from '@/hooks/useInputFocus'
 import { useState } from 'react'
 import { Button, Input, type InputProps } from 'react-daisyui'
 import { FiEdit } from 'react-icons/fi'
+import cn from 'classnames'
 
 type EditableInputProps = {
   label: string
@@ -27,9 +28,9 @@ export default function EditableText({
   const { inputRef, inputIndex, onDone } = useInputFocus(isEditing)
 
   const toggle = () => {
-    if (isEditing && !invalid) {
+    onDone()
+    if (isEditing) {
       setIsEditing(false)
-      onDone()
     } else {
       setIsEditing(true)
     }
@@ -44,30 +45,29 @@ export default function EditableText({
         </Button>
       </div>
 
-      {isEditing ? (
-        <form
-          className="form-control w-full"
-          onSubmit={(e) => {
-            e.preventDefault()
-            toggle()
+      <form
+        className={cn('form-control w-full', !isEditing && 'hidden')}
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (invalid) return
+          toggle()
+        }}
+      >
+        <Input
+          {...props}
+          {...(invalid && { color: 'warning' })}
+          value={inputValue}
+          placeholder={'Type Here'}
+          onChange={(e) => {
+            onChange(e.target.value)
+            setInputValue(e.target.value)
           }}
-        >
-          <Input
-            {...props}
-            {...(invalid && { color: 'warning' })}
-            value={inputValue}
-            placeholder={'Type Here'}
-            onChange={(e) => {
-              onChange(e.target.value)
-              setInputValue(e.target.value)
-            }}
-            ref={inputRef}
-            data-index={inputIndex}
-          />
-        </form>
-      ) : (
-        <p>{value}</p>
-      )}
+          ref={inputRef}
+          data-inputindex={inputIndex}
+        />
+      </form>
+
+      <p className={cn(isEditing && 'hidden')}>{value}</p>
     </>
   )
 }

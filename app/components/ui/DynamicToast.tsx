@@ -33,7 +33,11 @@ export default function DynamicToast({
           className="px-2 py-1 flex text-xs items-center"
         >
           <p>{alert.text}</p>
-          <Button color="ghost" onClick={() => removeToast(index)}>
+          <Button
+            className="ml-auto"
+            color="ghost"
+            onClick={() => removeToast(index)}
+          >
             X
           </Button>
         </Alert>

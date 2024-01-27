@@ -1,3 +1,4 @@
+import { useInputFocus } from '@/hooks/useInputFocus'
 import { formatAmountString } from '@/lib/utils'
 import cn from 'classnames'
 
@@ -41,6 +42,12 @@ export default function NumberInput({
     onChange(formatAmountString(e.target.value))
   }
 
+  const { inputRef, inputIndex, onDone } = useInputFocus()
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') onDone()
+  }
+
   props.className = cn(props?.className)
 
   return (
@@ -52,17 +59,20 @@ export default function NumberInput({
         </>
       )}
       <div className="flex gap-3">
-        <button onClick={handleDecrement} className="btn">
+        <button onClick={handleDecrement} className="btn" tabIndex={-1}>
           -
         </button>
         <input
+          ref={inputRef}
+          onKeyDown={handleKeyDown}
           type="number"
           inputMode="decimal"
           value={value}
           onChange={handleChange}
           className="input w-full input-bordered"
+          data-index={inputIndex}
         />
-        <button onClick={handleIncrement} className="btn">
+        <button onClick={handleIncrement} className="btn" tabIndex={-1}>
           +
         </button>
       </div>

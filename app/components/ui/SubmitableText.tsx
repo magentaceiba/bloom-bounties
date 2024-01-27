@@ -1,5 +1,6 @@
 'use client'
 
+import { useInputFocus } from '@/hooks/useInputFocus'
 import { useState } from 'react'
 import { Button, Input, type InputProps } from 'react-daisyui'
 import { BsCopy } from 'react-icons/bs'
@@ -36,8 +37,16 @@ export default function SubmitableText({
   >) {
   const [isEditing, setIsEditing] = useState(defaultIsEditing ?? false)
   const [inputValue, setInputValue] = useState('')
+  const { inputRef, inputIndex, onDone } = useInputFocus(isEditing)
 
-  const toggle = () => setIsEditing((prev) => !prev)
+  const toggle = () => {
+    if (isEditing && !invalid) {
+      setIsEditing(false)
+      onDone()
+    } else {
+      setIsEditing(true)
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -74,6 +83,8 @@ export default function SubmitableText({
               setValue(e.target.value)
               setInputValue(e.target.value)
             }}
+            ref={inputRef}
+            data-index={inputIndex}
           />
 
           <Button

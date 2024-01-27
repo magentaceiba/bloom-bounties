@@ -23,7 +23,8 @@ export function ClientClaimPage({ id }: { id: string }) {
   const bounty = bountyQuery.data
 
   const [contributers, setContributers] = useState<Contributers>([
-    { uid: crypto.randomUUID(), addr: workflow.address, claimAmount: '' },
+    // @ts-ignore
+    { uid: crypto.randomUUID(), addr: '', claimAmount: '' },
   ])
 
   const [url, setUrl] = useState('')

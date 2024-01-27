@@ -88,7 +88,8 @@ export default function VerifyPage() {
           />
           <Button
             onClick={onVerify}
-            disabled={!isConnected || !!claim?.claimed}
+            disabled={!isConnected || !!claim?.claimed || verify.isPending}
+            loading={verify.isPending}
             color="primary"
           >
             Verify Claim

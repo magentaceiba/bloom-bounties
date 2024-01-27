@@ -24,8 +24,8 @@ export function ContributerInput({
   const handleState = ({ uid, addr, claimAmount }: Contributers[0]) => {
     const newContributers = contributers.map((c) => {
       if (c.uid === uid) {
-        if (!!addr) return { ...c, addr }
-        if (!!claimAmount) return { ...c, claimAmount }
+        if (addr !== undefined) return { ...c, addr }
+        if (claimAmount !== undefined) return { ...c, claimAmount }
         return c
       }
       return c

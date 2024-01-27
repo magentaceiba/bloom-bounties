@@ -22,8 +22,6 @@ export default function AppProvider({
   const isHydrated = useIsHydratedHandler()
   const inputFocus = useInputFocusHandler()
 
-  console.log(inputFocus)
-
   // CONTEXT
   //==============================================
   const contextData: TAppContext = {

@@ -9,7 +9,10 @@ export function useInputFocus(tracker?: any) {
   const inputs = useAppContext().inputFocus
 
   useEffect(() => {
-    if (!!inputs) setInputIndex(inputs.findIndex((i) => i === inputRef.current))
+    if (inputs) {
+      const newIndex = inputs.findIndex((i) => i === inputRef.current)
+      if (newIndex !== inputIndex) setInputIndex(newIndex)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputs])
 
@@ -46,33 +49,30 @@ export function useInputFocusHandler() {
   const [inputs, setInputs] = useState<HTMLInputElement[]>([])
 
   const updateInputs = () => {
-    const newInputs = Array.from(
-      document.querySelectorAll('input[data-inputindex]')
-    )
-    // @ts-ignore
-    setInputs(newInputs)
+    if (typeof document !== 'undefined') {
+      const newInputs = Array.from(
+        document.querySelectorAll('input[data-inputindex]')
+      )
+      // @ts-ignore
+      setInputs(newInputs)
+    }
   }
 
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      // Initialize inputs
-      updateInputs()
+    // Create a MutationObserver instance to watch for changes in the DOM
+    const observer = new MutationObserver(updateInputs)
 
-      // Create a MutationObserver instance to watch for changes in the DOM
-      const observer = new MutationObserver(updateInputs)
+    // Start observing the document with the configured parameters
+    observer.observe(document, {
+      childList: true,
+      subtree: true,
+      attributeFilter: ['data-inputindex'],
+    })
 
-      // Start observing the document with the configured parameters
-      observer.observe(document, {
-        childList: true,
-        subtree: true,
-        attributeFilter: ['data-inputindex'],
-      })
-
-      // Clean up: disconnect the observer when the component is unmounted
-      return () => observer.disconnect()
-    }
+    // Clean up: disconnect the observer when the component is unmounted
+    return () => observer.disconnect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [typeof document])
+  }, [])
 
   return inputs
 }

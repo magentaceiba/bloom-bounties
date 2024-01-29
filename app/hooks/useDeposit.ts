@@ -2,10 +2,11 @@ import { useToast } from './'
 import { formatUnits, parseUnits } from 'viem'
 import { useBalance } from 'wagmi'
 import { useWorkflow } from './useWorkflow'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { waitUntilConfirmation } from '@/lib/utils'
 
 export default function useDeposit() {
+  const queryClient = useQueryClient()
   const { addToast } = useToast()
   const workflow = useWorkflow()
   const address = workflow.address
@@ -40,7 +41,7 @@ export default function useDeposit() {
       ])
 
       addToast({
-        text: `Waiting for 1 deposit confirmation`,
+        text: `Waiting for deposit confirmation`,
         status: 'info',
       })
 
@@ -52,6 +53,10 @@ export default function useDeposit() {
       addToast({
         text: `Deposited ${workflow.data?.ERC20Symbol}`,
         status: 'success',
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['totalSupply'],
+        refetchType: 'all',
       })
       balance.refetch()
       allowance.refetch()
@@ -70,7 +75,7 @@ export default function useDeposit() {
       ])
 
       addToast({
-        text: `Waiting for 1 approval confirmation`,
+        text: `Waiting for approval confirmation`,
         status: 'info',
       })
 

@@ -3,6 +3,19 @@ export type FormattedClaimDetails = {
   date: string
 }
 
+export type FormattedClaim = {
+  claimId: bigint
+  details: FormattedClaimDetails
+  contributors: {
+    addr: `0x${string}`
+    claimAmount: string
+    include: boolean
+  }[]
+  symbol: string
+  bountyId: bigint
+  claimed: boolean
+}
+
 export type ClaimObject =
   | {
       details: FormattedClaimDetails

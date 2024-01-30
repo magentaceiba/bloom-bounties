@@ -5,3 +5,12 @@ export type FormattedBountyDetails = {
   url?: string
   date: string
 }
+
+export type FormattedBounty = {
+  id: string
+  details: FormattedBountyDetails
+  minimumPayoutAmount: string
+  maximumPayoutAmount: string
+  symbol: string
+  locked: boolean
+}

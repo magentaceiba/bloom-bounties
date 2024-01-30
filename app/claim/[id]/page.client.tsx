@@ -3,24 +3,22 @@
 import { FourOFour, WalletWidget } from '@/components'
 import { BountyDetails } from '@/components/BountyDetails'
 import { ContributerInput, Contributers } from '@/components/ContributerInput'
-import { handleBountyList } from '@/lib/handleBountyList'
 import useClaim from '@/hooks/useClaim'
 import { useWorkflow } from '@/hooks/useWorkflow'
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Button, Loading } from 'react-daisyui'
+import { FormattedBounty } from '@/lib/types/bounty'
 
-export function ClientClaimPage({ id }: { id: string }) {
+export function ClientClaimPage({
+  claim,
+  isPending,
+}: {
+  claim: FormattedBounty
+  isPending: boolean
+}) {
   const workflow = useWorkflow()
 
-  const bountyQuery = useQuery({
-    queryKey: ['claimBounty', workflow.dataUpdatedAt],
-    queryFn: async () =>
-      (await handleBountyList(workflow.data!, [BigInt(id)]))[0],
-    enabled: workflow.isSuccess,
-  })
-
-  const bounty = bountyQuery.data
+  const bounty = claim
 
   const [contributers, setContributers] = useState<Contributers>([
     // @ts-ignore
@@ -31,7 +29,22 @@ export function ClientClaimPage({ id }: { id: string }) {
 
   const { post } = useClaim()
 
-  if (bountyQuery.isPending) return <Loading />
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    post.mutate({
+      contributers: contributers.map((i) => ({
+        addr: i.addr!,
+        claimAmount: i.claimAmount!,
+      })),
+      details: {
+        url,
+        date: new Date().toISOString(),
+      },
+      bountyId: claim.id,
+    })
+  }
+
+  if (isPending) return <Loading />
 
   if (!bounty) return <FourOFour />
 
@@ -53,7 +66,10 @@ export function ClientClaimPage({ id }: { id: string }) {
       {!workflow.isConnected ? (
         <WalletWidget />
       ) : (
-        <>
+        <form
+          onSubmit={onSubmit}
+          className="form-control gap-6 w-full max-w-xl"
+        >
           <ContributerInput
             contributers={contributers}
             contributersStateHandler={setContributers}
@@ -65,23 +81,11 @@ export function ClientClaimPage({ id }: { id: string }) {
             loading={post.isPending}
             disabled={post.isPending}
             color="primary"
-            onClick={() => {
-              post.mutate({
-                contributers: contributers.map((i) => ({
-                  addr: i.addr!,
-                  claimAmount: i.claimAmount!,
-                })),
-                details: {
-                  url,
-                  date: new Date().toISOString(),
-                },
-                bountyId: id,
-              })
-            }}
+            type="submit"
           >
             Submit
           </Button>
-        </>
+        </form>
       )}
     </>
   )

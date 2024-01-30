@@ -1,40 +1,31 @@
-import { useToast } from './'
+import { useServerAction, useToast } from './'
 import { useWorkflow } from './useWorkflow'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { ClaimArgs, VerifyArgs } from '@/lib/types/claim'
 import { handleClaim } from '@/lib/handleClaim'
-import { handleClaimList } from '@/lib/handleClaimList'
 import { handleVerify } from '@/lib/handleVerify'
+import { revalidateServerPath } from '@/lib/actions/utils'
 
 export default function useClaim() {
   const workflow = useWorkflow()
-  const queryClient = useQueryClient()
   const { addToast } = useToast()
+  const serverAction = useServerAction()
 
-  const ids = useQuery({
-    queryKey: ['claimIds', workflow.dataUpdatedAt],
-    queryFn: () => workflow.data!.contracts.logic.read.listClaimIds(),
-    enabled: workflow.isSuccess,
-    refetchOnWindowFocus: false,
-  })
+  const invlaidateBounties = () => {
+    serverAction(() => revalidateServerPath('client', '/'))
+  }
 
-  const list = useQuery({
-    queryKey: ['claimList', ids.dataUpdatedAt],
-    queryFn: () => handleClaimList(workflow.data!, ids.data!),
-    enabled: ids.isSuccess,
-    refetchOnWindowFocus: false,
-  })
+  const invalidateClaims = () => {
+    serverAction(() => revalidateServerPath('client', '/verify'))
+  }
 
   const post = useMutation({
     mutationKey: ['addClaim'],
     mutationFn: (data: ClaimArgs) => handleClaim({ data, workflow }),
 
     onSuccess: ({ bountyId, ERC20Symbol, claim }) => {
-      queryClient.invalidateQueries({
-        queryKey: ['bondtyIds'],
-      })
-
-      list.refetch()
+      invlaidateBounties()
+      invalidateClaims()
 
       addToast({
         text: `Claim Proposal for ${String(
@@ -59,7 +50,7 @@ export default function useClaim() {
         status: 'success',
       })
 
-      ids.refetch()
+      invalidateClaims()
     },
 
     onError: (err) => {
@@ -69,7 +60,6 @@ export default function useClaim() {
 
   return {
     post,
-    list,
     verify,
     isConnected: workflow.isConnected,
     address: workflow.address,

@@ -1,6 +1,5 @@
 import { Button } from 'react-daisyui'
-import { EditableText, Frame, NumberInput } from './ui'
-import { isAddress } from 'viem'
+import { Frame, NumberInput, TextInput } from './ui'
 
 export type Contributers = {
   uid: string
@@ -34,16 +33,18 @@ export function ContributerInput({
   }
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-xl">
-      <EditableText
+    <div className="flex flex-col w-full max-w-xl">
+      <TextInput
         label="Proposal URL"
         type="url"
         value={url}
         onChange={onUrlChange}
       />
       <Button
+        className="mt-6"
         color="primary"
         size="sm"
+        type="button"
         onClick={() => {
           contributersStateHandler([
             ...contributers,
@@ -58,14 +59,13 @@ export function ContributerInput({
         Add Contributor
       </Button>
       {contributers.map((c, index) => (
-        <Frame key={index}>
-          <EditableText
-            invalid={!isAddress(c.addr ?? '')}
+        <Frame key={index} className="mt-6">
+          <TextInput
             label={`Contributer ${index + 1} Address`}
-            value={c.addr ?? ''}
             onChange={(e) => {
               handleState({ uid: c.uid, addr: e as `0x${string}` })
             }}
+            type="address"
           />
           <NumberInput
             label={`Proposal Amount ${symbol}`}

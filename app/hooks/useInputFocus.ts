@@ -9,26 +9,31 @@ export function useInputFocus(tracker?: any) {
   const inputs = useAppContext().inputFocus
 
   useEffect(() => {
-    if (inputs) {
+    if (!!inputs) {
       const newIndex = inputs.findIndex((i) => i === inputRef.current)
-      if (newIndex !== inputIndex) setInputIndex(newIndex)
+      setInputIndex(newIndex)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputs])
 
   const onDone = () => {
     if (inputs) {
-      const nextIndex = inputs.findIndex(
-        (input) => input && parseInt(input.dataset.inputindex!) > inputIndex
-      )
+      const nonHiddenInputs = inputs.filter(
+          (input) => input && input.offsetParent !== null
+        ),
+        nextIndex = nonHiddenInputs.findIndex(
+          (input) => input && parseInt(input.dataset.inputindex!) > inputIndex
+        )
 
-      // const firstNonHiddenIndex = inputs.findIndex(
-      //   (input) => input && window.getComputedStyle(input).display !== 'none'
-      // )
+      // Check if inputRef is the last input in the parent form
+      const form = inputRef.current?.form
+      if (form && !form.checkValidity()) return
 
-      if (nextIndex !== -1 && inputs[nextIndex]) inputs[nextIndex].focus()
-      // If it's the last one, focus on the first
-      // else if (inputs[firstNonHiddenIndex]) inputs[firstNonHiddenIndex].focus()
+      const finalNextIndex = nextIndex === -1 ? 0 : nextIndex
+
+      setTimeout(() => {
+        nonHiddenInputs[finalNextIndex].focus()
+      }, 0.1)
     }
   }
 
@@ -60,14 +65,33 @@ export function useInputFocusHandler() {
 
   useEffect(() => {
     // Create a MutationObserver instance to watch for changes in the DOM
-    const observer = new MutationObserver(updateInputs)
+    const observer = new MutationObserver((mutationsList) => {
+      let runCondition = false
+      for (let mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+          ;(['addedNodes', 'removedNodes'] as const).map((key) => {
+            Array.from(mutation[key]).forEach((node) => {
+              if (
+                node instanceof HTMLElement &&
+                node.querySelector('input[data-inputindex]')
+              ) {
+                runCondition = true
+              }
+            })
+          })
+        }
+      }
+
+      if (runCondition) updateInputs()
+    })
 
     // Start observing the document with the configured parameters
     observer.observe(document, {
       childList: true,
       subtree: true,
-      attributeFilter: ['data-inputindex'],
     })
+
+    updateInputs()
 
     // Clean up: disconnect the observer when the component is unmounted
     return () => observer.disconnect()

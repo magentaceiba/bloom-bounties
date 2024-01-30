@@ -1,11 +1,11 @@
 'use client'
 
 import { compressAddress, firstLetterToUpper } from '@/lib/utils'
-import { EditableText, NumberInput } from '@/components/ui'
+import { TextInput, NumberInput } from '@/components/ui'
 import { Badge, Button, Divider } from 'react-daisyui'
 import { WalletWidget } from '@/components'
 import { useBounty } from '@/hooks/useBounty'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 export default function PostPage() {
   const fields = ['title', 'description', 'url'] as const
@@ -15,13 +15,15 @@ export default function PostPage() {
     description: '',
     url: '',
   })
+
   const [minimumPayoutAmount, setMinimumPayoutAmount] = useState('')
   const [maximumPayoutAmount, setMaximumPayoutAmount] = useState('')
 
   const { ERC20Symbol, post, address, isConnected } = useBounty()
   const { mutate, isPending } = post
 
-  const onMutate = () => {
+  const onMutate = (e: React.FormEvent) => {
+    e.preventDefault()
     mutate({
       details,
       minimumPayoutAmount,
@@ -30,20 +32,21 @@ export default function PostPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
+    <form className="flex flex-col lg:flex-row gap-6" onSubmit={onMutate}>
       <div className="flex flex-col justify-center p-3">
         {fields.map((i, index) => (
-          <div key={index}>
-            <EditableText
-              invalid={false}
+          <Fragment key={index}>
+            <TextInput
               label={firstLetterToUpper(i)}
               value={details[i]}
               onChange={(value) =>
                 setDetails((prev) => ({ ...prev, [i]: value }))
               }
+              required
+              type={i === 'url' ? 'url' : 'text'}
             />
             <Divider />
-          </div>
+          </Fragment>
         ))}
 
         <div className="flex justify-center flex-wrap gap-3">
@@ -65,14 +68,14 @@ export default function PostPage() {
       <div className="flex flex-col gap-6 h-max my-auto items-center">
         <NumberInput
           label="Minimum Payment Amount"
-          value={minimumPayoutAmount}
           onChange={(e) => setMinimumPayoutAmount(e)}
+          required
         />
 
         <NumberInput
           label="Maximum Payment Amount"
-          value={maximumPayoutAmount}
           onChange={(e) => setMaximumPayoutAmount(e)}
+          required
         />
 
         {!isConnected ? (
@@ -80,7 +83,7 @@ export default function PostPage() {
         ) : (
           <Button
             color={'primary'}
-            onClick={onMutate}
+            type="submit"
             loading={isPending}
             disabled={isPending}
           >
@@ -88,6 +91,6 @@ export default function PostPage() {
           </Button>
         )}
       </div>
-    </div>
+    </form>
   )
 }

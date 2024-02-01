@@ -4,8 +4,10 @@ import { useBalance } from 'wagmi'
 import { useWorkflow } from './useWorkflow'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { waitUntilConfirmation } from '@/lib/utils'
+import { useState } from 'react'
 
 export default function useDeposit() {
+  const [amount, setAmount] = useState('')
   const queryClient = useQueryClient()
   const { addToast } = useToast()
   const workflow = useWorkflow()
@@ -54,12 +56,12 @@ export default function useDeposit() {
         text: `Deposited ${workflow.data?.ERC20Symbol}`,
         status: 'success',
       })
-      queryClient.invalidateQueries({
+      queryClient.refetchQueries({
         queryKey: ['totalSupply'],
-        refetchType: 'all',
       })
       balance.refetch()
       allowance.refetch()
+      setAmount('')
     },
     onError: (err) => {
       addToast({ text: err?.message, status: 'error' })
@@ -98,17 +100,25 @@ export default function useDeposit() {
     },
   })
 
-  const depositEnabled = (amount: string) => {
-    return Number(amount) <= Number(allowance.data?.formatted!)
+  const isConnected = workflow.isConnected
+
+  const depositEnabled = Number(amount) <= Number(allowance.data?.formatted!)
+
+  const handleDeposit = () => {
+    if (depositEnabled) deposit.mutate(amount)
+    else if (isConnected) approve.mutate(amount)
   }
+
+  const loading = deposit.isPending || allowance.isPending || approve.isPending
 
   return {
     ERC20Symbol: workflow.data?.ERC20Symbol,
     balance,
     allowance,
-    deposit,
-    approve,
-    depositEnabled,
-    isConnected: workflow.isConnected,
+    isConnected,
+    setAmount,
+    loading,
+    handleDeposit,
+    amount,
   }
 }

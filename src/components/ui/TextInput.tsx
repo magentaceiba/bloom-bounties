@@ -11,7 +11,7 @@ export type TextInputProps = {
   onChange: (value: string) => void
   invalid?: boolean
   label?: string
-} & Omit<InputProps, 'onChange' | 'placeholder' | 'onSubmit' | 'color'>
+} & Omit<InputProps, 'onChange' | 'color'>
 
 const TextInput = ({
   onChange,
@@ -19,7 +19,8 @@ const TextInput = ({
   invalid = false,
   ...props
 }: TextInputProps) => {
-  const { inputRef, inputIndex, onDone } = useInputFocus()
+  const { inputRef, inputIndex, onDone, isTouched, setIsTouched } =
+    useInputFocus()
 
   const setValidity = (msg: string) => {
     inputRef.current!.setCustomValidity(msg)
@@ -54,6 +55,7 @@ const TextInput = ({
   const isInvalid = invalid || !scanValidity()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isTouched) setIsTouched(true)
     onChange(e.target.value)
   }
 
@@ -71,11 +73,11 @@ const TextInput = ({
 
       <Input
         onKeyDown={handleKeyDown}
-        placeholder={'Type Here'}
+        placeholder={props.placeholder ?? 'Type Here'}
         onChange={handleChange}
         ref={inputRef}
         data-inputindex={inputIndex}
-        {...(isInvalid && { color: 'warning' })}
+        {...(isTouched && isInvalid && { color: 'warning' })}
         {...props}
       />
     </>

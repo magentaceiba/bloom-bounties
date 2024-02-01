@@ -65,6 +65,7 @@ export function VerifierInput({
               }}
               value={claimAmount ?? ''}
               max={standingClaimAmount}
+              required
             />
           </Frame>
         )

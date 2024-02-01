@@ -8,25 +8,23 @@ import { useState } from 'react'
 import { Alert, Button, Stats } from 'react-daisyui'
 
 export default function DepositPage() {
-  const [amount, setAmount] = useState('')
   const {
     ERC20Symbol,
-    depositEnabled,
-    deposit,
+    handleDeposit,
+    loading,
     balance,
-    approve,
     allowance,
     isConnected,
+    setAmount,
+    amount,
   } = useDeposit()
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (depositEnabled(amount)) deposit.mutate(amount)
-    else if (isConnected) approve.mutate(amount)
+    handleDeposit()
   }
 
   const hasNoBalance = !balance.isSuccess || balance.data?.value === BigInt(0)
-  const loading = deposit.isPending || allowance.isPending || approve.isPending
 
   return (
     <>
@@ -52,6 +50,7 @@ export default function DepositPage() {
         label={'Deposit Amount'}
         onChange={setAmount}
         value={amount}
+        required
       />
 
       <form onSubmit={onSubmit}>

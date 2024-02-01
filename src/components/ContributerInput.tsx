@@ -66,13 +66,14 @@ export function ContributerInput({
               handleState({ uid: c.uid, addr: e as `0x${string}` })
             }}
             type="address"
+            required
           />
           <NumberInput
             label={`Proposal Amount ${symbol}`}
             onChange={(e) => {
               handleState({ uid: c.uid, claimAmount: e })
             }}
-            value={c.claimAmount ?? ''}
+            required
           />
         </Frame>
       ))}

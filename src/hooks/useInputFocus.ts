@@ -6,35 +6,23 @@ import { useRef, useEffect, useState } from 'react'
 export function useInputFocus(tracker?: any) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [inputIndex, setInputIndex] = useState(0)
-  const inputs = useAppContext().inputFocus
+  const [isTouched, setIsTouched] = useState(false)
+  const { inputsChangeCounter, getNewInputIndex, getNextInputRef } =
+    useAppContext().inputFocus
 
   useEffect(() => {
-    if (!!inputs) {
-      const newIndex = inputs.findIndex((i) => i === inputRef.current)
-      setInputIndex(newIndex)
-    }
+    if (!!inputRef.current) setInputIndex(getNewInputIndex(inputRef.current))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputs])
+  }, [inputsChangeCounter])
 
   const onDone = () => {
-    if (inputs) {
-      const nonHiddenInputs = inputs.filter(
-          (input) => input && input.offsetParent !== null
-        ),
-        nextIndex = nonHiddenInputs.findIndex(
-          (input) => input && parseInt(input.dataset.inputindex!) > inputIndex
-        )
+    // Check if inputRef is the last input in the parent form
+    const form = inputRef.current?.form
+    if (form && !form.checkValidity()) return
 
-      // Check if inputRef is the last input in the parent form
-      const form = inputRef.current?.form
-      if (form && !form.checkValidity()) return
-
-      const finalNextIndex = nextIndex === -1 ? 0 : nextIndex
-
-      setTimeout(() => {
-        nonHiddenInputs[finalNextIndex].focus()
-      }, 0.1)
-    }
+    setTimeout(() => {
+      getNextInputRef(inputIndex)?.focus()
+    }, 0.1)
   }
 
   useEffect(() => {
@@ -44,6 +32,8 @@ export function useInputFocus(tracker?: any) {
   }, [tracker])
 
   return {
+    isTouched,
+    setIsTouched,
     inputRef,
     inputIndex,
     onDone,
@@ -52,12 +42,14 @@ export function useInputFocus(tracker?: any) {
 
 export function useInputFocusHandler() {
   const [inputs, setInputs] = useState<HTMLInputElement[]>([])
+  const [inputsChangeCounter, setInputsChangeCounter] = useState(0)
 
   const updateInputs = () => {
     if (typeof document !== 'undefined') {
       const newInputs = Array.from(
         document.querySelectorAll('input[data-inputindex]')
       )
+      setInputsChangeCounter((prev) => prev + 1)
       // @ts-ignore
       setInputs(newInputs)
     }
@@ -98,5 +90,19 @@ export function useInputFocusHandler() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return inputs
+  const getNewInputIndex = (inputRef: HTMLInputElement) =>
+    inputs.findIndex((i) => i === inputRef)
+
+  const nonHiddenInputs = inputs.filter(
+    (input) => input && input.offsetParent !== null
+  )
+
+  const getNextInputRef = (inputIndex: number) => {
+    const nextIndex = nonHiddenInputs.findIndex(
+      (input) => input && parseInt(input.dataset.inputindex!) > inputIndex
+    )
+    return nonHiddenInputs[nextIndex]
+  }
+
+  return { inputsChangeCounter, getNewInputIndex, getNextInputRef }
 }

@@ -1,4 +1,4 @@
-import { useToast } from './'
+import { useToast } from '.'
 import { formatUnits, parseUnits } from 'viem'
 import { useBalance } from 'wagmi'
 import { useWorkflow } from './useWorkflow'

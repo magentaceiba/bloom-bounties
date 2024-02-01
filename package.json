@@ -9,19 +9,7 @@
     "build": "next build",
     "start": "next start -p 8080",
     "pre-commit": "lint-staged",
-    "type-check": "tsc -p ./tsconfig.json --pretty --noEmit",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
-    "prettier": "prettier --check .",
-    "prettier:fix": "prettier --write .",
     "release": "standard-version"
-  },
-  "lint-staged": {
-    ".": "npm run type-check",
-    ".**/*.{js,jsx,ts,tsx}": [
-      "npm run lint:fix",
-      "npm run prettier:fix"
-    ]
   },
   "dependencies": {
     "@dynamic-labs/ethereum": "^1.0.7",
@@ -29,7 +17,7 @@
     "@dynamic-labs/sdk-react-core": "^1.0.7",
     "@dynamic-labs/wagmi-connector": "^1.0.7",
     "@emotion/react": "^11.11.1",
-    "@inverter-network/abis": "^0.0.2",
+    "@inverter-network/abis": "0.0.2",
     "@reduxjs/toolkit": "^1.9.7",
     "@tanstack/react-query": "^5.13.4",
     "classnames": "^2.3.2",
@@ -67,7 +55,8 @@
   "peerDependencies": {
     "typescript": "^5.1.6",
     "viem": "^1.19.13",
-    "wagmi": "^1.4.12"
+    "wagmi": "^1.4.12",
+    "zod": "^3.22.4"
   },
   "browser": {
     "fs": false,

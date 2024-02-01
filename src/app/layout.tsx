@@ -7,15 +7,15 @@
 
 import React from 'react'
 import type { Metadata } from 'next'
-import Providers from './providers'
-import { RouteProgressBar, Navbar } from './components'
+import Providers from '../providers'
+import { RouteProgressBar, Navbar } from '../components'
 import { cookies } from 'next/headers'
 import { initialTheme } from '../styles'
 import { Open_Sans } from 'next/font/google'
 import '../styles/global.css'
 import 'swiper/css'
 import 'swiper/css/effect-cards'
-import Analytics from './providers/Analytics'
+import Analytics from '../providers/Analytics'
 
 const openSans = Open_Sans({
   subsets: ['cyrillic'],

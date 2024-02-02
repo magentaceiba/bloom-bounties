@@ -55,7 +55,5 @@ export const handleRoles = async ({
     hasRoles[`is${key}`] = res
   }
 
-  console.log('hasRoles', hasRoles)
-
   return hasRoles
 }

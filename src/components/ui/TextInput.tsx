@@ -1,11 +1,11 @@
 'use client'
 
-import { useInputFocus } from '@/hooks'
 import { Input, type InputProps } from 'react-daisyui'
 import cn from 'classnames'
 
 import { z } from 'zod'
 import { isAddress } from 'viem'
+import { useState, useRef } from 'react'
 
 export type TextInputProps = {
   onChange: (value: string) => void
@@ -19,8 +19,8 @@ const TextInput = ({
   invalid = false,
   ...props
 }: TextInputProps) => {
-  const { inputRef, inputIndex, onDone, isTouched, setIsTouched } =
-    useInputFocus()
+  const [isTouched, setIsTouched] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const setValidity = (msg: string) => {
     inputRef.current!.setCustomValidity(msg)
@@ -59,12 +59,6 @@ const TextInput = ({
     onChange(e.target.value)
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      onDone()
-    }
-  }
-
   return (
     <>
       <label className={cn('label', !label && 'hidden')}>
@@ -72,11 +66,11 @@ const TextInput = ({
       </label>
 
       <Input
-        onKeyDown={handleKeyDown}
+        // onKeyDown={handleKeyDown}
         placeholder={props.placeholder ?? 'Type Here'}
         onChange={handleChange}
         ref={inputRef}
-        data-inputindex={inputIndex}
+        // data-inputindex={inputIndex}
         {...(isTouched && isInvalid && { color: 'warning' })}
         {...props}
       />

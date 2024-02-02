@@ -1,8 +1,8 @@
 'use client'
 
-import { useInputFocus } from '@/hooks/useInputFocus'
 import { formatAmountString } from '@/lib/utils'
 import cn from 'classnames'
+import { useState, useRef } from 'react'
 import { Input, type InputProps } from 'react-daisyui'
 
 import { z } from 'zod'
@@ -21,8 +21,8 @@ export default function NumberInput({
   const maxNumber = Number(props.max)
   const stepNumber = Number(props.step)
 
-  const { inputRef, inputIndex, onDone, isTouched, setIsTouched } =
-    useInputFocus()
+  const [isTouched, setIsTouched] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleIncrementOrDecrement = (inc?: boolean) => {
     let newValue =
@@ -37,12 +37,6 @@ export default function NumberInput({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(formatAmountString(e.target.value))
     if (!isTouched) setIsTouched(true)
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      onDone()
-    }
   }
 
   const setValidity = (msg: string) => {
@@ -99,11 +93,9 @@ export default function NumberInput({
         <Input
           className="w-full"
           ref={inputRef}
-          onKeyDown={handleKeyDown}
           type="number"
           inputMode="decimal"
           onChange={handleChange}
-          data-inputindex={inputIndex}
           {...(isTouched && isInvalid && { color: 'warning' })}
           {...props}
         />

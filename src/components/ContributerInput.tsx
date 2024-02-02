@@ -39,6 +39,7 @@ export function ContributerInput({
         type="url"
         value={url}
         onChange={onUrlChange}
+        required
       />
       <Button
         className="mt-6"

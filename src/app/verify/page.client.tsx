@@ -19,7 +19,7 @@ export default function VerifyPageClient({
   list: FormattedClaim[]
   isPending: boolean
 }) {
-  const roles = useRole()
+  const { roles } = useRole()
   const { isConnected, ERC20Symbol, verify } = useClaim()
   const [selected, setSelected] = useState<number>(0)
 

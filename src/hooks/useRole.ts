@@ -1,11 +1,14 @@
-import { useQuery } from '@tanstack/react-query'
-import { useWorkflow } from '.'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useToast, useWorkflow } from '.'
 import { useAccount } from 'wagmi'
-import { handleRoles } from '@/lib/handleRoles'
+import { RoleKeys, handleRoles } from '@/lib/handleRoles'
+import { waitUntilConfirmation } from '@/lib/utils'
+import { type Hex } from 'viem'
 
 export function useRole() {
   const { address } = useAccount()
   const workflow = useWorkflow()
+  const { addToast } = useToast()
 
   const roles = useQuery({
     queryKey: ['roles', workflow.dataUpdatedAt],
@@ -19,5 +22,62 @@ export function useRole() {
     refetchOnWindowFocus: false,
   })
 
-  return roles
+  const setRole = useMutation({
+    mutationKey: ['grantRole'],
+    mutationFn: async ({
+      role,
+      walletAddress,
+      type,
+    }: {
+      role: RoleKeys
+      walletAddress: Hex
+      type: 'Grant' | 'Revoke'
+    }) => {
+      if (!roles.isSuccess) throw new Error('Roles not loaded')
+
+      let action:
+        | 'grantRole'
+        | 'grantModuleRole'
+        | 'revokeRole'
+        | 'revokeModuleRole'
+
+      switch (role) {
+        case 'Owner':
+          if (type === 'Grant') action = 'grantRole'
+          else action = 'revokeRole'
+          break
+        default:
+          if (type === 'Grant') action = 'grantModuleRole'
+          else action = 'revokeModuleRole'
+      }
+
+      const hash = await workflow.data!.contracts.authorizer.write[action]([
+        roles.data![role],
+        walletAddress,
+      ])
+
+      addToast({
+        text: `Granting role ${role} to ${walletAddress}`,
+        status: 'info',
+      })
+
+      await waitUntilConfirmation(workflow.publicClient, hash)
+
+      return hash
+    },
+    onSuccess: (hash) => {
+      addToast({
+        text: `Role granted with hash ${hash}`,
+        status: 'success',
+      })
+    },
+    onError: (error) => {
+      addToast({
+        text: error.message,
+        status: 'error',
+      })
+    },
+  })
+
+  return { roles, setRole }
 }

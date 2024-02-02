@@ -10,7 +10,7 @@ import NoAccess from '@/components/ui/NoAccess'
 import { useRole } from '@/hooks'
 
 export default function PostPage() {
-  const roles = useRole()
+  const { roles } = useRole()
 
   const fields = ['title', 'description', 'url'] as const
 

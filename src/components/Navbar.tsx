@@ -18,7 +18,7 @@ const NavItems = ({
   pathname: string
   reverse?: boolean
 }) => {
-  const roles = useRole()
+  const { roles } = useRole()
   const iS = roles.isSuccess,
     canPost = iS && roles.data!.isIssuer,
     canVerify = iS && roles.data!.isVerifier,

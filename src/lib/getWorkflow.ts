@@ -18,6 +18,7 @@ export const getWorkflow = async (
   })
 
   const addresses = {
+    orchestrator: orchestratorAddress,
     authorizer: await orchestrator.read.authorizer(),
     funding: await orchestrator.read.fundingManager(),
     payment: await orchestrator.read.paymentProcessor(),

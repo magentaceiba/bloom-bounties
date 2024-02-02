@@ -12,7 +12,7 @@ const Roles = {
   ...BountyRoles,
 } as const
 
-type RoleKeys = keyof typeof Roles
+export type RoleKeys = keyof typeof Roles
 
 export type HandleRoleProps = {
   workflow: Workflow
@@ -55,5 +55,5 @@ export const handleRoles = async ({
     hasRoles[`is${key}`] = res
   }
 
-  return hasRoles
+  return { ...hasRoles, ...generatedRoles }
 }

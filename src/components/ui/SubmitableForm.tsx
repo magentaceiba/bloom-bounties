@@ -11,7 +11,7 @@ import TextInput, { TextInputProps } from './TextInput'
 type SubmitableFormProps = {
   rows: TextInputProps[]
   onSubmit: () => void
-  header: string
+  header?: string
   buttonLabel?: string
   data?: string
   isPending?: boolean
@@ -27,7 +27,9 @@ export default function SubmitableForm({
   buttonLabel = 'Edit',
   defaultIsEditing,
 }: SubmitableFormProps) {
-  const [isEditing, setIsEditing] = useState(defaultIsEditing ?? false)
+  const [isEditing, setIsEditing] = useState(
+    !!header ? defaultIsEditing ?? false : true
+  )
 
   const invalid = rows.some((i) => i.invalid)
 
@@ -54,7 +56,12 @@ export default function SubmitableForm({
 
   return (
     <>
-      <div className={'w-full flex justify-between items-center'}>
+      <div
+        className={cn(
+          'w-full flex justify-between items-center',
+          !header && 'hidden'
+        )}
+      >
         <h3>{header}</h3>
         <Toggler />
       </div>

@@ -5,13 +5,14 @@ import cn from 'classnames'
 
 import { isAddress } from 'viem'
 import { useState, useRef } from 'react'
-import { useIsHydrated } from '@/hooks'
 
 export type TextInputProps = {
   onChange: (value: string) => void
   invalid?: boolean
   label?: string
-} & Omit<InputProps, 'onChange' | 'color'>
+} & Omit<InputProps, 'onChange' | 'color' | 'type'> & {
+    type?: InputProps['type'] | 'address'
+  }
 
 const TextInput = ({
   onChange,
@@ -21,24 +22,17 @@ const TextInput = ({
 }: TextInputProps) => {
   const [isTouched, setIsTouched] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const isHydrated = useIsHydrated()
+  const [valid, setValid] = useState(true)
 
-  const setValidity = (msg: string) => {
-    inputRef.current!.setCustomValidity(msg)
-  }
-
-  const scanValidity = () => {
+  const testValidity = (value: string) => {
     let valid = inputRef.current?.validity.valid ?? true
-
-    if (isHydrated) return valid
 
     if (!!inputRef.current) {
       let validityMessage = ''
-      const value = inputRef.current.value
       switch (props.type) {
         case 'address':
           valid = isAddress(value)
-          if (!valid) setValidity('Invalid Address')
+          if (!valid) validityMessage = 'Invalid Address'
           break
       }
 
@@ -48,11 +42,13 @@ const TextInput = ({
     return valid
   }
 
-  const isInvalid = invalid || !scanValidity()
+  const isInvalid = invalid || !valid
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isTouched) setIsTouched(true)
-    onChange(e.target.value)
+    const value = e.target.value
+    onChange(value)
+    setValid(testValidity(value))
   }
 
   return (

@@ -3,17 +3,16 @@
 import { useAppContext } from '@/providers'
 import { useRef, useEffect, useState } from 'react'
 
-export function useInputFocus(tracker?: any) {
+export function useInputFocus() {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [inputIndex, setInputIndex] = useState(0)
+  const inputIndex = useRef(0)
   const [isTouched, setIsTouched] = useState(false)
-  const { inputsChangeCounter, getNewInputIndex, getNextInputRef } =
-    useAppContext().inputFocus
+  const { getNewInputIndex, getNextInputRef } = useAppContext().inputFocus
 
-  useEffect(() => {
-    if (!!inputRef.current) setInputIndex(getNewInputIndex(inputRef.current))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputsChangeCounter])
+  if (!!inputRef.current) {
+    const newInputIndex = getNewInputIndex(inputRef.current)
+    if (!!newInputIndex) inputIndex.current = newInputIndex
+  }
 
   const onDone = () => {
     // Check if inputRef is the last input in the parent form
@@ -21,15 +20,9 @@ export function useInputFocus(tracker?: any) {
     if (form && !form.checkValidity()) return
 
     setTimeout(() => {
-      getNextInputRef(inputIndex)?.focus()
+      getNextInputRef(inputIndex.current)?.focus()
     }, 0.1)
   }
-
-  useEffect(() => {
-    if (inputRef.current && tracker) {
-      inputRef.current.focus()
-    }
-  }, [tracker])
 
   return {
     isTouched,
@@ -41,18 +34,13 @@ export function useInputFocus(tracker?: any) {
 }
 
 export function useInputFocusHandler() {
-  const [inputs, setInputs] = useState<HTMLInputElement[]>([])
-  const [inputsChangeCounter, setInputsChangeCounter] = useState(0)
+  const [inputs, setInputs] = useState<HTMLInputElement[] | null>(null)
 
   const updateInputs = () => {
-    if (typeof document !== 'undefined') {
-      const newInputs = Array.from(
-        document.querySelectorAll('input[data-inputindex]')
-      )
-      setInputsChangeCounter((prev) => prev + 1)
-      // @ts-ignore
-      setInputs(newInputs)
-    }
+    const newInputs = Array.from(
+      document.querySelectorAll('input[data-inputindex]')
+    ) as HTMLInputElement[]
+    setInputs(newInputs)
   }
 
   useEffect(() => {
@@ -60,8 +48,8 @@ export function useInputFocusHandler() {
     const observer = new MutationObserver((mutationsList) => {
       let runCondition = false
       for (let mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-          ;(['addedNodes', 'removedNodes'] as const).map((key) => {
+        if (mutation.type === 'childList')
+          (['addedNodes', 'removedNodes'] as const).forEach((key) => {
             Array.from(mutation[key]).forEach((node) => {
               if (
                 node instanceof HTMLElement &&
@@ -71,7 +59,6 @@ export function useInputFocusHandler() {
               }
             })
           })
-        }
       }
 
       if (runCondition) updateInputs()
@@ -88,21 +75,23 @@ export function useInputFocusHandler() {
     // Clean up: disconnect the observer when the component is unmounted
     return () => observer.disconnect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [typeof document])
 
   const getNewInputIndex = (inputRef: HTMLInputElement) =>
-    inputs.findIndex((i) => i === inputRef)
-
-  const nonHiddenInputs = inputs.filter(
-    (input) => input && input.offsetParent !== null
-  )
+    inputs?.findIndex((i) => i === inputRef)
 
   const getNextInputRef = (inputIndex: number) => {
-    const nextIndex = nonHiddenInputs.findIndex(
-      (input) => input && parseInt(input.dataset.inputindex!) > inputIndex
-    )
-    return nonHiddenInputs[nextIndex]
+    const nonHiddenInputs = inputs?.filter(
+        (input) => input.offsetParent !== null
+      ),
+      nextIndex = nonHiddenInputs?.findIndex(
+        (input) => input && parseInt(input.dataset.inputindex!) > inputIndex
+      )
+
+    if (!nextIndex) return undefined
+
+    return nonHiddenInputs?.[nextIndex]
   }
 
-  return { inputsChangeCounter, getNewInputIndex, getNextInputRef }
+  return { getNewInputIndex, getNextInputRef }
 }

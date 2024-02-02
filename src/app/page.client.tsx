@@ -33,7 +33,12 @@ export default function PageClient({
 
         return (
           <div className="w-60">
-            <Swiper effect={'cards'} grabCursor={true} modules={[EffectCards]}>
+            <Swiper
+              effect={'cards'}
+              grabCursor={true}
+              modules={[EffectCards]}
+              onSlideChange={(swiper) => setSwiperIndex(swiper.activeIndex)}
+            >
               {list.map((bounty, index) => (
                 <SwiperSlide
                   key={index}
@@ -46,18 +51,13 @@ export default function PageClient({
                     fontSize: '22px',
                   }}
                 >
-                  {({ isActive }) => {
-                    isActive && swiperIndex !== index && setSwiperIndex(index)
-                    return (
-                      <BountyDetails.Main
-                        title={bounty.details?.title}
-                        minimumPayoutAmount={bounty.minimumPayoutAmount}
-                        maximumPayoutAmount={bounty.maximumPayoutAmount}
-                        symbol={bounty.symbol}
-                        creatorAddress={bounty.details?.creatorAddress}
-                      />
-                    )
-                  }}
+                  <BountyDetails.Main
+                    title={bounty.details?.title}
+                    minimumPayoutAmount={bounty.minimumPayoutAmount}
+                    maximumPayoutAmount={bounty.maximumPayoutAmount}
+                    symbol={bounty.symbol}
+                    creatorAddress={bounty.details?.creatorAddress}
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>

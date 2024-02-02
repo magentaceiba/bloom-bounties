@@ -38,7 +38,7 @@ export function VerifierInput({
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-xl">
-      {contributers.map(({ addr, claimAmount, include }, index) => {
+      {contributers.map(({ addr, include }, index) => {
         const standingClaimAmount =
           Number(claim?.contributors?.[index]?.claimAmount) ?? 0
         return (
@@ -63,7 +63,7 @@ export function VerifierInput({
               onChange={(e) => {
                 handleState({ addr, claimAmount: e })
               }}
-              value={claimAmount ?? ''}
+              min={0}
               max={standingClaimAmount}
               required
             />

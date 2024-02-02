@@ -1,11 +1,10 @@
 'use client'
 
+import { useIsHydrated } from '@/hooks'
 import { formatAmountString } from '@/lib/utils'
 import cn from 'classnames'
 import { useState, useRef } from 'react'
 import { Input, type InputProps } from 'react-daisyui'
-
-import { z } from 'zod'
 
 export default function NumberInput({
   onChange,
@@ -17,10 +16,9 @@ export default function NumberInput({
   label?: string
   invalid?: boolean
 } & Omit<InputProps, 'onChange' | 'color' | 'type' | 'inputMode'>) {
-  const minNumber = Number(props.min)
-  const maxNumber = Number(props.max)
-  const stepNumber = Number(props.step)
+  const stepNumber = Number(props.step ?? 1)
 
+  const isHydrated = useIsHydrated()
   const [isTouched, setIsTouched] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -39,32 +37,14 @@ export default function NumberInput({
     if (!isTouched) setIsTouched(true)
   }
 
-  const setValidity = (msg: string) => {
-    inputRef.current!.setCustomValidity(msg)
-  }
-
   const scanValidity = () => {
-    let valid = true
-    let validityMessage = ''
+    let valid = inputRef.current?.validity.valid ?? true
+
+    if (isHydrated) return valid
 
     if (!!inputRef.current) {
-      const value = Number(inputRef.current.value)
-
-      try {
-        z.number()
-          .min(minNumber, `Must be at least ${minNumber}`)
-          .max(maxNumber, `Must be at most ${maxNumber}`)
-          .parse(value)
-
-        validityMessage = ''
-      } catch (e: any) {
-        valid = false
-        if (e instanceof z.ZodError) {
-          validityMessage = e.errors[0]?.message
-        }
-      }
-
-      setValidity(validityMessage)
+      // let validityMessage = ''
+      // inputRef.current.setCustomValidity(validityMessage)
     }
 
     return valid

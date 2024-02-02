@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Loading, Table } from 'react-daisyui'
 import { NoData, WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
@@ -28,12 +28,6 @@ export default function VerifyPageClient({
   const [contributors, setContributors] = useState<VerifyContributers>(
     claim?.contributors ?? []
   )
-
-  useEffect(() => {
-    if (!claim) return
-    setContributors(claim.contributors)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list])
 
   const onVerify = () => {
     if (!claim) return

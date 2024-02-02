@@ -4,7 +4,6 @@ import { NumberInput, WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
 import { useDeposit } from '@/hooks'
 import { formatToCompactNumber } from '@/lib/utils'
-import { useState } from 'react'
 import { Alert, Button, Stats } from 'react-daisyui'
 
 export default function DepositPage() {

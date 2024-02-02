@@ -3,9 +3,9 @@
 import { Input, type InputProps } from 'react-daisyui'
 import cn from 'classnames'
 
-import { z } from 'zod'
 import { isAddress } from 'viem'
 import { useState, useRef } from 'react'
+import { useIsHydrated } from '@/hooks'
 
 export type TextInputProps = {
   onChange: (value: string) => void
@@ -21,32 +21,28 @@ const TextInput = ({
 }: TextInputProps) => {
   const [isTouched, setIsTouched] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const isHydrated = useIsHydrated()
 
   const setValidity = (msg: string) => {
     inputRef.current!.setCustomValidity(msg)
   }
 
   const scanValidity = () => {
-    let valid = true
+    let valid = inputRef.current?.validity.valid ?? true
+
+    if (isHydrated) return valid
+
     if (!!inputRef.current) {
+      let validityMessage = ''
       const value = inputRef.current.value
       switch (props.type) {
-        case 'url':
-          valid = z.string().url().safeParse(value).success
-          setValidity(valid ? '' : 'Invalid URL')
-          break
-        case 'email':
-          valid = z.string().email().safeParse(value).success
-          setValidity(valid ? '' : 'Invalid Email')
-          break
         case 'address':
           valid = isAddress(value)
-          setValidity(valid ? '' : 'Invalid Address')
-          break
-        default:
-          valid = inputRef.current.validity.valid
+          if (!valid) setValidity('Invalid Address')
           break
       }
+
+      inputRef.current.setCustomValidity(validityMessage)
     }
 
     return valid

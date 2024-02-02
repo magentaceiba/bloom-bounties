@@ -78,12 +78,14 @@ export default function PostPage() {
           label="Minimum Payment Amount"
           onChange={(e) => setMinimumPayoutAmount(e)}
           required
+          min={0}
         />
 
         <NumberInput
           label="Maximum Payment Amount"
           onChange={(e) => setMaximumPayoutAmount(e)}
           required
+          min={0}
         />
 
         {!isConnected ? (

@@ -1,5 +1,4 @@
-import { useServerAction, useToast } from '.'
-import { useWorkflow } from './useWorkflow'
+import { useServerAction, useToast, useWorkflow } from '.'
 import { useMutation } from '@tanstack/react-query'
 import { ClaimArgs, VerifyArgs } from '@/lib/types/claim'
 import { handleClaim } from '@/lib/handleClaim'

@@ -1,4 +1,4 @@
-import { WorkflowQuery } from '@/hooks/useWorkflow'
+import { WorkflowQuery } from '@/hooks'
 import { parseUnits, stringToHex } from 'viem'
 import { ClaimArgs } from './types/claim'
 import { waitUntilConfirmation } from './utils'

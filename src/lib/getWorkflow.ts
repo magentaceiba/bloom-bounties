@@ -33,6 +33,13 @@ export const getWorkflow = async (
     abi: abis.RebasingFundingManager.v1,
   })
 
+  const authorizer = getContract({
+    publicClient,
+    walletClient,
+    address: addresses.authorizer,
+    abi: abis.RoleAuthorizer.v1,
+  })
+
   const ERC20Address = await funding.read.token(),
     ERC20 = getContract({
       publicClient,
@@ -57,8 +64,11 @@ export const getWorkflow = async (
       orchestrator,
       funding,
       logic,
+      authorizer,
     },
     ERC20Decimals,
     ERC20Symbol,
   }
 }
+
+export type Workflow = Awaited<ReturnType<typeof getWorkflow>>

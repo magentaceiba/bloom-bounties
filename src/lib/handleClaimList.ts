@@ -1,4 +1,4 @@
-import { WorkflowQuery } from '@/hooks/useWorkflow'
+import { WorkflowQuery } from '@/hooks'
 import { hexToString, formatUnits } from 'viem'
 import { FormattedClaimDetails } from './types/claim'
 

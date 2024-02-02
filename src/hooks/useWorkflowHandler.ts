@@ -7,7 +7,9 @@ import { usePublicClient, useWalletClient } from 'wagmi'
 const defaultOrchestratorAddress = process.env
   .NEXT_PUBLIC_ORCHESTRATOR_ADDRESS as `0x${string}` | undefined
 
-export function useWorkflow(orchestratorAddress = defaultOrchestratorAddress) {
+export default function useWorkflowHandler(
+  orchestratorAddress = defaultOrchestratorAddress
+) {
   const publicClient = usePublicClient()
   const walletClient = useWalletClient()
 
@@ -31,4 +33,4 @@ export function useWorkflow(orchestratorAddress = defaultOrchestratorAddress) {
   }
 }
 
-export type WorkflowQuery = ReturnType<typeof useWorkflow>
+export type WorkflowQuery = ReturnType<typeof useWorkflowHandler>

@@ -9,6 +9,8 @@ import Link from 'next/link'
 import cn from 'classnames'
 import { VerifierInput } from '@/components/VerifierInput'
 import { FormattedClaim, VerifyContributers } from '@/lib/types/claim'
+import { useRole } from '@/hooks'
+import NoAccess from '@/components/ui/NoAccess'
 
 export default function VerifyPageClient({
   list,
@@ -17,6 +19,7 @@ export default function VerifyPageClient({
   list: FormattedClaim[]
   isPending: boolean
 }) {
+  const roles = useRole()
   const { isConnected, ERC20Symbol, verify } = useClaim()
   const [selected, setSelected] = useState<number>(0)
 
@@ -37,6 +40,10 @@ export default function VerifyPageClient({
 
     verify.mutate({ claimId: String(claim.claimId), contributors })
   }
+
+  if (roles.isPending) return <Loading />
+
+  if (!roles.data?.isVerifier) return <NoAccess />
 
   return (
     <>

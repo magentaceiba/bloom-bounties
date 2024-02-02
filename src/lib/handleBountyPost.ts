@@ -1,6 +1,6 @@
 import { parseUnits, stringToHex } from 'viem'
 import { FormattedBountyDetails } from './types/bounty'
-import { WorkflowQuery } from '@/hooks/useWorkflow'
+import { WorkflowQuery } from '@/hooks'
 import { waitUntilConfirmation } from './utils'
 
 export type BountyPostArgs = {

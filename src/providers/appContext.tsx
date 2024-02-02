@@ -5,10 +5,12 @@ import { setThemeCookie } from '@/lib/utils'
 import { createContext, useContext, useEffect } from 'react'
 import { useTheme } from '@/hooks'
 import { useInputFocusHandler } from '@/hooks/useInputFocus'
+import useWorkflowHandler from '@/hooks/useWorkflowHandler'
 
 export type TAppContext = {
   isHydrated: boolean
   inputFocus: ReturnType<typeof useInputFocusHandler>
+  workflow: ReturnType<typeof useWorkflowHandler>
 }
 
 const AppContext = createContext({} as TAppContext)
@@ -21,12 +23,14 @@ export default function AppProvider({
   const { theme } = useTheme()
   const isHydrated = useIsHydratedHandler()
   const inputFocus = useInputFocusHandler()
+  const workflow = useWorkflowHandler()
 
   // CONTEXT
   //==============================================
   const contextData: TAppContext = {
     isHydrated,
     inputFocus,
+    workflow,
   }
 
   // EFFECTS

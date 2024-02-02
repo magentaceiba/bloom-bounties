@@ -2,12 +2,16 @@
 
 import { compressAddress, firstLetterToUpper } from '@/lib/utils'
 import { TextInput, NumberInput } from '@/components/ui'
-import { Badge, Button, Divider } from 'react-daisyui'
+import { Badge, Button, Divider, Loading } from 'react-daisyui'
 import { WalletWidget } from '@/components'
 import { useBounty } from '@/hooks/useBounty'
 import { Fragment, useState } from 'react'
+import NoAccess from '@/components/ui/NoAccess'
+import { useRole } from '@/hooks'
 
 export default function PostPage() {
+  const roles = useRole()
+
   const fields = ['title', 'description', 'url'] as const
 
   const [details, setDetails] = useState({
@@ -30,6 +34,10 @@ export default function PostPage() {
       maximumPayoutAmount,
     })
   }
+
+  if (roles.isPending) return <Loading />
+
+  if (!roles.data?.isIssuer) return <NoAccess />
 
   return (
     <form className="flex flex-col lg:flex-row gap-6" onSubmit={onMutate}>

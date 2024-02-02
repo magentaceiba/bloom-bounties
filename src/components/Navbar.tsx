@@ -9,6 +9,7 @@ import { Button, Dropdown } from 'react-daisyui'
 import WalletWidget from './WalletWidget'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import cn from 'classnames'
+import { useRole } from '@/hooks'
 
 const NavItems = ({
   pathname,
@@ -17,11 +18,18 @@ const NavItems = ({
   pathname: string
   reverse?: boolean
 }) => {
+  const roles = useRole()
+  const iS = roles.isSuccess,
+    canPost = iS && roles.data!.isIssuer,
+    canVerify = iS && roles.data!.isVerifier,
+    canAdmin = iS && roles.data!.isOwner
+
   const arr = [
     { href: '/', label: 'Bounties' },
-    { href: '/post', label: 'Post' },
+    ...(canPost ? [{ href: '/post', label: 'Post' }] : []),
     { href: '/deposit', label: 'Deposit' },
-    { href: '/verify', label: 'Verify' },
+    ...(canVerify ? [{ href: '/verify', label: 'Verify' }] : []),
+    ...(canAdmin ? [{ href: '/admin', label: 'Admin' }] : []),
   ]
 
   if (reverse) arr.reverse()

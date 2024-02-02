@@ -1,7 +1,6 @@
-import { useToast } from '.'
+import { useToast, useWorkflow } from '.'
 import { formatUnits, parseUnits } from 'viem'
 import { useBalance } from 'wagmi'
-import { useWorkflow } from './useWorkflow'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { waitUntilConfirmation } from '@/lib/utils'
 import { useState } from 'react'

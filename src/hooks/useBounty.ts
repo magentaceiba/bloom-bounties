@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { useWorkflow } from './useWorkflow'
-import { useServerAction, useToast } from '.'
+import { useServerAction, useToast, useWorkflow } from '.'
 import { BountyPostArgs, handleBountyPost } from '@/lib/handleBountyPost'
 import { revalidateServerPath } from '@/lib/actions/utils'
 

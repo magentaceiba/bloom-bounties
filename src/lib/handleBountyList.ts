@@ -1,4 +1,4 @@
-import { WorkflowQuery } from '@/hooks/useWorkflow'
+import { WorkflowQuery } from '@/hooks'
 import { FormattedBountyDetails } from './types/bounty'
 import { formatUnits, hexToString } from 'viem'
 

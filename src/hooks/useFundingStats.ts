@@ -1,5 +1,5 @@
 import { formatUnits } from 'viem'
-import { useWorkflow } from './useWorkflow'
+import { useWorkflow } from '.'
 import { useQuery } from '@tanstack/react-query'
 
 export default function useFundingStats() {

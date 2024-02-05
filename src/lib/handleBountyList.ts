@@ -20,6 +20,8 @@ export const handleBountyList = async (
           return null
         }
 
+        if (bounty.locked) return null
+
         const newBounty = {
           ...bounty,
           id: String(bountyId),
@@ -29,7 +31,7 @@ export const handleBountyList = async (
             workflow.ERC20Decimals
           ),
           maximumPayoutAmount: formatUnits(
-            bounty.minimumPayoutAmount,
+            bounty.maximumPayoutAmount,
             workflow.ERC20Decimals
           ),
           symbol: workflow.ERC20Symbol,

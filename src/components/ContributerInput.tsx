@@ -1,5 +1,7 @@
 import { Button } from 'react-daisyui'
 import { Frame, NumberInput, TextInput } from './ui'
+import { IoClose } from 'react-icons/io5'
+import cn from 'classnames'
 
 export type Contributers = {
   uid: string
@@ -13,12 +15,14 @@ export function ContributerInput({
   onUrlChange,
   contributersStateHandler,
   symbol,
+  maximumPayoutAmount,
 }: {
   contributers: Contributers
   contributersStateHandler: (contributers: Contributers) => void
   onUrlChange: (url: string) => void
   url: string
   symbol?: string
+  maximumPayoutAmount: string
 }) {
   const handleState = ({ uid, addr, claimAmount }: Contributers[0]) => {
     const newContributers = contributers.map((c) => {
@@ -29,6 +33,11 @@ export function ContributerInput({
       }
       return c
     })
+    contributersStateHandler(newContributers)
+  }
+
+  const removeContributer = (uid: string) => {
+    const newContributers = contributers.filter((c) => c.uid !== uid)
     contributersStateHandler(newContributers)
   }
 
@@ -60,7 +69,17 @@ export function ContributerInput({
         Add Contributor
       </Button>
       {contributers.map((c, index) => (
-        <Frame key={index} className="mt-6">
+        <Frame key={index} className="mt-6 relative">
+          <IoClose
+            className={cn(
+              'rounded-box cursor-pointer btn-ghost p-0 absolute right-3 top-3',
+              index === 0 && 'hidden'
+            )}
+            size={30}
+            onClick={() => {
+              removeContributer(c.uid)
+            }}
+          />
           <TextInput
             label={`Contributer ${index + 1} Address`}
             onChange={(e) => {
@@ -74,6 +93,7 @@ export function ContributerInput({
             onChange={(e) => {
               handleState({ uid: c.uid, claimAmount: e })
             }}
+            max={Number(maximumPayoutAmount)}
             required
           />
         </Frame>

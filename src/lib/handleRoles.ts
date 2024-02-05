@@ -28,40 +28,69 @@ export const handleRoles = async ({
   },
   address,
 }: HandleRoleProps) => {
-  // ===========GENERATION_START===========
-  const roleIds = {} as Record<RoleKeys, Hex>
+  // Initialize roleIds and generatedRoles as empty objects
+  const roleHexs = {} as Record<RoleKeys, Hex>
+  const generatedRoles = {} as Record<BountyRoleKeys, Hex>
 
+  // Set role HEXs for each role in BountyRoles
   for (const [key, value] of Object.entries(BountyRoles)) {
-    const id = await logic.read[value]()
-
-    roleIds[key as RoleKeys] = id
+    roleHexs[key as BountyRoleKeys] = await logic.read[value]()
   }
 
-  const OwnerRoleId = await authorizer.read.getOwnerRole()
-  roleIds.Owner = OwnerRoleId
-
-  let generatedRoles = {} as Record<BountyRoleKeys, Hex>
-
-  for (const [role, id] of Object.entries(roleIds)) {
-    const generatedRole = await authorizer.read.generateRoleId([
+  // Generate role IDs for each role in roleHexs
+  for (const [role, id] of Object.entries(roleHexs) as [
+    BountyRoleKeys,
+    Hex,
+  ][]) {
+    generatedRoles[role] = await authorizer.read.generateRoleId([
       logicAddress,
       id!,
     ])
-
-    generatedRoles[role as BountyRoleKeys] = generatedRole!
   }
-  // ===========GENERATION_DONE===========
 
-  let hasRoles = {} as Record<`is${RoleKeys}`, boolean>
+  // Add the owner role HEX to roleHexs
+  roleHexs.Owner = await authorizer.read.getOwnerRole()
 
+  // Initialize hasRoles as an empty object
+  const hasRoles = {} as Record<`is${RoleKeys}`, boolean>
+
+  // Check if the address has each role in Roles
   for (const key of Object.keys(Roles) as RoleKeys[]) {
-    let res: boolean
-    res = await authorizer.read.hasRole([
-      { ...generatedRoles, Owner: roleIds.Owner }[key],
-      address!,
+    hasRoles[`is${key}`] = await authorizer.read.hasRole([
+      { Owner: roleHexs.Owner, ...generatedRoles }[key],
+      address,
     ])
-    hasRoles[`is${key}`] = res
   }
 
-  return { ...hasRoles, roleIds, generatedRoles }
+  // Return the results
+  return { ...hasRoles, roleHexs }
+}
+
+export const grantOrRevokeRole = async ({
+  role,
+  walletAddress,
+  type,
+  workflow,
+  roleHexs,
+}: {
+  role: RoleKeys
+  walletAddress: Hex
+  type: 'Grant' | 'Revoke'
+  workflow: Workflow
+  roleHexs: Record<RoleKeys, Hex>
+}) => {
+  // Determine the action based on the role and type
+  const action = `${type === 'Grant' ? 'grant' : 'revoke'}${
+    role === 'Owner' ? 'Role' : 'ModuleRole'
+  }` as const
+
+  const args = [roleHexs[role], walletAddress] as const
+
+  let hash: Hex
+
+  if (action === 'grantRole' || action === 'revokeRole')
+    hash = await workflow.contracts.authorizer.write[action](args)
+  else hash = await workflow.contracts.logic.write[action](args)
+
+  return hash
 }

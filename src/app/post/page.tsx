@@ -35,6 +35,8 @@ export default function PostPage() {
     })
   }
 
+  if (!isConnected) return <WalletWidget />
+
   if (roles.isPending) return <Loading />
 
   if (!roles.data?.isIssuer) return <NoAccess />

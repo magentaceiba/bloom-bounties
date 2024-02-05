@@ -51,10 +51,19 @@ export function useRole() {
           else action = 'revokeModuleRole'
       }
 
-      const hash = await workflow.data!.contracts.authorizer.write[action]([
-        roles.data![role],
-        walletAddress,
-      ])
+      let hash: Hex
+
+      if (action === 'grantRole' || action === 'revokeRole') {
+        hash = await workflow.data!.contracts.authorizer.write[action]([
+          roles.data!.roleIds[role],
+          walletAddress,
+        ])
+      } else {
+        hash = await workflow.data!.contracts.logic.write[action]([
+          roles.data!.roleIds[role],
+          walletAddress,
+        ])
+      }
 
       addToast({
         text: `Granting role ${role} to ${walletAddress}`,
@@ -65,11 +74,13 @@ export function useRole() {
 
       return hash
     },
+
     onSuccess: (hash) => {
       addToast({
         text: `Role granted with hash ${hash}`,
         status: 'success',
       })
+      roles.refetch()
     },
     onError: (error) => {
       addToast({
@@ -79,5 +90,5 @@ export function useRole() {
     },
   })
 
-  return { roles, setRole }
+  return { roles, setRole, isConnected: !!address }
 }

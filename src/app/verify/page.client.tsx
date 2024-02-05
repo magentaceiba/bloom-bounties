@@ -35,6 +35,8 @@ export default function VerifyPageClient({
     verify.mutate({ claimId: String(claim.claimId), contributors })
   }
 
+  if (!isConnected) return <WalletWidget />
+
   if (roles.isPending) return <Loading />
 
   if (!roles.data?.isVerifier) return <NoAccess />

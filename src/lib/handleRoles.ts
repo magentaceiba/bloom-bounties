@@ -7,6 +7,8 @@ const BountyRoles = {
   Issuer: 'BOUNTY_ISSUER_ROLE',
 } as const
 
+export type BountyRoleKeys = keyof typeof BountyRoles
+
 const Roles = {
   Owner: 'ORCHESTRATOR_OWNER_ROLE',
   ...BountyRoles,
@@ -27,33 +29,39 @@ export const handleRoles = async ({
   address,
 }: HandleRoleProps) => {
   // ===========GENERATION_START===========
-  const bountyRoleIds = await Promise.all(
-    Object.entries(BountyRoles).map(async ([key, value]) => {
-      const id = await logic.read[value]()
-      return { id, role: key as RoleKeys }
-    })
-  )
+  const roleIds = {} as Record<RoleKeys, Hex>
 
-  let generatedRoles = {} as Record<RoleKeys, Hex>
+  for (const [key, value] of Object.entries(BountyRoles)) {
+    const id = await logic.read[value]()
 
-  for (const { id, role } of bountyRoleIds) {
+    roleIds[key as RoleKeys] = id
+  }
+
+  const OwnerRoleId = await authorizer.read.getOwnerRole()
+  roleIds.Owner = OwnerRoleId
+
+  let generatedRoles = {} as Record<BountyRoleKeys, Hex>
+
+  for (const [role, id] of Object.entries(roleIds)) {
     const generatedRole = await authorizer.read.generateRoleId([
       logicAddress,
       id!,
     ])
 
-    generatedRoles[role] = generatedRole!
+    generatedRoles[role as BountyRoleKeys] = generatedRole!
   }
-
-  generatedRoles.Owner = await authorizer.read.getOwnerRole()!
   // ===========GENERATION_DONE===========
 
   let hasRoles = {} as Record<`is${RoleKeys}`, boolean>
 
   for (const key of Object.keys(Roles) as RoleKeys[]) {
-    const res = await authorizer.read.hasRole([generatedRoles[key], address!])
+    let res: boolean
+    res = await authorizer.read.hasRole([
+      { ...generatedRoles, Owner: roleIds.Owner }[key],
+      address!,
+    ])
     hasRoles[`is${key}`] = res
   }
 
-  return { ...hasRoles, ...generatedRoles }
+  return { ...hasRoles, roleIds, generatedRoles }
 }

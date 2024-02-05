@@ -59,7 +59,14 @@ export default function AdminPage() {
           type="address"
           required
         />
-        <Button size={'sm'} color="primary" type="submit" className="mt-3">
+        <Button
+          size={'sm'}
+          color="primary"
+          type="submit"
+          className="mt-3"
+          disabled={setRole.isPending}
+          loading={setRole.isPending}
+        >
           Set Role
         </Button>
       </form>

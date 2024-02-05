@@ -1,16 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Button, Loading, Table } from 'react-daisyui'
-import { NoData, WalletWidget } from '@/components'
+import { Button, Loading } from 'react-daisyui'
+import { WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
 import useClaim from '@/hooks/useClaim'
-import Link from 'next/link'
-import cn from 'classnames'
 import { VerifierInput } from '@/components/VerifierInput'
 import { FormattedClaim, VerifyContributers } from '@/lib/types/claim'
 import { useRole } from '@/hooks'
-import NoAccess from '@/components/ui/NoAccess'
+import { NoAccess, InteractiveTable } from '@/components/ui/'
 
 export default function VerifyPageClient({
   list,
@@ -45,45 +43,17 @@ export default function VerifyPageClient({
     <>
       <FundingStats />
 
-      {(() => {
-        if (isPending) return <Loading className={'m-4'} />
-
-        if (!list.length) return <NoData />
-
-        return (
-          <div className="overflow-y-scroll w-full max-w-4xl py-10 max-h-64">
-            <Table>
-              <Table.Head>
-                <span>Bounty ID</span>
-                <span>Claimed</span>
-                <span>URL</span>
-              </Table.Head>
-
-              <Table.Body>
-                {list.map((i, index) => (
-                  <Table.Row
-                    className={cn(
-                      'cursor-pointer transition-transform duration-150 ease-in-out transform active:scale-95',
-                      'hover:bg-primary hover:text-primary-content',
-                      selected === index && 'bg-primary text-primary-content'
-                    )}
-                    key={index}
-                    onClick={() => setSelected(index)}
-                  >
-                    <span>{String(i.bountyId)}</span>
-                    <span>{i.claimed ? 'Yes' : 'No'}</span>
-                    <span>
-                      <Link href={i.details.url} target="_blank">
-                        {i.details.url}
-                      </Link>
-                    </span>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
-        )
-      })()}
+      <InteractiveTable
+        isPending={isPending}
+        heads={['Bounty ID', 'Claimed', 'URL']}
+        rows={list.map((i) => ({
+          row: [
+            { item: String(i.bountyId) },
+            { item: i.claimed ? 'Yes' : 'No' },
+            { item: i.details.url, type: 'url' },
+          ],
+        }))}
+      />
 
       {!isConnected ? (
         <WalletWidget />

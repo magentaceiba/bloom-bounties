@@ -27,7 +27,7 @@ const NavItems = ({
   const arr = [
     { href: '/', label: 'Bounties' },
     ...(canPost ? [{ href: '/post', label: 'Post' }] : []),
-    { href: '/deposit', label: 'Deposit' },
+    { href: '/funds', label: 'Funds' },
     ...(canVerify ? [{ href: '/verify', label: 'Verify' }] : []),
     ...(canAdmin ? [{ href: '/admin', label: 'Admin' }] : []),
   ]

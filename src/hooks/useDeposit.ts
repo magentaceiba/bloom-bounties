@@ -110,6 +110,11 @@ export default function useDeposit() {
 
   const loading = deposit.isPending || allowance.isPending || approve.isPending
 
+  const isDepositable =
+    allowance.isSuccess &&
+    balance.isSuccess &&
+    Number(amount) <= Number(balance.data?.formatted!)
+
   return {
     ERC20Symbol: workflow.data?.ERC20Symbol,
     balance,
@@ -119,5 +124,6 @@ export default function useDeposit() {
     loading,
     handleDeposit,
     amount,
+    isDepositable,
   }
 }

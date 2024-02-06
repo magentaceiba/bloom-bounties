@@ -53,6 +53,7 @@ export default function VerifyPageClient({
             { item: i.details.url, type: 'url' },
           ],
         }))}
+        className="py-10 max-w-xl"
       />
 
       {!isConnected ? (

@@ -11,13 +11,13 @@ export default function InteractiveTable({
   heads,
   rows,
   onSelect,
-  extraPadding = true,
+  className,
 }: {
   isPending: boolean
   heads: string[]
   rows: { row: { item: string; type?: 'url' }[] }[]
   onSelect?: (index: number) => void
-  extraPadding?: boolean
+  className?: string
 }) {
   const [selected, setSelected] = useState<number>(0)
 
@@ -27,10 +27,7 @@ export default function InteractiveTable({
 
   return (
     <div
-      className={cn(
-        'overflow-y-scroll w-full max-w-4xl max-h-64',
-        extraPadding && 'my-10'
-      )}
+      className={cn('overflow-y-scroll w-full max-w-4xl max-h-64', className)}
     >
       <Table>
         <Table.Head>

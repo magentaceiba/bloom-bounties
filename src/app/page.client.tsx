@@ -47,7 +47,6 @@ export default function PageClient({
                   row: [{ item: String(i.id) }, { item: i.details!.title! }],
                 }))}
                 onSelect={(index) => setIndex(index)}
-                extraPadding={false}
               />
             )
 

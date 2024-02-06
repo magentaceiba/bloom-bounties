@@ -1,17 +1,11 @@
-import type {
-  Account,
-  Chain,
-  PublicClient,
-  Transport,
-  WalletClient,
-} from 'viem'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { goerli } from 'viem/chains'
 import { privateKeyToAccount } from 'viem/accounts'
+import type { PublicClient, WalletClient } from 'wagmi'
 
 export default function testConnectors(): {
-  publicClient: PublicClient<Transport, Chain>
-  walletClient: WalletClient<Transport, Chain, Account>
+  publicClient: PublicClient
+  walletClient: WalletClient
 } {
   // Public Client: This is used to read from the blockchain.
   const publicClient = createPublicClient({
@@ -21,7 +15,7 @@ export default function testConnectors(): {
 
   // Private Key for high level operations
   // ( ex// Bloom Multisig, in this exemple this is a single private key )
-  const ownerPrivateKey = <`0x${string}`>process.env.OWNER_PRIVATE_KEY
+  const ownerPrivateKey = <`0x${string}`>process.env.TEST_PRIVATE_KEY
   if (!ownerPrivateKey) throw new Error('PRIVATE_KEY is required')
 
   // Owner Wallet Client: This is only for demonstration purposes.

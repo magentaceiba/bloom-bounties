@@ -3,28 +3,19 @@ import { useMutation } from '@tanstack/react-query'
 import { ClaimArgs, VerifyArgs } from '@/lib/types/claim'
 import { handleClaim } from '@/lib/handleClaim'
 import { handleVerify } from '@/lib/handleVerify'
-import { revalidateServerPath } from '@/lib/actions/utils'
+import { revalidateServerPaths } from '@/lib/actions/utils'
 
 export default function useClaim() {
   const workflow = useWorkflow()
   const { addToast } = useToast()
   const serverAction = useServerAction()
 
-  const invlaidateBounties = () => {
-    serverAction(() => revalidateServerPath('client', '/'))
-  }
-
-  const invalidateClaims = () => {
-    serverAction(() => revalidateServerPath('client', '/verify'))
-  }
-
   const post = useMutation({
     mutationKey: ['addClaim'],
     mutationFn: (data: ClaimArgs) => handleClaim({ data, workflow }),
 
     onSuccess: ({ bountyId, ERC20Symbol, claim }) => {
-      invlaidateBounties()
-      invalidateClaims()
+      serverAction(() => revalidateServerPaths('client', ['/', '/verify']))
 
       addToast({
         text: `Claim Proposal for ${String(
@@ -49,7 +40,7 @@ export default function useClaim() {
         status: 'success',
       })
 
-      invalidateClaims()
+      serverAction(() => revalidateServerPaths('client', ['/verify']))
     },
 
     onError: (err) => {

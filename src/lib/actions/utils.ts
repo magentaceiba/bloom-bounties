@@ -4,12 +4,14 @@ import { createPublicClient, http } from 'viem'
 import { goerli } from 'viem/chains'
 import { getWorkflow } from '../getWorkflow'
 
-export async function revalidateServerPath<C extends CalledFrom>(
+export async function revalidateServerPaths<C extends CalledFrom>(
   calledFrom: C,
-  path: string
+  path: string[]
 ) {
   return await serverActionWrapper(async () => {
-    revalidatePath(path)
+    for (const p of path) {
+      revalidatePath(p)
+    }
 
     return 'Successfully revalidated path'
   }, calledFrom)

@@ -11,8 +11,12 @@ if (!orchestratorAddress) throw new Error('ORCHESTRATOR_ADDRESS is required')
 
 const { walletClient, publicClient } = testConnectors()
 
+const walletAddress = process.env.TEST_WALLET_ADDRESS as
+  | `0x${string}`
+  | undefined
+
 // Addresses of the wallet client
-const walletClientAddresses = walletClient.account.address
+const walletClientAddresses = walletAddress ?? walletClient.account.address
 
 // Create ERC20Mock contract / this is a mock contract for testing purposes
 const ERC20MockContract = getContract({

@@ -2,8 +2,7 @@
 
 import { NumberInput, Tabs, WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
-import { useDeposit } from '@/hooks'
-import { useWithdraw } from '@/hooks/useWithdraw'
+import { useFunding } from '@/hooks/useFunding'
 import { formatToCompactNumber } from '@/lib/utils'
 import { useState } from 'react'
 import { Button, Stats } from 'react-daisyui'
@@ -15,39 +14,25 @@ export default function FundsPage() {
   const {
     ERC20Symbol,
     handleDeposit,
-    loading: loadingDeposit,
+    handleWithdraw,
+    loading,
     balance,
     allowance,
     isConnected,
-    setAmount: setDepositAmount,
+    setAmount,
     isDepositable,
-  } = useDeposit()
-
-  const {
-    withdrawable,
-    loading: loadingWithdraw,
-    setAmount: setWithdrawAmount,
-    handleWithdraw,
     isWithdrawable,
-  } = useWithdraw()
+    withdrawable,
+  } = useFunding()
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    console.log('submit')
     if (tab === 0) handleDeposit()
     else handleWithdraw()
   }
 
-  let loading: boolean
-  const disabled = (() => {
-    switch (tab) {
-      case 0:
-        loading = loadingDeposit
-        return !isDepositable || loading
-      case 1:
-        loading = loadingWithdraw
-        return loading || !isWithdrawable
-    }
-  })()
+  const disabled = (tab === 0 ? !isDepositable : !isWithdrawable) || loading
 
   return (
     <>
@@ -67,9 +52,7 @@ export default function FundsPage() {
           </Stats.Stat.Item>
           <Stats.Stat.Item variant="value">
             {ERC20Symbol}{' '}
-            {formatToCompactNumber(
-              tab === 0 ? balance.data?.formatted : withdrawable.data?.formatted
-            )}
+            {formatToCompactNumber(tab === 0 ? balance : withdrawable)}
           </Stats.Stat.Item>
         </Stats.Stat>
 
@@ -83,14 +66,14 @@ export default function FundsPage() {
         )}
       </Stats>
 
-      <NumberInput
-        label={`${tabs[tab]} Amount`}
-        onChange={tab === 0 ? setDepositAmount : setWithdrawAmount}
-        max={tab === 0 ? balance.data?.formatted : withdrawable.data?.formatted}
-        required
-      />
+      <form onSubmit={onSubmit} className="form-control items-center gap-6">
+        <NumberInput
+          label={`${tabs[tab]} Amount`}
+          onChange={setAmount}
+          max={tab === 0 ? balance : withdrawable}
+          required
+        />
 
-      <form onSubmit={onSubmit}>
         {!isConnected ? (
           <WalletWidget />
         ) : (
@@ -98,7 +81,7 @@ export default function FundsPage() {
             color="primary"
             type="submit"
             disabled={disabled}
-            loading={loading!}
+            loading={loading}
           >
             {tab === 0 ? 'Deposit' : 'Withdraw'}
           </Button>

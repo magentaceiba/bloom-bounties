@@ -3,15 +3,15 @@
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCards } from 'swiper/modules'
 import { useState } from 'react'
-import { Button, Loading, Menu } from 'react-daisyui'
-import { InteractiveTable, NoData, WalletWidget } from '../components'
+import { Button, Loading } from 'react-daisyui'
+import { InteractiveTable, NoData, Tabs, WalletWidget } from '../components'
 import { FundingStats } from '../components/FundingStats'
 import { BountyDetails } from '../components/BountyDetails'
 import Link from 'next/link'
 import { FormattedBounty } from '../lib/types/bounty'
 import { useAccount } from 'wagmi'
-import cn from 'classnames'
-import { firstLetterToUpper } from '@/lib/utils'
+
+const tabs = ['List', 'Card'] as const
 
 export default function PageClient({
   list,
@@ -21,7 +21,7 @@ export default function PageClient({
   isPending: boolean
 }) {
   const { isConnected } = useAccount()
-  const [viewType, setViewType] = useState<'list' | 'card'>('list')
+  const [tab, setTab] = useState(0)
   const [index, setIndex] = useState<number>(0)
   const bounty = list[index ?? 0]
 
@@ -30,23 +30,15 @@ export default function PageClient({
       <FundingStats />
 
       <div className="flex flex-col items-center gap-6 w-full max-w-xl">
-        <Menu horizontal className="bg-base-200 rounded-box">
-          {(['list', 'card'] as const).map((type, index) => (
-            <Menu.Item key={type} className={cn(index === 0 && 'mr-2')}>
-              <a
-                className={cn(type === viewType && 'active')}
-                onClick={() => {
-                  setViewType(type)
-                }}
-              >
-                {firstLetterToUpper(type)}
-              </a>
-            </Menu.Item>
-          ))}
-        </Menu>
+        <Tabs
+          variant="boxed"
+          setTab={setTab}
+          tab={tab}
+          tabs={tabs as unknown as string[]}
+        />
 
         {(() => {
-          if (viewType === 'list')
+          if (tab === 0)
             return (
               <InteractiveTable
                 isPending={isPending}
@@ -98,7 +90,7 @@ export default function PageClient({
         })()}
       </div>
 
-      {viewType === 'card' ? (
+      {tab === 1 ? (
         <BountyDetails.Description
           description={bounty?.details?.description}
           url={bounty?.details?.url}

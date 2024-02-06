@@ -1,18 +1,16 @@
 'use client'
 
 import { compressAddress, firstLetterToUpper } from '@/lib/utils'
-import { TextInput, NumberInput } from '@/components/ui'
 import { Badge, Button, Divider, Loading } from 'react-daisyui'
-import { WalletWidget } from '@/components'
+import { WalletWidget, NoAccess, TextInput, NumberInput } from '@/components'
 import { useBounty } from '@/hooks/useBounty'
 import { Fragment, useState } from 'react'
-import NoAccess from '@/components/ui/NoAccess'
 import { useRole } from '@/hooks'
+
+const fields = ['title', 'description', 'url'] as const
 
 export default function PostPage() {
   const { roles } = useRole()
-
-  const fields = ['title', 'description', 'url'] as const
 
   const [details, setDetails] = useState({
     title: '',
@@ -48,7 +46,6 @@ export default function PostPage() {
           <Fragment key={index}>
             <TextInput
               label={firstLetterToUpper(i)}
-              value={details[i]}
               onChange={(value) =>
                 setDetails((prev) => ({ ...prev, [i]: value }))
               }

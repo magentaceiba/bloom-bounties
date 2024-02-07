@@ -39,10 +39,13 @@ export type ClaimArgs = {
   details: FormattedClaimDetails
 }
 
-export type VerifyContributers = {
+export type CalimEditContributers = {
   addr: `0x${string}`
   claimAmount?: string
   include?: boolean
 }[]
 
-export type VerifyArgs = { claimId: string; contributors: VerifyContributers }
+export type VerifyArgs = {
+  claimId: string
+  contributors: ClaimArgs['contributers']
+}

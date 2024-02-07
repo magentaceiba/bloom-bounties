@@ -13,19 +13,10 @@ export async function handleVerify({
   const { logic } = workflow.data!.contracts
   const { ERC20Symbol, ERC20Decimals } = workflow.data!
 
-  const parsedContributors = contributors
-    .map((c) => {
-      if (c.include)
-        return {
-          addr: c.addr,
-          claimAmount: parseUnits(c.claimAmount!, ERC20Decimals),
-        }
-    })
-    .filter((c): c is NonNullable<typeof c> => c !== undefined)
-
-  if (parsedContributors.length === 0) {
-    throw new Error('No Contributors Included')
-  }
+  const parsedContributors = contributors.map(({ addr, claimAmount }) => ({
+    addr,
+    claimAmount: parseUnits(claimAmount, ERC20Decimals),
+  }))
 
   const config = [BigInt(claimId), parsedContributors] as const
 

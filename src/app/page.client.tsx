@@ -3,7 +3,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCards } from 'swiper/modules'
 import { useState } from 'react'
-import { Button, Loading } from 'react-daisyui'
+import { Button } from 'react-daisyui'
 import { InteractiveTable, NoData, Tabs, WalletWidget } from '../components'
 import { FundingStats } from '../components/FundingStats'
 import { BountyDetails } from '../components/BountyDetails'

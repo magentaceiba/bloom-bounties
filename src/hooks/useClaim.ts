@@ -16,7 +16,8 @@ export default function useClaim() {
     mutationFn: (data: ClaimArgs) => handleClaim({ data, workflow }),
 
     onSuccess: ({ bountyId, ERC20Symbol, claim }) => {
-      revalidateServerPaths(['/', '/verify'])
+      contributorsList.refetch()
+      revalidateServerPaths(['/verify'])
 
       addToast({
         text: `Claim Proposal for ${String(
@@ -36,12 +37,12 @@ export default function useClaim() {
     mutationFn: (data: VerifyArgs) => handleVerify({ data, workflow }),
 
     onSuccess: ({ ERC20Symbol, verify }) => {
+      revalidateServerPaths(['/verify', '/claims'])
+
       addToast({
         text: `Verify Proposal for ${1} ${ERC20Symbol} Has Been Submitted.\nWith TX Hash: ${verify}`,
         status: 'success',
       })
-
-      revalidateServerPaths(['/verify'])
     },
 
     onError: (err) => {

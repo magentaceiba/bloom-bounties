@@ -10,7 +10,7 @@ import { useRole } from '@/hooks'
 import { NoAccess, InteractiveTable } from '@/components/ui/'
 import { ContributerInput } from '@/components/ContributerInput'
 
-export default function ClaimsPage({ isPending }: { isPending: boolean }) {
+export default function ClaimsPage() {
   const { roles } = useRole()
   const { isConnected, ERC20Symbol, contributorsList, editContributors } =
     useClaim()
@@ -61,7 +61,6 @@ export default function ClaimsPage({ isPending }: { isPending: boolean }) {
       <FundingStats />
 
       <InteractiveTable
-        isPending={isPending}
         onSelect={setSelected}
         heads={['Bounty ID', 'Claimed', 'URL']}
         rows={list.map((i) => ({

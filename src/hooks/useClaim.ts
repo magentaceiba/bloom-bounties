@@ -1,4 +1,4 @@
-import { useRevalidateServerPaths, useToast, useWorkflow } from '.'
+import { useRefreshServerPaths, useToast, useWorkflow } from '.'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ClaimArgs, EditContributersArgs, VerifyArgs } from '@/lib/types/claim'
 import { handleClaim } from '@/lib/handleClaim'
@@ -9,7 +9,7 @@ import { handleEditContributers } from '@/lib/handleEditContributers'
 export default function useClaim() {
   const workflow = useWorkflow()
   const { addToast } = useToast()
-  const revalidateServerPaths = useRevalidateServerPaths()
+  const refreshServerPaths = useRefreshServerPaths()
 
   const post = useMutation({
     mutationKey: ['addClaim'],
@@ -17,7 +17,7 @@ export default function useClaim() {
 
     onSuccess: ({ bountyId, ERC20Symbol, claim }) => {
       contributorsList.refetch()
-      revalidateServerPaths(['/verify'])
+      refreshServerPaths.post(['verify'])
 
       addToast({
         text: `Claim Proposal for ${String(
@@ -37,7 +37,7 @@ export default function useClaim() {
     mutationFn: (data: VerifyArgs) => handleVerify({ data, workflow }),
 
     onSuccess: ({ ERC20Symbol, verify }) => {
-      revalidateServerPaths(['/verify', '/claims'])
+      refreshServerPaths.post(['verify', 'claims'])
 
       addToast({
         text: `Verify Proposal for ${1} ${ERC20Symbol} Has Been Submitted.\nWith TX Hash: ${verify}`,
@@ -66,7 +66,6 @@ export default function useClaim() {
   const editContributors = useMutation({
     mutationKey: ['editContributors'],
     mutationFn: async (data: EditContributersArgs) => {
-      console.log('data', data)
       const hash = await handleEditContributers({
         data,
         workflow,
@@ -82,7 +81,7 @@ export default function useClaim() {
         status: 'success',
       })
       contributorsList.refetch()
-      revalidateServerPaths(['/verify'])
+      refreshServerPaths.post(['verify'])
     },
 
     onError: (err) => {

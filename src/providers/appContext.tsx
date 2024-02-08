@@ -5,6 +5,7 @@ import { setThemeCookie } from '@/lib/utils'
 import { createContext, useContext, useEffect } from 'react'
 import { useTheme } from '@/hooks'
 import useWorkflowHandler from '@/hooks/useWorkflowHandler'
+import useHandleClientPathState from '@/hooks/useRefreshServerPaths'
 
 export type TAppContext = {
   isHydrated: boolean
@@ -18,6 +19,7 @@ export default function AppProvider({
 }: {
   children: React.ReactNode
 }) {
+  useHandleClientPathState()
   const { theme } = useTheme()
   const isHydrated = useIsHydratedHandler()
   const workflow = useWorkflowHandler()

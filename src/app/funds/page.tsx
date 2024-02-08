@@ -27,7 +27,6 @@ export default function FundsPage() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('submit')
     if (tab === 0) handleDeposit()
     else handleWithdraw()
   }

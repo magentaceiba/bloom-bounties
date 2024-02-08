@@ -32,3 +32,4 @@ function extractError(errorMessage?: string) {
 }
 
 export type UseToastHandlerReturn = ReturnType<typeof useToastHandler>
+export type AddToast = UseToastHandlerReturn['addToast']

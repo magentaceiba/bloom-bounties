@@ -110,7 +110,7 @@ export default function PageClient({
       ) : (
         <>
           {!!bounty?.id && (
-            <Link href={`/claim/${bounty.id}`}>
+            <Link href={`/claims/${bounty.id}`}>
               <Button color="primary">Claim Bounty</Button>
             </Link>
           )}

@@ -2,30 +2,36 @@ import { Button } from 'react-daisyui'
 import { Frame, NumberInput, TextInput } from './ui'
 import { IoClose } from 'react-icons/io5'
 import cn from 'classnames'
-
-export type Contributers = {
-  uid: string
-  addr?: `0x${string}`
-  claimAmount?: string
-}[]
+import { InitialContributor } from '@/lib/types/claim'
 
 export function ContributerInput({
-  contributers,
-  url,
+  contributors,
   onUrlChange,
   contributersStateHandler,
   symbol,
   maximumPayoutAmount,
+  canEditContributor,
 }: {
-  contributers: Contributers
-  contributersStateHandler: (contributers: Contributers) => void
-  onUrlChange: (url: string) => void
-  url: string
+  contributors: InitialContributor[]
+  contributersStateHandler: (contributors: InitialContributor[]) => void
+  onUrlChange?: (url: string) => void
   symbol?: string
-  maximumPayoutAmount: string
+  maximumPayoutAmount?: string
+  canEditContributor?: boolean
 }) {
-  const handleState = ({ uid, addr, claimAmount }: Contributers[0]) => {
-    const newContributers = contributers.map((c) => {
+  const addContributer = () => {
+    contributersStateHandler([
+      ...contributors,
+      {
+        uid: crypto.randomUUID(),
+        addr: undefined,
+        claimAmount: undefined,
+      },
+    ])
+  }
+
+  const handleState = ({ uid, addr, claimAmount }: InitialContributor) => {
+    const newContributers = contributors.map((c) => {
       if (c.uid === uid) {
         if (addr !== undefined) return { ...c, addr }
         if (claimAmount !== undefined) return { ...c, claimAmount }
@@ -37,38 +43,31 @@ export function ContributerInput({
   }
 
   const removeContributer = (uid: string) => {
-    const newContributers = contributers.filter((c) => c.uid !== uid)
+    const newContributers = contributors.filter((c) => c.uid !== uid)
     contributersStateHandler(newContributers)
   }
 
   return (
     <div className="flex flex-col w-full max-w-xl">
-      <TextInput
-        label="Proposal URL"
-        type="url"
-        value={url}
-        onChange={onUrlChange}
-        required
-      />
+      {!!onUrlChange && (
+        <TextInput
+          label="Proposal URL"
+          type="url"
+          onChange={onUrlChange}
+          required
+        />
+      )}
       <Button
         className="mt-6"
         color="primary"
         size="sm"
         type="button"
-        onClick={() => {
-          contributersStateHandler([
-            ...contributers,
-            {
-              uid: crypto.randomUUID(),
-              addr: undefined,
-              claimAmount: undefined,
-            },
-          ])
-        }}
+        onClick={addContributer}
+        disabled={canEditContributor === false}
       >
         Add Contributor
       </Button>
-      {contributers.map((c, index) => (
+      {contributors.map((c, index) => (
         <Frame key={index} className="mt-6 relative">
           <IoClose
             className={cn(
@@ -79,6 +78,7 @@ export function ContributerInput({
             onClick={() => {
               removeContributer(c.uid)
             }}
+            disabled={canEditContributor === false}
           />
           <TextInput
             label={`Contributer ${index + 1} Address`}
@@ -86,6 +86,7 @@ export function ContributerInput({
               handleState({ uid: c.uid, addr: e as `0x${string}` })
             }}
             type="address"
+            defaultValue={c.addr}
             required
           />
           <NumberInput
@@ -93,7 +94,10 @@ export function ContributerInput({
             onChange={(e) => {
               handleState({ uid: c.uid, claimAmount: e })
             }}
-            max={Number(maximumPayoutAmount)}
+            max={
+              !!maximumPayoutAmount ? Number(maximumPayoutAmount) : undefined
+            }
+            defaultValue={c.claimAmount}
             required
           />
         </Frame>

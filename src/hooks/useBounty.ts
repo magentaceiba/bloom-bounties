@@ -1,12 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
-import { useServerAction, useToast, useWorkflow } from '.'
+import { useRevalidateServerPaths, useToast, useWorkflow } from '.'
 import { BountyPostArgs, handleBountyPost } from '@/lib/handleBountyPost'
-import { revalidateServerPaths } from '@/lib/actions/utils'
 
 export function useBounty() {
   const workflow = useWorkflow()
   const { addToast } = useToast()
-  const serverAction = useServerAction()
+  const revalidateServerPaths = useRevalidateServerPaths()
 
   const post = useMutation({
     mutationKey: ['postBounty'],
@@ -14,7 +13,7 @@ export function useBounty() {
 
     onSuccess: (res) => {
       addToast({ text: `Bounty Posted: ${res}`, status: 'success' })
-      serverAction(() => revalidateServerPaths('client', ['/']))
+      revalidateServerPaths(['/'])
     },
 
     onError: (err: any) => {

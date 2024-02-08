@@ -23,7 +23,6 @@ export const handleClaimList = async (
         const contributors = claim.contributors.map((c) => ({
           addr: c.addr,
           claimAmount: formatUnits(c.claimAmount, workflow.ERC20Decimals),
-          include: true,
         }))
 
         const formattedClaim = {

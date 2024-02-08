@@ -22,10 +22,12 @@ const NavItems = ({
   const iS = roles.isSuccess,
     canPost = iS && roles.data!.isIssuer,
     canVerify = iS && roles.data!.isVerifier,
-    canAdmin = iS && roles.data!.isOwner
+    canAdmin = iS && roles.data!.isOwner,
+    canClaim = iS && roles.data!.isClaimer
 
   const arr = [
     { href: '/', label: 'Bounties' },
+    ...(canClaim ? [{ href: '/claims', label: 'Claims' }] : []),
     ...(canPost ? [{ href: '/post', label: 'Post' }] : []),
     { href: '/funds', label: 'Funds' },
     ...(canVerify ? [{ href: '/verify', label: 'Verify' }] : []),

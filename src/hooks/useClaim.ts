@@ -1,21 +1,22 @@
-import { useServerAction, useToast, useWorkflow } from '.'
-import { useMutation } from '@tanstack/react-query'
-import { ClaimArgs, VerifyArgs } from '@/lib/types/claim'
+import { useRevalidateServerPaths, useToast, useWorkflow } from '.'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { ClaimArgs, EditContributersArgs, VerifyArgs } from '@/lib/types/claim'
 import { handleClaim } from '@/lib/handleClaim'
 import { handleVerify } from '@/lib/handleVerify'
-import { revalidateServerPaths } from '@/lib/actions/utils'
+import { handleClaimList } from '@/lib/handleClaimList'
+import { handleEditContributers } from '@/lib/handleEditContributers'
 
 export default function useClaim() {
   const workflow = useWorkflow()
   const { addToast } = useToast()
-  const serverAction = useServerAction()
+  const revalidateServerPaths = useRevalidateServerPaths()
 
   const post = useMutation({
     mutationKey: ['addClaim'],
     mutationFn: (data: ClaimArgs) => handleClaim({ data, workflow }),
 
     onSuccess: ({ bountyId, ERC20Symbol, claim }) => {
-      serverAction(() => revalidateServerPaths('client', ['/', '/verify']))
+      revalidateServerPaths(['/', '/verify'])
 
       addToast({
         text: `Claim Proposal for ${String(
@@ -40,7 +41,47 @@ export default function useClaim() {
         status: 'success',
       })
 
-      serverAction(() => revalidateServerPaths('client', ['/verify']))
+      revalidateServerPaths(['/verify'])
+    },
+
+    onError: (err) => {
+      addToast({ text: err?.message, status: 'error' })
+    },
+  })
+
+  const contributorsList = useQuery({
+    queryKey: ['contributorsList'],
+    queryFn: async () => {
+      const ids =
+        await workflow.data!.contracts.logic.read.listClaimIdsForContributorAddress(
+          [workflow.address!]
+        )
+      const list = await handleClaimList(workflow.data!, ids)
+      return list
+    },
+    enabled: !!workflow.address && workflow.isSuccess,
+  })
+
+  const editContributors = useMutation({
+    mutationKey: ['editContributors'],
+    mutationFn: async (data: EditContributersArgs) => {
+      console.log('data', data)
+      const hash = await handleEditContributers({
+        data,
+        workflow,
+        addToast,
+      })
+
+      return hash
+    },
+
+    onSuccess: () => {
+      addToast({
+        text: `Contributors List Has Been Updated`,
+        status: 'success',
+      })
+      contributorsList.refetch()
+      revalidateServerPaths(['/verify'])
     },
 
     onError: (err) => {
@@ -49,6 +90,8 @@ export default function useClaim() {
   })
 
   return {
+    editContributors,
+    contributorsList,
     post,
     verify,
     isConnected: workflow.isConnected,

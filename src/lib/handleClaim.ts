@@ -4,7 +4,7 @@ import { ClaimArgs } from './types/claim'
 import { waitUntilConfirmation } from './utils'
 
 export async function handleClaim({
-  data: { contributers, bountyId, details },
+  data: { contributors, bountyId, details },
   workflow,
 }: {
   data: ClaimArgs
@@ -13,7 +13,7 @@ export async function handleClaim({
   const { logic } = workflow.data!.contracts
   const { ERC20Symbol, ERC20Decimals } = workflow.data!
 
-  const mappedContributers = contributers.map((c) => ({
+  const mappedContributers = contributors.map((c) => ({
     ...c,
     claimAmount: parseUnits(c.claimAmount, ERC20Decimals),
   }))

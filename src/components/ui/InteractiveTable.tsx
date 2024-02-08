@@ -13,7 +13,7 @@ export default function InteractiveTable({
   onSelect,
   className,
 }: {
-  isPending: boolean
+  isPending?: boolean
   heads: string[]
   rows: { row: { item: string; type?: 'url' }[] }[]
   onSelect?: (index: number) => void

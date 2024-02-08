@@ -9,13 +9,7 @@ import { FormattedClaim } from '@/lib/types/claim'
 import { useRole } from '@/hooks'
 import { NoAccess, InteractiveTable, Frame, Copy } from '@/components/ui/'
 
-export default function VerifyPageClient({
-  list,
-  isPending,
-}: {
-  list: FormattedClaim[]
-  isPending: boolean
-}) {
+export default function VerifyPageClient({ list }: { list: FormattedClaim[] }) {
   const { roles } = useRole()
   const { isConnected, ERC20Symbol, verify } = useClaim()
   const [selected, setSelected] = useState<number>(0)
@@ -40,7 +34,6 @@ export default function VerifyPageClient({
       <FundingStats />
 
       <InteractiveTable
-        isPending={isPending}
         onSelect={setSelected}
         heads={['Bounty ID', 'Claimed', 'URL']}
         rows={list.map((i) => ({

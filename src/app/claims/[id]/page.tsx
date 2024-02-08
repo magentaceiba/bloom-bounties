@@ -1,5 +1,7 @@
 import { get } from '@/lib/actions/claim'
 import { ClientClaimPage } from './page.client'
+import { handlePageData } from '@/lib/utils'
+import { HasError } from '@/components'
 
 type Props = {
   params: { id: string }
@@ -7,13 +9,9 @@ type Props = {
 
 export default async function ClaimPage({ params }: Props) {
   const { id } = params
-  let isPending = false
-  let claim: Awaited<ReturnType<typeof get>>
-  try {
-    isPending = true
-    claim = await get(id)
-  } finally {
-    isPending = false
-  }
-  return <ClientClaimPage isPending={isPending} claim={claim} />
+  const { error, data } = await handlePageData(() => get(id))
+
+  if (error !== null) return <HasError error={error} />
+
+  return <ClientClaimPage claim={data} />
 }

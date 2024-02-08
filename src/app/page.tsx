@@ -1,15 +1,12 @@
+import { handlePageData } from '@/lib/utils'
 import { getList } from '../lib/actions/bounty'
 import PageClient from './page.client'
+import { HasError } from '@/components'
 
 export default async function Page() {
-  let isPending = false
-  let list: Awaited<ReturnType<typeof getList>> = []
-  try {
-    isPending = true
-    list = await getList()
-  } finally {
-    isPending = false
-  }
+  const { data, error } = await handlePageData(getList)
 
-  return <PageClient list={list} isPending={isPending} />
+  if (error !== null) return <HasError error={error} />
+
+  return <PageClient list={data} />
 }

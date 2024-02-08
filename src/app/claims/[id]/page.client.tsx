@@ -10,13 +10,7 @@ import { Button, Loading } from 'react-daisyui'
 import { FormattedBounty } from '@/lib/types/bounty'
 import { InitialContributor } from '@/lib/types/claim'
 
-export function ClientClaimPage({
-  claim,
-  isPending,
-}: {
-  claim: FormattedBounty
-  isPending: boolean
-}) {
+export function ClientClaimPage({ claim }: { claim: FormattedBounty }) {
   const { addToast } = useToast()
   const workflow = useWorkflow()
   const { roles, isConnected } = useRole()
@@ -60,7 +54,7 @@ export function ClientClaimPage({
 
   if (!isConnected) return <WalletWidget />
 
-  if (isPending || roles.isPending) return <Loading />
+  if (roles.isPending) return <Loading />
 
   if (!bounty) return <FourOFour />
 

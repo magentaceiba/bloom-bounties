@@ -4,7 +4,8 @@ import {
   PathState,
   PathStatePostRequest,
   PathsCorrespondingTo,
-} from '@/lib/types/revalidate'
+  initialPathsState,
+} from '@/lib/types/paths'
 import { CalledFrom, serverActionWrapper } from '../utils/serverActionWrapper'
 import { CacheContainer } from 'node-ts-cache'
 import { MemoryStorage } from 'node-ts-cache-storage-memory'
@@ -12,36 +13,21 @@ import { revalidatePath } from 'next/cache'
 
 const stateCache = new CacheContainer(new MemoryStorage())
 
-const initialState: PathState = {
-  bounties: 0,
-  verify: 0,
-  claims: 0,
-}
-
 export async function postPathState(text: PathStatePostRequest) {
   const cachedState = await stateCache.getItem<PathState>('state')
 
-  const newCachedState: PathState = cachedState ?? initialState
+  const newCachedState: PathState = cachedState ?? initialPathsState
 
-  switch (text) {
-    case 'bounties':
-      newCachedState.bounties++
-      break
-    case 'verify':
-      newCachedState.verify++
-      break
-    case 'claims':
-      newCachedState.claims++
-    default:
-      throw new Error('Invalid request text')
-  }
+  if (!newCachedState[text]) throw new Error('Invalid request text')
+
+  newCachedState[text]++
 
   await stateCache.setItem('state', newCachedState, { isCachedForever: true })
 }
 
 export async function getPathState<C extends CalledFrom>(calledFrom: C) {
   return await serverActionWrapper(async () => {
-    return (await stateCache.getItem<PathState>('state')) ?? initialState
+    return (await stateCache.getItem<PathState>('state')) ?? initialPathsState
   }, calledFrom)
 }
 

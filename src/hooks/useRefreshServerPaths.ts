@@ -6,17 +6,13 @@ import {
   PathState,
   PathStatePostRequest,
   PathsCorrespondingTo,
-} from '@/lib/types/revalidate'
+  initialPathsState,
+} from '@/lib/types/paths'
 import { useEffect, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import _ from 'lodash'
+import { isEqual } from 'lodash'
 
-const initialState: PathState = {
-  bounties: 0,
-  verify: 0,
-  claims: 0,
-}
-
+// Hook to update and get the server paths cache
 export function useRefreshServerPaths() {
   const serverAction = useServerAction()
 
@@ -24,29 +20,18 @@ export function useRefreshServerPaths() {
     serverAction(() => revalidateServerPaths('client', paths))
   }
 
-  return { post }
+  const get = () => serverAction(() => getPathState('client'))
+
+  return { post, get }
 }
 
-function findDifferences<T extends PathState>(obj1: T, obj2: T): (keyof T)[] {
-  const changedKeys: (keyof T)[] = []
-
-  Object.keys(obj1).forEach((k) => {
-    const key = k as keyof T
-    if (!_.isEqual(obj1[key], obj2[key])) {
-      changedKeys.push(key)
-    }
-  })
-
-  return changedKeys
-}
-
+// Top level Provider hook to handle the state changes
 export default function useHandleClientPathState() {
   const pathname = usePathname()
   const router = useRouter()
-  const serverAction = useServerAction()
-  const get = () => serverAction(() => getPathState('client'))
+  const { get } = useRefreshServerPaths()
 
-  const currentState = useRef<PathState>(initialState)
+  const currentState = useRef<PathState>(initialPathsState)
   const pendingRefreshes = useRef<PathStatePostRequest[]>([])
 
   const removePending = (path: PathStatePostRequest) => {
@@ -55,20 +40,25 @@ export default function useHandleClientPathState() {
     )
   }
 
-  const handle = async () => {
+  const handleFindDifferences = async () => {
     const newState = await get(),
       changes = findDifferences(newState, currentState.current),
       hasChange = changes?.length > 0
 
+    return { newState, changes, hasChange }
+  }
+
+  const handle = async () => {
+    const { newState, changes, hasChange } = await handleFindDifferences()
+
     if (!hasChange) return
 
     const changeIsCurrent = changes.find(
-      (c) => PathsCorrespondingTo[c] === pathname
-    )
-
-    const pendingIsCurrent = pendingRefreshes.current.find(
-      (p) => PathsCorrespondingTo[p] === pathname
-    )
+        (c) => PathsCorrespondingTo[c] === pathname
+      ),
+      pendingIsCurrent = pendingRefreshes.current.find(
+        (p) => PathsCorrespondingTo[p] === pathname
+      )
 
     if (changeIsCurrent || pendingIsCurrent) router.refresh()
     // remove the pending refresh if the refresh was performed on the pending path
@@ -84,13 +74,31 @@ export default function useHandleClientPathState() {
     })
   }
 
-  // get and set the current state every 20 seconds if the new state is different
+  // get and set the current state every 10 seconds if the new state is different
   useEffect(() => {
-    handle()
+    // get the initial state
+    handleFindDifferences()
+      .then(({ newState }) => {
+        currentState.current = newState
+      })
+      .catch((err) =>
+        console.error('Error getting initial state:', err?.message)
+      )
+
+    // set the interval to get the state every 10 seconds
     const interval = setInterval(() => {
-      handle()
+      handle().catch((err) =>
+        console.error('Error handling state update:', err?.message)
+      )
     }, 10_000)
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+}
+
+// Helper function to find the differences between two objects
+function findDifferences<T extends object>(obj1: T, obj2: T) {
+  return (Object.keys(obj1) as (keyof T)[]).filter(
+    (k) => !isEqual(obj1[k], obj2[k])
+  )
 }

@@ -10,6 +10,10 @@ import WalletWidget from './WalletWidget'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import cn from 'classnames'
 import { useRole } from '@/hooks'
+import { PathStatePostRequest, PathsCorrespondingTo } from '@/lib/types/paths'
+import { firstLetterToUpper } from '@/lib/utils'
+
+type NavbarFields = Exclude<PathStatePostRequest, 'bounties' | 'funds'>
 
 const NavItems = ({
   pathname,
@@ -19,18 +23,27 @@ const NavItems = ({
   reverse?: boolean
 }) => {
   const { roles } = useRole()
-  const iS = roles.isSuccess,
-    canPost = iS && roles.data!.isIssuer,
-    canVerify = iS && roles.data!.isVerifier,
-    canAdmin = iS && roles.data!.isOwner
+  const iS = roles.isSuccess
+
+  const can: Record<NavbarFields, boolean> = {
+    post: iS && roles.data!.isIssuer,
+    verify: iS && roles.data!.isVerifier,
+    admin: iS && roles.data!.isOwner,
+    claims: iS && roles.data!.isClaimer,
+  }
 
   const arr = [
     { href: '/', label: 'Bounties' },
-    ...(canPost ? [{ href: '/post', label: 'Post' }] : []),
     { href: '/funds', label: 'Funds' },
-    ...(canVerify ? [{ href: '/verify', label: 'Verify' }] : []),
-    ...(canAdmin ? [{ href: '/admin', label: 'Admin' }] : []),
   ]
+
+  Object.entries(PathsCorrespondingTo).forEach(([key, value]) => {
+    if (can[key as NavbarFields])
+      arr.push({
+        href: value,
+        label: firstLetterToUpper(key),
+      })
+  })
 
   if (reverse) arr.reverse()
 
@@ -87,7 +100,7 @@ export default function Navbar() {
           <Dropdown.Item className="flex gap-2">
             <ThemeSwitcher className="w-full" />
           </Dropdown.Item>
-          {NavItems({ pathname, reverse: true })}
+          <NavItems pathname={pathname} reverse />
         </Dropdown.Menu>
       </Dropdown>
     </div>

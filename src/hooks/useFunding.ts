@@ -64,7 +64,7 @@ export function useFunding() {
   const deposit = useMutation({
     mutationKey: ['deposit'],
     mutationFn: async (formatted: string) => {
-      const res = await workflow.data?.contracts.funding.write.deposit([
+      const hash = await workflow.data?.contracts.funding.write.deposit([
         parseUnits(formatted, workflow.data!.ERC20Decimals),
       ])
 
@@ -73,16 +73,17 @@ export function useFunding() {
         status: 'info',
       })
 
-      await waitUntilConfirmation(workflow.publicClient, res)
+      await waitUntilConfirmation(workflow.publicClient, hash)
 
-      return res
+      return hash
     },
 
     onSuccess: () => {
       addToast({
-        text: `Deposited ${workflow.data?.ERC20Symbol}`,
+        text: `Deposit confirmed`,
         status: 'success',
       })
+
       refetchTotalSupply()
       balance.refetch()
       allowance.refetch()
@@ -98,28 +99,30 @@ export function useFunding() {
     mutationFn: async (formattedAmount: string) => {
       if (!withdrawable.data) throw new Error('No withdrawable balance found')
 
-      const res = await workflow.data?.contracts.funding.write.withdraw([
+      const hash = await workflow.data?.contracts.funding.write.withdraw([
         parseUnits(formattedAmount, workflow.data!.ERC20Decimals),
       ])
 
       addToast({
-        text: `Waiting for withdraw confirmation for ${formattedAmount} ${workflow.data?.ERC20Symbol}`,
+        text: `Waiting for withdrawal confirmation`,
         status: 'info',
       })
 
-      await waitUntilConfirmation(workflow.publicClient, res)
+      await waitUntilConfirmation(workflow.publicClient, hash)
 
-      return { res, formattedAmount }
+      return hash
     },
-    onSuccess: ({ formattedAmount }) => {
+
+    onSuccess: () => {
       withdrawable.refetch()
       refetchTotalSupply()
       balance.refetch()
       addToast({
-        text: `Withdrawn ${formattedAmount} ${workflow.data?.ERC20Symbol}`,
+        text: `Withdrawal confirmed`,
         status: 'success',
       })
     },
+
     onError,
   })
 
@@ -127,7 +130,7 @@ export function useFunding() {
   const approve = useMutation({
     mutationKey: ['approve'],
     mutationFn: async (formattedAmount: string) => {
-      const res = await workflow.data?.contracts.ERC20.write.approve([
+      const hash = await workflow.data?.contracts.ERC20.write.approve([
         workflow.data?.addresses.funding!,
         parseUnits(formattedAmount, workflow.data!.ERC20Decimals),
       ])
@@ -137,18 +140,20 @@ export function useFunding() {
         status: 'info',
       })
 
-      await waitUntilConfirmation(workflow.publicClient, res)
+      await waitUntilConfirmation(workflow.publicClient, hash)
 
-      return { hash: res, formattedAmount }
+      return { hash, formattedAmount }
     },
+
     onSuccess: ({ formattedAmount }) => {
       addToast({
-        text: `Approved ${formattedAmount} ${workflow.data?.ERC20Symbol}`,
+        text: `Approval confirmed`,
         status: 'success',
       })
       allowance.refetch()
       deposit.mutate(formattedAmount)
     },
+
     onError,
   })
 

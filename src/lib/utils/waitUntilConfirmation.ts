@@ -20,7 +20,6 @@ export const waitUntilConfirmation = async (
       timeout: 300_000,
       until: (res) => Number(res) >= confirmations,
       retryIf(error) {
-        console.log(error)
         return ['could not be found', 'connection'].some((str) =>
           error.message.includes(str)
         )

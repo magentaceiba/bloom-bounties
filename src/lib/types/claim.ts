@@ -3,46 +3,38 @@ export type FormattedClaimDetails = {
   date: string
 }
 
+export type Contributor = {
+  addr: `0x${string}`
+  claimAmount: string
+}
+
+export type InitialContributor = {
+  addr?: `0x${string}`
+  claimAmount?: string
+  uid: string
+}
+
 export type FormattedClaim = {
   claimId: bigint
   details: FormattedClaimDetails
-  contributors: {
-    addr: `0x${string}`
-    claimAmount: string
-    include: boolean
-  }[]
+  contributors: Contributor[]
   symbol: string
   bountyId: bigint
   claimed: boolean
 }
 
-export type ClaimObject =
-  | {
-      details: FormattedClaimDetails
-      contributors: {
-        addr: `0x${string}`
-        claimAmount: string
-        include: boolean
-      }[]
-      symbol: string
-      bountyId: bigint
-      claimed: boolean
-    }
-  | undefined
-
 export type ClaimArgs = {
   bountyId: string
-  contributers: {
-    addr: `0x${string}`
-    claimAmount: string
-  }[]
+  contributors: Contributor[]
   details: FormattedClaimDetails
 }
 
-export type VerifyContributers = {
-  addr: `0x${string}`
-  claimAmount?: string
-  include?: boolean
-}[]
+export type EditContributersArgs = {
+  claimId: string
+  contributors: Contributor[]
+}
 
-export type VerifyArgs = { claimId: string; contributors: VerifyContributers }
+export type VerifyArgs = {
+  claimId: string
+  contributors: Contributor[]
+}

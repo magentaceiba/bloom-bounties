@@ -2,6 +2,7 @@ import { parseUnits, stringToHex } from 'viem'
 import { FormattedBountyDetails } from './types/bounty'
 import { WorkflowQuery } from '@/hooks'
 import { waitUntilConfirmation } from './utils'
+import { AddToast } from '@/hooks/useToastHandler'
 
 export type BountyPostArgs = {
   details: {
@@ -16,9 +17,11 @@ export type BountyPostArgs = {
 export const handleBountyPost = async ({
   data,
   workflow,
+  addToast,
 }: {
   data: BountyPostArgs
   workflow: WorkflowQuery
+  addToast: AddToast
 }) => {
   if (!workflow.data) return
 
@@ -43,6 +46,11 @@ export const handleBountyPost = async ({
   ] as const
 
   const bounty = await workflow.data.contracts.logic.write.addBounty(args)
+
+  addToast({
+    text: 'Waiting for bounty post confirmation',
+    status: 'success',
+  })
 
   await waitUntilConfirmation(workflow.publicClient, bounty)
 

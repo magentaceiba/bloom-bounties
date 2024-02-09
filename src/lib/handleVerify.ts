@@ -2,36 +2,35 @@ import { WorkflowQuery } from '@/hooks'
 import { VerifyArgs } from './types/claim'
 import { parseUnits } from 'viem'
 import { waitUntilConfirmation } from './utils'
+import { AddToast } from '@/hooks/useToastHandler'
 
 export async function handleVerify({
   data: { claimId, contributors },
   workflow,
+  addToast,
 }: {
   data: VerifyArgs
   workflow: WorkflowQuery
+  addToast: AddToast
 }) {
   const { logic } = workflow.data!.contracts
-  const { ERC20Symbol, ERC20Decimals } = workflow.data!
+  const { ERC20Decimals } = workflow.data!
 
-  const parsedContributors = contributors
-    .map((c) => {
-      if (c.include)
-        return {
-          addr: c.addr,
-          claimAmount: parseUnits(c.claimAmount!, ERC20Decimals),
-        }
-    })
-    .filter((c): c is NonNullable<typeof c> => c !== undefined)
-
-  if (parsedContributors.length === 0) {
-    throw new Error('No Contributors Included')
-  }
+  const parsedContributors = contributors.map(({ addr, claimAmount }) => ({
+    addr,
+    claimAmount: parseUnits(claimAmount, ERC20Decimals),
+  }))
 
   const config = [BigInt(claimId), parsedContributors] as const
 
-  const verify = await logic.write.verifyClaim(config)
+  const hash = await logic.write.verifyClaim(config)
 
-  await waitUntilConfirmation(workflow.publicClient, verify)
+  addToast({
+    text: `Waiting for verify confirmation`,
+    status: 'success',
+  })
 
-  return { verify, ERC20Symbol }
+  await waitUntilConfirmation(workflow.publicClient, hash)
+
+  return hash
 }

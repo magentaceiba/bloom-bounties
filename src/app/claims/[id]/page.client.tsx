@@ -2,36 +2,29 @@
 
 import { FourOFour, NoAccess, WalletWidget } from '@/components'
 import { BountyDetails } from '@/components/BountyDetails'
-import { ContributerInput, Contributers } from '@/components/ContributerInput'
+import { ContributerInput } from '@/components/ContributerInput'
 import useClaim from '@/hooks/useClaim'
 import { useRole, useToast, useWorkflow } from '@/hooks'
 import { useState } from 'react'
 import { Button, Loading } from 'react-daisyui'
 import { FormattedBounty } from '@/lib/types/bounty'
+import { InitialContributor } from '@/lib/types/claim'
 
-export function ClientClaimPage({
-  claim,
-  isPending,
-}: {
-  claim: FormattedBounty
-  isPending: boolean
-}) {
+export function ClientClaimPage({ claim }: { claim: FormattedBounty }) {
   const { addToast } = useToast()
   const workflow = useWorkflow()
   const { roles, isConnected } = useRole()
 
   const bounty = claim
 
-  const [contributers, setContributers] = useState<Contributers>([
-    // @ts-ignore
-    { uid: crypto.randomUUID(), addr: '', claimAmount: '' },
-  ])
-
-  const [url, setUrl] = useState('')
+  const [contributors, setContributers] = useState<InitialContributor[]>([
+      { uid: crypto.randomUUID(), addr: '' as `0x${string}`, claimAmount: '' },
+    ]),
+    [url, setUrl] = useState('')
 
   const { post } = useClaim()
 
-  const total = contributers.reduce((acc, i) => acc + Number(i.claimAmount), 0)
+  const total = contributors.reduce((acc, i) => acc + Number(i.claimAmount), 0)
 
   const isTotalValid =
     total >= Number(bounty.minimumPayoutAmount) &&
@@ -47,7 +40,7 @@ export function ClientClaimPage({
       })
 
     post.mutate({
-      contributers: contributers.map((i) => ({
+      contributors: contributors.map((i) => ({
         addr: i.addr!,
         claimAmount: i.claimAmount!,
       })),
@@ -61,7 +54,7 @@ export function ClientClaimPage({
 
   if (!isConnected) return <WalletWidget />
 
-  if (isPending || roles.isPending) return <Loading />
+  if (roles.isPending) return <Loading />
 
   if (!bounty) return <FourOFour />
 
@@ -85,31 +78,32 @@ export function ClientClaimPage({
         url={bounty?.details?.url}
       />
 
-      {!workflow.isConnected ? (
-        <WalletWidget />
-      ) : (
-        <form
-          onSubmit={onSubmit}
-          className="form-control gap-6 w-full max-w-xl"
-        >
-          <ContributerInput
-            maximumPayoutAmount={maximumPayoutAmount}
-            contributers={contributers}
-            contributersStateHandler={setContributers}
-            url={url}
-            onUrlChange={setUrl}
-            symbol={workflow.data?.ERC20Symbol}
-          />
-          <Button
-            loading={post.isPending}
-            disabled={post.isPending}
-            color="primary"
-            type="submit"
+      {(() => {
+        if (!workflow.isConnected) return <WalletWidget />
+
+        return (
+          <form
+            onSubmit={onSubmit}
+            className="form-control gap-6 w-full max-w-xl"
           >
-            Submit
-          </Button>
-        </form>
-      )}
+            <ContributerInput
+              maximumPayoutAmount={maximumPayoutAmount}
+              contributors={contributors}
+              contributersStateHandler={setContributers}
+              onUrlChange={setUrl}
+              symbol={workflow.data?.ERC20Symbol}
+            />
+            <Button
+              loading={post.isPending}
+              disabled={post.isPending}
+              color="primary"
+              type="submit"
+            >
+              Submit
+            </Button>
+          </form>
+        )
+      })()}
     </>
   )
 }

@@ -1,9 +1,9 @@
-import { WorkflowQuery } from '@/hooks'
 import { hexToString, formatUnits } from 'viem'
 import { FormattedClaimDetails } from './types/claim'
+import { Workflow } from './getWorkflow'
 
 export const handleClaimList = async (
-  workflow: NonNullable<WorkflowQuery['data']>,
+  workflow: Workflow,
   ids: readonly bigint[]
 ) => {
   const list = (
@@ -23,7 +23,6 @@ export const handleClaimList = async (
         const contributors = claim.contributors.map((c) => ({
           addr: c.addr,
           claimAmount: formatUnits(c.claimAmount, workflow.ERC20Decimals),
-          include: true,
         }))
 
         const formattedClaim = {
@@ -43,4 +42,19 @@ export const handleClaimList = async (
     (a, b) =>
       new Date(b.details.date).getTime() - new Date(a.details.date).getTime()
   )
+}
+
+export async function handleClaimListForContributorAddress({
+  workflow,
+  address,
+}: {
+  workflow: Workflow
+  address: `0x${string}`
+}) {
+  const ids =
+    await workflow.contracts.logic.read.listClaimIdsForContributorAddress([
+      address!,
+    ])
+  const list = await handleClaimList(workflow, ids)
+  return list
 }

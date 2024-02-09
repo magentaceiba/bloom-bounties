@@ -3,7 +3,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCards } from 'swiper/modules'
 import { useState } from 'react'
-import { Button, Loading } from 'react-daisyui'
+import { Button } from 'react-daisyui'
 import { InteractiveTable, NoData, Tabs, WalletWidget } from '../components'
 import { FundingStats } from '../components/FundingStats'
 import { BountyDetails } from '../components/BountyDetails'
@@ -13,13 +13,7 @@ import { useAccount } from 'wagmi'
 
 const tabs = ['List', 'Card'] as const
 
-export default function PageClient({
-  list,
-  isPending,
-}: {
-  list: FormattedBounty[]
-  isPending: boolean
-}) {
+export default function PageClient({ list }: { list: FormattedBounty[] }) {
   const { isConnected } = useAccount()
   const [tab, setTab] = useState(0)
   const [index, setIndex] = useState<number>(0)
@@ -41,7 +35,6 @@ export default function PageClient({
           if (tab === 0)
             return (
               <InteractiveTable
-                isPending={isPending}
                 heads={['Bounty ID', 'Title']}
                 rows={list.map((i) => ({
                   row: [{ item: String(i.id) }, { item: i.details!.title! }],
@@ -49,8 +42,6 @@ export default function PageClient({
                 onSelect={(index) => setIndex(index)}
               />
             )
-
-          if (isPending) return <Loading className={'m-4'} />
 
           if (!list?.length) return <NoData />
 
@@ -110,7 +101,7 @@ export default function PageClient({
       ) : (
         <>
           {!!bounty?.id && (
-            <Link href={`/claim/${bounty.id}`}>
+            <Link href={`/claims/${bounty.id}`}>
               <Button color="primary">Claim Bounty</Button>
             </Link>
           )}

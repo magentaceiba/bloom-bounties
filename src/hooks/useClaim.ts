@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { ClaimArgs, EditContributersArgs, VerifyArgs } from '@/lib/types/claim'
 import { handleClaim } from '@/lib/handleClaim'
 import { handleVerify } from '@/lib/handleVerify'
-import { handleClaimList } from '@/lib/handleClaimList'
+import { handleClaimListForContributorAddress } from '@/lib/handleClaimList'
 import { handleEditContributers } from '@/lib/handleEditContributers'
 
 export default function useClaim() {
@@ -11,82 +11,73 @@ export default function useClaim() {
   const { addToast } = useToast()
   const refreshServerPaths = useRefreshServerPaths()
 
+  const onError = (err: any) => {
+    addToast({ text: err?.message, status: 'error' })
+  }
+
+  const contributorsList = useQuery({
+    queryKey: ['contributorsList'],
+    queryFn: () =>
+      handleClaimListForContributorAddress({
+        workflow: workflow.data!,
+        address: workflow.address!,
+      }),
+    enabled: !!workflow.address && workflow.isSuccess,
+  })
+
   const post = useMutation({
     mutationKey: ['addClaim'],
-    mutationFn: (data: ClaimArgs) => handleClaim({ data, workflow }),
+    mutationFn: (data: ClaimArgs) => handleClaim({ data, workflow, addToast }),
 
-    onSuccess: ({ bountyId, ERC20Symbol, claim }) => {
+    onSuccess: () => {
       contributorsList.refetch()
       refreshServerPaths.post(['verify'])
 
       addToast({
-        text: `Claim Proposal for ${String(
-          bountyId
-        )} ${ERC20Symbol} Has Been Submitted.\nWith TX Hash: ${claim}`,
+        text: `Claim proposal has been confirmed`,
         status: 'success',
       })
     },
 
-    onError: (err) => {
-      addToast({ text: err?.message, status: 'error' })
-    },
+    onError,
   })
 
   const verify = useMutation({
     mutationKey: ['performVerify'],
-    mutationFn: (data: VerifyArgs) => handleVerify({ data, workflow }),
+    mutationFn: (data: VerifyArgs) =>
+      handleVerify({ data, workflow, addToast }),
 
-    onSuccess: ({ ERC20Symbol, verify }) => {
+    onSuccess: () => {
       refreshServerPaths.post(['verify', 'claims'])
 
       addToast({
-        text: `Verify Proposal for ${1} ${ERC20Symbol} Has Been Submitted.\nWith TX Hash: ${verify}`,
+        text: `Verify has been confirmed`,
         status: 'success',
       })
     },
 
-    onError: (err) => {
-      addToast({ text: err?.message, status: 'error' })
-    },
-  })
-
-  const contributorsList = useQuery({
-    queryKey: ['contributorsList'],
-    queryFn: async () => {
-      const ids =
-        await workflow.data!.contracts.logic.read.listClaimIdsForContributorAddress(
-          [workflow.address!]
-        )
-      const list = await handleClaimList(workflow.data!, ids)
-      return list
-    },
-    enabled: !!workflow.address && workflow.isSuccess,
+    onError,
   })
 
   const editContributors = useMutation({
     mutationKey: ['editContributors'],
-    mutationFn: async (data: EditContributersArgs) => {
-      const hash = await handleEditContributers({
+    mutationFn: (data: EditContributersArgs) =>
+      handleEditContributers({
         data,
         workflow,
         addToast,
-      })
-
-      return hash
-    },
+      }),
 
     onSuccess: () => {
       addToast({
-        text: `Contributors List Has Been Updated`,
+        text: `Contributors edit has been confirmed`,
         status: 'success',
       })
       contributorsList.refetch()
       refreshServerPaths.post(['verify'])
     },
 
-    onError: (err) => {
-      addToast({ text: err?.message, status: 'error' })
-    },
+    onError,
   })
 
   return {

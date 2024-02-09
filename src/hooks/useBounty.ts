@@ -9,10 +9,11 @@ export function useBounty() {
 
   const post = useMutation({
     mutationKey: ['postBounty'],
-    mutationFn: (data: BountyPostArgs) => handleBountyPost({ data, workflow }),
+    mutationFn: (data: BountyPostArgs) =>
+      handleBountyPost({ data, workflow, addToast }),
 
-    onSuccess: (res) => {
-      addToast({ text: `Bounty Posted: ${res}`, status: 'success' })
+    onSuccess: () => {
+      addToast({ text: `Bounty post has been confirmed`, status: 'success' })
       refreshServerPaths.post(['bounties'])
     },
 

@@ -18,7 +18,8 @@ export async function postPathState(text: PathStatePostRequest) {
 
   const newCachedState: PathState = cachedState ?? initialPathsState
 
-  if (!newCachedState[text]) throw new Error('Invalid request text')
+  if (newCachedState[text] === undefined)
+    throw new Error('Invalid request text')
 
   newCachedState[text]++
 

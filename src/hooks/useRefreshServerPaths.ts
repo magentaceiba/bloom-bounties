@@ -54,24 +54,35 @@ export default function useHandleClientPathState() {
     if (!hasChange) return
 
     const changeIsCurrent = changes.find(
-        (c) => PathsCorrespondingTo[c] === pathname
-      ),
-      pendingIsCurrent = pendingRefreshes.current.find(
-        (p) => PathsCorrespondingTo[p] === pathname
-      )
+      (c) => PathsCorrespondingTo[c] === pathname
+    )
 
-    if (changeIsCurrent || pendingIsCurrent) router.refresh()
-    // remove the pending refresh if the refresh was performed on the pending path
-    if (pendingIsCurrent) removePending(pendingIsCurrent)
+    // if the change is the current path, update the current state, refresh and return
+    if (changeIsCurrent) {
+      currentState.current = newState
+      router.refresh()
 
-    // update the current state after the refresh
-    currentState.current = newState
+      return
+    }
 
+    // if the change is not the current path
     // add the changes to the pending refreshes if they are not already there
     changes.forEach((changed) => {
       if (!pendingRefreshes.current.includes(changed))
         pendingRefreshes.current.push(changed)
     })
+
+    const pendingIsCurrent = pendingRefreshes.current.find(
+      (p) => PathsCorrespondingTo[p] === pathname
+    )
+
+    // remove the pending refresh if the refresh was performed on the pending path
+    if (pendingIsCurrent) {
+      removePending(pendingIsCurrent)
+      router.refresh()
+    }
+
+    return
   }
 
   // get and set the current state every 10 seconds if the new state is different

@@ -30,7 +30,7 @@ export async function handleEditContributers({
     await workflow.data!.contracts.logic.write.updateClaimContributors(config)
 
   addToast({
-    text: `Waiting for confirmation`,
+    text: `Waiting for edit contibutors confirmation`,
     status: 'info',
   })
 

@@ -3,7 +3,7 @@ import { useToast, useWorkflow } from '.'
 import { useAccount } from 'wagmi'
 import { RoleKeys, grantOrRevokeRole, handleRoles } from '@/lib/handleRoles'
 import { waitUntilConfirmation } from '@/lib/utils'
-import { type Hex } from 'viem'
+import { isAddress, type Hex } from 'viem'
 
 export function useRole() {
   const { address } = useAccount()
@@ -20,6 +20,19 @@ export function useRole() {
 
     enabled: workflow.isSuccess && !!address,
     refetchOnWindowFocus: false,
+  })
+
+  const checkRole = useMutation({
+    mutationKey: ['checkRole'],
+    mutationFn: (walletAddress: string) => {
+      if (!workflow.isSuccess) throw new Error('Workflow not success')
+      if (!isAddress(walletAddress)) throw new Error('Invalid address')
+
+      return handleRoles({
+        workflow: workflow.data,
+        address: walletAddress,
+      })
+    },
   })
 
   const setRole = useMutation({
@@ -61,5 +74,5 @@ export function useRole() {
     },
   })
 
-  return { roles, setRole, isConnected: !!address }
+  return { roles, setRole, checkRole, isConnected: workflow.isConnected }
 }

@@ -15,12 +15,10 @@ export default function ClaimsPage() {
   const { isConnected, ERC20Symbol, contributorsList, editContributors } =
     useClaim()
   const [selected, setSelected] = useState<number>(0)
+  const [contributors, setContributors] = useState<InitialContributor[]>([])
 
   const list = contributorsList.data ?? []
-
   const claim = list[selected ?? 0]
-
-  const [contributors, setContributors] = useState<InitialContributor[]>([])
 
   useEffect(() => {
     if (claim)

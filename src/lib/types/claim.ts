@@ -15,11 +15,11 @@ export type InitialContributor = {
 }
 
 export type FormattedClaim = {
-  claimId: bigint
+  claimId: string
   details: FormattedClaimDetails
   contributors: Contributor[]
   symbol: string
-  bountyId: bigint
+  bountyId: string
   claimed: boolean
 }
 

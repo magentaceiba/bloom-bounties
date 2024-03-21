@@ -59,7 +59,7 @@ export default function FundsPage() {
           <Stats.Stat>
             <Stats.Stat.Item variant="title">Allowance</Stats.Stat.Item>
             <Stats.Stat.Item variant="value">
-              {formatToCompactNumber(allowance.data?.formatted)}
+              {formatToCompactNumber(allowance.data)}
             </Stats.Stat.Item>
           </Stats.Stat>
         )}

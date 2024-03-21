@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast, useWorkflow } from '.'
-import { formatUnits, parseUnits } from 'viem'
 import { useBalance } from 'wagmi'
 import { waitUntilConfirmation } from '@/lib/utils'
 
@@ -25,21 +24,20 @@ export function useFunding() {
   // Balance and allowance queries
   const balance = useBalance({
     address,
-    token: workflow.data?.addresses.ERC20,
+    token: workflow.data?.erc20Module.address,
   })
 
+  const fundingManagerAddress = workflow.data?.fundingManager.address
+
   const allowance = useQuery({
-    queryKey: ['allowance', address, workflow.data?.addresses.funding],
+    queryKey: ['allowance', address, fundingManagerAddress],
     queryFn: async () => {
       const allowanceValue =
-        await workflow.data?.contracts.ERC20.read.allowance([
+        await workflow.data?.erc20Module.read.allowance.run([
           address!,
-          workflow.data?.addresses.funding!,
+          fundingManagerAddress!,
         ])
-      return {
-        value: allowanceValue,
-        formatted: formatUnits(allowanceValue!, workflow.data!.ERC20Decimals),
-      }
+      return allowanceValue!
     },
     enabled: workflow.isSuccess && !!address,
   })
@@ -48,14 +46,11 @@ export function useFunding() {
   const withdrawable = useQuery({
     queryKey: ['balanceInFunding', workflow.dataUpdatedAt],
     queryFn: async () => {
-      const parsed = await workflow.data?.contracts.funding.read.balanceOf([
-        workflow.address!,
-      ])!
+      const formatted = await workflow.data?.fundingManager.read.balanceOf.run(
+        workflow.address!
+      )!
 
-      return {
-        value: parsed,
-        formatted: formatUnits(parsed, workflow.data!.ERC20Decimals),
-      }
+      return formatted
     },
     enabled: workflow.isSuccess && !!workflow.address,
   })
@@ -64,9 +59,8 @@ export function useFunding() {
   const deposit = useMutation({
     mutationKey: ['deposit'],
     mutationFn: async (formatted: string) => {
-      const hash = await workflow.data?.contracts.funding.write.deposit([
-        parseUnits(formatted, workflow.data!.ERC20Decimals),
-      ])
+      const hash =
+        await workflow.data?.fundingManager.write.deposit.run(formatted)
 
       addToast({
         text: `Waiting for deposit confirmation`,
@@ -99,9 +93,8 @@ export function useFunding() {
     mutationFn: async (formattedAmount: string) => {
       if (!withdrawable.data) throw new Error('No withdrawable balance found')
 
-      const hash = await workflow.data?.contracts.funding.write.withdraw([
-        parseUnits(formattedAmount, workflow.data!.ERC20Decimals),
-      ])
+      const hash =
+        await workflow.data?.fundingManager.write.withdraw.run(formattedAmount)
 
       addToast({
         text: `Waiting for withdrawal confirmation`,
@@ -130,10 +123,14 @@ export function useFunding() {
   const approve = useMutation({
     mutationKey: ['approve'],
     mutationFn: async (formattedAmount: string) => {
-      const hash = await workflow.data?.contracts.ERC20.write.approve([
-        workflow.data?.addresses.funding!,
-        parseUnits(formattedAmount, workflow.data!.ERC20Decimals),
+      console.log('Approving', formattedAmount!)
+
+      const hash = await workflow.data?.erc20Module.write.approve.run([
+        fundingManagerAddress!,
+        formattedAmount,
       ])
+
+      console.log('Approve hash', hash)
 
       addToast({
         text: `Waiting for approval confirmation`,
@@ -158,9 +155,18 @@ export function useFunding() {
   })
 
   // Handle deposit and withdraw actions
-  const allowanceIsEnough =
-      Number(amount) <= Number(allowance.data?.formatted!),
+  const allowanceIsEnough = Number(amount) <= Number(allowance.data!),
     handleDeposit = () => {
+      console.log(
+        'allowanceIsEnough',
+        allowanceIsEnough,
+        'Allowance',
+        allowance.data,
+        'Amount',
+        amount,
+        'Balance',
+        balance.data?.formatted
+      )
       if (allowanceIsEnough) deposit.mutate(amount)
       else approve.mutate(amount)
     },
@@ -179,13 +185,12 @@ export function useFunding() {
       balance.isSuccess &&
       Number(amount) <= Number(balance.data?.formatted!),
     isWithdrawable =
-      withdrawable.isSuccess &&
-      Number(withdrawable.data?.formatted) >= Number(amount)
+      withdrawable.isSuccess && Number(withdrawable.data) >= Number(amount)
 
   return {
-    ERC20Symbol: workflow.data?.ERC20Symbol,
+    ERC20Symbol: workflow.data?.erc20Symbol,
     balance: balance.data?.formatted,
-    withdrawable: withdrawable.data?.formatted,
+    withdrawable: withdrawable.data,
     allowance,
     isConnected,
     setAmount,

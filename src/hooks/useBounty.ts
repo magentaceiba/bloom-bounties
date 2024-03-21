@@ -25,7 +25,7 @@ export function useBounty() {
   return {
     post,
     isConnected: workflow.isConnected,
-    ERC20Symbol: workflow.data?.ERC20Symbol,
+    ERC20Symbol: workflow.data?.erc20Symbol,
     address: workflow?.address,
   }
 }

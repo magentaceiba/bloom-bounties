@@ -1,5 +1,4 @@
 import { WorkflowQuery } from '@/hooks'
-import { parseUnits, stringToHex } from 'viem'
 import { ClaimArgs } from './types/claim'
 import { waitUntilConfirmation } from './utils'
 import { AddToast } from '@/hooks/useToastHandler'
@@ -13,20 +12,14 @@ export async function handleClaim({
   workflow: WorkflowQuery
   addToast: AddToast
 }) {
-  const { logic } = workflow.data!.contracts
-  const { ERC20Decimals } = workflow.data!
+  const { logicModule } = workflow.data!
 
-  const mappedContributers = contributors.map((c) => ({
-    ...c,
-    claimAmount: parseUnits(c.claimAmount, ERC20Decimals),
-  }))
+  const mappedContributers = contributors.map((c) => c)
 
-  const parsedDetails = stringToHex(JSON.stringify(details))
-
-  const hash = await logic.write.addClaim([
-    BigInt(bountyId),
+  const hash = await logicModule.write.addClaim.run([
+    bountyId,
     mappedContributers,
-    parsedDetails,
+    details,
   ])
 
   addToast({

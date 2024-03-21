@@ -1,22 +1,17 @@
-import { formatUnits } from 'viem'
 import { useWorkflow } from '.'
 import { useQuery } from '@tanstack/react-query'
 
 export default function useFundingStats() {
   const workflow = useWorkflow()
-  const address = workflow.data?.addresses.funding
-  const decimals = workflow.data?.ERC20Decimals
-  const symbol = workflow.data?.ERC20Symbol ?? '...'
+  const address = workflow.data?.fundingManager.address
+  const symbol = workflow.data?.erc20Symbol ?? '...'
 
   const totalSupply = useQuery({
     queryKey: ['totalSupply', address],
     queryFn: async () => {
-      const value = await workflow.data!.contracts.funding.read.totalSupply()
-      const formatted = formatUnits(value, decimals!)
-      return {
-        value,
-        formatted,
-      }
+      const formatted =
+        await workflow.data!.fundingManager.read.totalSupply.run()
+      return formatted
     },
     enabled: workflow.isSuccess,
   })
@@ -25,9 +20,7 @@ export default function useFundingStats() {
 
   return {
     isPending,
-    totalSupply: {
-      ...totalSupply.data,
-    },
+    totalSupply: totalSupply.data,
     symbol,
   }
 }

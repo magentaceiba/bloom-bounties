@@ -91,7 +91,7 @@ export function ClientClaimPage({ claim }: { claim: FormattedBounty }) {
               contributors={contributors}
               contributersStateHandler={setContributers}
               onUrlChange={setUrl}
-              symbol={workflow.data?.ERC20Symbol}
+              symbol={workflow.data?.erc20Symbol}
             />
             <Button
               loading={post.isPending}

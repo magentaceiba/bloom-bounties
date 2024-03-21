@@ -1,40 +1,23 @@
 import { WorkflowQuery } from '@/hooks'
 import { FormattedBountyDetails } from './types/bounty'
-import { formatUnits, hexToString } from 'viem'
 
 export const handleBountyList = async (
   workflow: NonNullable<WorkflowQuery['data']>,
-  ids: readonly bigint[]
+  ids: readonly string[]
 ) => {
   const list = (
     await Promise.all(
-      ids.map(async (bountyId: bigint) => {
-        const bounty = await workflow.contracts.logic.read.getBountyInformation(
-          [bountyId]
-        )
+      ids.map(async (bountyId) => {
+        const bounty =
+          await workflow.logicModule.read.getBountyInformation.run(bountyId)
 
-        let details: FormattedBountyDetails
-        try {
-          details = JSON.parse(hexToString(bounty.details))
-        } catch {
-          return null
-        }
-
-        if (bounty.locked) return null
+        if (bounty.locked || !bounty.details?.title) return null
 
         const newBounty = {
           ...bounty,
-          id: String(bountyId),
-          details,
-          minimumPayoutAmount: formatUnits(
-            bounty.minimumPayoutAmount,
-            workflow.ERC20Decimals
-          ),
-          maximumPayoutAmount: formatUnits(
-            bounty.maximumPayoutAmount,
-            workflow.ERC20Decimals
-          ),
-          symbol: workflow.ERC20Symbol,
+          id: bountyId,
+          details: bounty.details as FormattedBountyDetails,
+          symbol: workflow.erc20Symbol,
         }
 
         return newBounty

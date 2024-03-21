@@ -1,36 +1,24 @@
-import { hexToString, formatUnits } from 'viem'
 import { FormattedClaimDetails } from './types/claim'
 import { Workflow } from './getWorkflow'
 
 export const handleClaimList = async (
   workflow: Workflow,
-  ids: readonly bigint[]
+  ids: readonly string[]
 ) => {
   const list = (
     await Promise.all(
-      ids.map(async (claimId: bigint) => {
-        const claim = await workflow.contracts.logic.read.getClaimInformation([
-          claimId,
-        ])
+      ids.map(async (claimId) => {
+        const claim =
+          await workflow.logicModule.read.getClaimInformation.run(claimId)
 
-        let details: FormattedClaimDetails
-        try {
-          details = JSON.parse(hexToString(claim.details))
-        } catch {
-          return null
-        }
-
-        const contributors = claim.contributors.map((c) => ({
-          addr: c.addr,
-          claimAmount: formatUnits(c.claimAmount, workflow.ERC20Decimals),
-        }))
+        const contributors = claim.contributors.map((c) => c)
 
         const formattedClaim = {
           ...claim,
           claimId,
-          details,
+          details: claim.details as FormattedClaimDetails,
           contributors,
-          symbol: workflow.ERC20Symbol,
+          symbol: workflow.erc20Symbol,
         }
 
         return formattedClaim
@@ -52,9 +40,9 @@ export async function handleClaimListForContributorAddress({
   address: `0x${string}`
 }) {
   const ids =
-    await workflow.contracts.logic.read.listClaimIdsForContributorAddress([
-      address!,
-    ])
+    await workflow.logicModule.read.listClaimIdsForContributorAddress.run(
+      address!
+    )
   const list = await handleClaimList(workflow, ids)
   return list
 }

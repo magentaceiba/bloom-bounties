@@ -22,19 +22,17 @@ export type HandleRoleProps = {
 }
 
 export const handleRoles = async ({
-  workflow: {
-    contracts: { authorizer, logic },
-    addresses: { logic: logicAddress },
-  },
+  workflow: { authorizer, logicModule },
   address,
 }: HandleRoleProps) => {
+  const logicAddress = logicModule.address
   // Initialize roleIds and generatedRoles as empty objects
   const roleHexs = {} as Record<RoleKeys, Hex>
   const generatedRoles = {} as Record<BountyRoleKeys, Hex>
 
   // Set role HEXs for each role in BountyRoles
   for (const [key, value] of Object.entries(BountyRoles)) {
-    roleHexs[key as BountyRoleKeys] = await logic.read[value]()
+    roleHexs[key as BountyRoleKeys] = await logicModule.read[value].run()
   }
 
   // Generate role IDs for each role in roleHexs
@@ -42,21 +40,21 @@ export const handleRoles = async ({
     BountyRoleKeys,
     Hex,
   ][]) {
-    generatedRoles[role] = await authorizer.read.generateRoleId([
+    generatedRoles[role] = await authorizer.read.generateRoleId.run([
       logicAddress,
       id!,
     ])
   }
 
   // Add the owner role HEX to roleHexs
-  roleHexs.Owner = await authorizer.read.getOwnerRole()
+  roleHexs.Owner = await authorizer.read.getOwnerRole.run()
 
   // Initialize hasRoles as an empty object
   const hasRoles = {} as Record<`is${RoleKeys}`, boolean>
 
   // Check if the address has each role in Roles
   for (const key of Object.keys(Roles) as RoleKeys[]) {
-    hasRoles[`is${key}`] = await authorizer.read.hasRole([
+    hasRoles[`is${key}`] = await authorizer.read.hasRole.run([
       { Owner: roleHexs.Owner, ...generatedRoles }[key],
       address,
     ])
@@ -89,8 +87,8 @@ export const grantOrRevokeRole = async ({
   let hash: Hex
 
   if (action === 'grantRole' || action === 'revokeRole')
-    hash = await workflow.contracts.authorizer.write[action](args)
-  else hash = await workflow.contracts.logic.write[action](args)
+    hash = await workflow.authorizer.write[action].run(args)
+  else hash = '0x000' /* await workflow.logicModule.write[action].run(args) */
 
   return hash
 }

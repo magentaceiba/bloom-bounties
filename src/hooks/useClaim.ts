@@ -87,6 +87,6 @@ export default function useClaim() {
     verify,
     isConnected: workflow.isConnected,
     address: workflow.address,
-    ERC20Symbol: workflow.data?.ERC20Symbol,
+    ERC20Symbol: workflow.data?.erc20Symbol,
   }
 }

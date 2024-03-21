@@ -1,6 +1,5 @@
 import { WorkflowQuery } from '@/hooks'
 import { VerifyArgs } from './types/claim'
-import { parseUnits } from 'viem'
 import { waitUntilConfirmation } from './utils'
 import { AddToast } from '@/hooks/useToastHandler'
 
@@ -13,17 +12,16 @@ export async function handleVerify({
   workflow: WorkflowQuery
   addToast: AddToast
 }) {
-  const { logic } = workflow.data!.contracts
-  const { ERC20Decimals } = workflow.data!
+  const { logicModule } = workflow.data!
 
   const parsedContributors = contributors.map(({ addr, claimAmount }) => ({
     addr,
-    claimAmount: parseUnits(claimAmount, ERC20Decimals),
+    claimAmount,
   }))
 
-  const config = [BigInt(claimId), parsedContributors] as const
+  const config = [claimId, parsedContributors] as const
 
-  const hash = await logic.write.verifyClaim(config)
+  const hash = await logicModule.write.verifyClaim.run(config)
 
   addToast({
     text: `Waiting for verify confirmation`,

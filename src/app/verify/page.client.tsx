@@ -15,12 +15,12 @@ export default function VerifyPageClient({ list }: { list: FormattedClaim[] }) {
   const [selected, setSelected] = useState<number>(0)
 
   const claim = list[selected ?? 0]
-  const contributors = claim?.contributors
+  const contributors = claim?.contributors ?? []
 
   const onVerify = () => {
     if (!contributors) return
 
-    verify.mutate({ claimId: String(claim.claimId), contributors })
+    verify.mutate({ claimId: claim.claimId, contributors })
   }
 
   if (!isConnected) return <WalletWidget />
@@ -38,7 +38,7 @@ export default function VerifyPageClient({ list }: { list: FormattedClaim[] }) {
         heads={['Bounty ID', 'Claimed', 'URL']}
         rows={list.map((i) => ({
           row: [
-            { item: String(i.bountyId) },
+            { item: i.bountyId },
             { item: i.claimed ? 'Yes' : 'No' },
             { item: i.details.url, type: 'url' },
           ],

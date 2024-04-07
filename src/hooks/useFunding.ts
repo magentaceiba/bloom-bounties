@@ -60,7 +60,7 @@ export function useFunding() {
     mutationKey: ['deposit'],
     mutationFn: async (formatted: string) => {
       const hash =
-        await workflow.data?.fundingManager.write.deposit.run(formatted)
+        await workflow.data?.fundingManager.write?.deposit.run(formatted)
 
       addToast({
         text: `Waiting for deposit confirmation`,
@@ -94,7 +94,7 @@ export function useFunding() {
       if (!withdrawable.data) throw new Error('No withdrawable balance found')
 
       const hash =
-        await workflow.data?.fundingManager.write.withdraw.run(formattedAmount)
+        await workflow.data?.fundingManager.write?.withdraw.run(formattedAmount)
 
       addToast({
         text: `Waiting for withdrawal confirmation`,
@@ -125,7 +125,7 @@ export function useFunding() {
     mutationFn: async (formattedAmount: string) => {
       console.log('Approving', formattedAmount!)
 
-      const hash = await workflow.data?.erc20Module.write.approve.run([
+      const hash = await workflow.data?.erc20Module.write?.approve.run([
         fundingManagerAddress!,
         formattedAmount,
       ])

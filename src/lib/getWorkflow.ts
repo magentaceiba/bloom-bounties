@@ -1,11 +1,15 @@
 import { getWorkflow as init } from '@inverter-network/sdk'
-import { usePublicClient, useWalletClient } from 'wagmi'
+import type {
+  UsePublicClientReturnType,
+  UseWalletClientReturnType,
+} from 'wagmi'
 
 export const getWorkflow = async (
-  publicClient: ReturnType<typeof usePublicClient>,
+  publicClient: UsePublicClientReturnType,
   orchestratorAddress: `0x${string}`,
-  walletClientQuery?: ReturnType<typeof useWalletClient>
+  walletClientQuery?: UseWalletClientReturnType
 ) => {
+  if (!publicClient) throw new Error('No public client provided')
   const walletClient = walletClientQuery?.isSuccess
     ? walletClientQuery.data!
     : undefined

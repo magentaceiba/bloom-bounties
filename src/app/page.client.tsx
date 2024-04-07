@@ -51,7 +51,7 @@ export default function PageClient({ list }: { list: FormattedBounty[] }) {
                 effect={'cards'}
                 grabCursor={true}
                 modules={[EffectCards]}
-                onSlideChange={(swiper) => setIndex(swiper.activeIndex)}
+                onSlideChange={(swiper: any) => setIndex(swiper.activeIndex)}
               >
                 {list.map((bounty, index) => (
                   <SwiperSlide
@@ -67,10 +67,10 @@ export default function PageClient({ list }: { list: FormattedBounty[] }) {
                   >
                     <BountyDetails.Main
                       title={bounty.details?.title}
-                      minimumPayoutAmount={bounty.minimumPayoutAmount}
-                      maximumPayoutAmount={bounty.maximumPayoutAmount}
-                      symbol={bounty.symbol}
-                      creatorAddress={bounty.details?.creatorAddress}
+                      minimumPayoutAmount={bounty?.minimumPayoutAmount}
+                      maximumPayoutAmount={bounty?.maximumPayoutAmount}
+                      symbol={bounty?.symbol}
+                      creatorAddress={bounty?.details?.creatorAddress}
                     />
                   </SwiperSlide>
                 ))}
@@ -89,10 +89,10 @@ export default function PageClient({ list }: { list: FormattedBounty[] }) {
         <BountyDetails.DetailedDescription
           description={bounty?.details?.description}
           url={bounty?.details?.url}
-          minimumPayoutAmount={bounty.minimumPayoutAmount}
-          maximumPayoutAmount={bounty.maximumPayoutAmount}
-          symbol={bounty.symbol}
-          creatorAddress={bounty.details?.creatorAddress}
+          minimumPayoutAmount={bounty?.minimumPayoutAmount}
+          maximumPayoutAmount={bounty?.maximumPayoutAmount}
+          symbol={bounty?.symbol}
+          creatorAddress={bounty?.details?.creatorAddress}
         />
       )}
 

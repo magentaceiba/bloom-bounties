@@ -7,6 +7,8 @@ describe('Get A Module', async () => {
   const publicClient = usePublicClient()
   const walletClient = useWalletClient()
 
+  if (!publicClient) throw new Error('No public client provided')
+
   const { logicModule, authorizer, fundingManager, paymentProcessor } =
     await getWorkflow({
       publicClient,

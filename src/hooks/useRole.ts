@@ -1,7 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useToast, useWorkflow } from '.'
 import { useAccount } from 'wagmi'
-import { RoleKeys, grantOrRevokeRole, handleRoles } from '@/lib/handleRoles'
+import {
+  RoleKeys,
+  getHasRoles,
+  grantOrRevokeRole,
+  handleRoles,
+} from '@/lib/handleRoles'
 import { waitUntilConfirmation } from '@/lib/utils'
 import { isAddress, type Hex } from 'viem'
 
@@ -25,12 +30,15 @@ export function useRole() {
   const checkRole = useMutation({
     mutationKey: ['checkRole'],
     mutationFn: (walletAddress: string) => {
+      if (!roles.isSuccess) throw new Error('Roles query not success')
       if (!workflow.isSuccess) throw new Error('Workflow not success')
       if (!isAddress(walletAddress)) throw new Error('Invalid address')
 
-      return handleRoles({
+      return getHasRoles({
         workflow: workflow.data,
         address: walletAddress,
+        roleHexs: roles.data?.roleHexs!,
+        generatedRoles: roles.data?.generatedRoles!,
       })
     },
   })
@@ -49,21 +57,22 @@ export function useRole() {
       })
 
       addToast({
-        text: `Granting role ${props.role} to ${props.walletAddress}`,
+        text: `${props.type}ng role ${props.role} to ${props.walletAddress}`,
         status: 'info',
       })
 
-      await waitUntilConfirmation(workflow.publicClient, hash)
+      await waitUntilConfirmation(workflow.publicClient!, hash)
 
-      return hash
+      return { hash, address: props.walletAddress!, type: props.type }
     },
 
-    onSuccess: (hash) => {
+    onSuccess: ({ hash, address, type }) => {
       addToast({
-        text: `Role granted with hash ${hash}`,
+        text: `Role ${type.toLowerCase}ed with hash ${hash}`,
         status: 'success',
       })
       roles.refetch()
+      checkRole.mutate(address)
     },
 
     onError: (error) => {

@@ -12,15 +12,15 @@
     "release": "standard-version"
   },
   "dependencies": {
-    "@dynamic-labs/ethereum": "^1.3.1",
-    "@dynamic-labs/magic": "^1.3.1",
-    "@dynamic-labs/sdk-react-core": "^1.3.1",
-    "@dynamic-labs/wagmi-connector": "^1.3.1",
+    "@dynamic-labs/ethereum": "^2.0.0-alpha",
+    "@dynamic-labs/magic": "^2.0.0-alpha",
+    "@dynamic-labs/sdk-react-core": "^2.0.0-alpha",
+    "@dynamic-labs/wagmi-connector": "^2.0.0-alpha",
     "@emotion/react": "^11.11.1",
-    "@inverter-network/sdk": "0.0.5",
+    "@inverter-network/sdk": "0.0.6",
     "@reduxjs/toolkit": "^1.9.7",
-    "@tanstack/react-query": "^5.13.4",
     "classnames": "^2.3.2",
+    "clsx": "^2.1.0",
     "next": "latest",
     "next-nprogress-bar": "^2.1.2",
     "node-ts-cache": "^4.4.0",
@@ -33,8 +33,8 @@
     "react-redux": "^8.1.3",
     "redux-persist": "^6.0.0",
     "swiper": "^11.0.5",
-    "ts-retry-promise": "^0.8.0",
-    "viem": "^1.19.13"
+    "tailwind-merge": "^2.2.2",
+    "ts-retry-promise": "^0.8.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
@@ -57,10 +57,12 @@
     "tsc-files": "^1.1.4"
   },
   "peerDependencies": {
-    "typescript": "^5.1.6",
-    "wagmi": "^1.4.12",
-    "zod": "^3.22.4",
-    "lodash": "^4.17.21"
+    "typescript": "^5",
+    "zod": "^3",
+    "lodash": "^4",
+    "@tanstack/react-query": "^5",
+    "viem": "2.7.6",
+    "wagmi": "2.5.7"
   },
   "browser": {
     "fs": false,

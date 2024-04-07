@@ -1,10 +1,16 @@
+import type {
+  Account,
+  Chain,
+  PublicClient,
+  Transport,
+  WalletClient,
+} from 'viem'
 import { createPublicClient, createWalletClient, defineChain, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import type { PublicClient, WalletClient } from 'wagmi'
 
 export default function testConnectors(): {
-  publicClient: PublicClient
-  walletClient: WalletClient
+  publicClient: PublicClient<Transport, Chain>
+  walletClient: WalletClient<Transport, Chain, Account>
 } {
   // Public Client: This is used to read from the blockchain.
   const publicClient = createPublicClient({

@@ -1,7 +1,7 @@
 import { Button } from 'react-daisyui'
 import { Frame, NumberInput, TextInput } from './ui'
 import { IoClose } from 'react-icons/io5'
-import cn from 'classnames'
+import { cn } from '@/styles/cn'
 import { InitialContributor } from '@/lib/types/claim'
 
 export function ContributerInput({

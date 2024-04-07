@@ -3,7 +3,7 @@
 import { Loading, Table } from 'react-daisyui'
 import { NoData } from '.'
 import { Fragment, useState } from 'react'
-import cn from 'classnames'
+import { cn } from '@/styles/cn'
 import Link from 'next/link'
 
 export default function InteractiveTable({

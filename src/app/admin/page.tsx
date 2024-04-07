@@ -7,7 +7,7 @@ import { Tabs, TextInput } from '@/components/ui'
 import { Alert, Button, Form, Loading, Toggle } from 'react-daisyui'
 import { isAddress, type Hex } from 'viem'
 import { WalletWidget } from '@/components'
-import cn from 'classnames'
+import { cn } from '@/styles/cn'
 
 const tabs = ['Owner', 'Claimer', 'Issuer', 'Verifier'] as const
 type Tabs = (typeof tabs)[number]

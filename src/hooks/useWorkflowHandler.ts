@@ -2,7 +2,7 @@
 
 import { getWorkflow } from '@/lib/getWorkflow'
 import { useQuery } from '@tanstack/react-query'
-import { usePublicClient, useWalletClient } from 'wagmi'
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
 
 const defaultOrchestratorAddress = process.env
   .NEXT_PUBLIC_ORCHESTRATOR_ADDRESS as `0x${string}` | undefined
@@ -12,19 +12,15 @@ export default function useWorkflowHandler(
 ) {
   const publicClient = usePublicClient()
   const walletClient = useWalletClient()
+  const { address, chainId } = useAccount()
 
   const workflowConfig = useQuery({
-    queryKey: [
-      'workflowConfig',
-      orchestratorAddress,
-      publicClient?.chain?.id,
-      walletClient.data?.account.address,
-    ],
+    queryKey: ['workflowConfig', orchestratorAddress, chainId, address],
     queryFn: () => {
       return getWorkflow(publicClient!, orchestratorAddress!, walletClient)
     },
     enabled:
-      !!publicClient?.chain.id &&
+      !!chainId &&
       !!orchestratorAddress &&
       (walletClient.isSuccess || walletClient.isError),
     refetchOnWindowFocus: false,

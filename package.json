@@ -19,7 +19,6 @@
     "@emotion/react": "^11.11.1",
     "@inverter-network/sdk": "0.0.6",
     "@reduxjs/toolkit": "^1.9.7",
-    "classnames": "^2.3.2",
     "clsx": "^2.1.0",
     "next": "latest",
     "next-nprogress-bar": "^2.1.2",

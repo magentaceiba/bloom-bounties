@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@/styles/cn'
 
 export default function Frame(props: React.HtmlHTMLAttributes<HTMLDivElement>) {
   const classes = cn(

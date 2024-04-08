@@ -4,7 +4,7 @@ import type {
   UseWalletClientReturnType,
 } from 'wagmi'
 
-export const getWorkflow = async (
+export const getWorkflow = (
   publicClient: UsePublicClientReturnType,
   orchestratorAddress: `0x${string}`,
   walletClientQuery?: UseWalletClientReturnType
@@ -13,6 +13,8 @@ export const getWorkflow = async (
   const walletClient = walletClientQuery?.isSuccess
     ? walletClientQuery.data!
     : undefined
+
+  console.log('GOT WORKFLOW')
 
   return init({
     publicClient,

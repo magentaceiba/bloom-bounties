@@ -5,8 +5,19 @@ import ReduxProvider from '../lib/store/ReduxProvider'
 import ConnectorProvider from './ConnectorProvider'
 import AppProvider from './appContext'
 import ThemeProvider from './themeContext'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      staleTime: Infinity,
+    },
+  },
+})
+
+console.log('RENDER AT PROVIDERS')
 
 export default function Providers({
   children,
@@ -27,6 +38,7 @@ export default function Providers({
           </ConnectorProvider>
         </ThemeProvider>
       </ReduxProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }

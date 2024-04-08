@@ -19,6 +19,7 @@
     "@emotion/react": "^11.11.1",
     "@inverter-network/sdk": "0.0.6",
     "@reduxjs/toolkit": "^1.9.7",
+    "@tanstack/react-query-devtools": "^5.29.0",
     "clsx": "^2.1.0",
     "next": "latest",
     "next-nprogress-bar": "^2.1.2",

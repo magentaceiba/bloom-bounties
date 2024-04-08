@@ -14,19 +14,19 @@ export default function useWorkflowHandler(
   const walletClient = useWalletClient()
   const { address, chainId } = useAccount()
 
-  const workflowConfig = useQuery({
-    queryKey: ['workflowConfig', orchestratorAddress, chainId, address],
+  const workflow = useQuery({
+    queryKey: ['workflow', orchestratorAddress, chainId, address],
     queryFn: () => {
-      return getWorkflow(publicClient!, orchestratorAddress!, walletClient)
+      const res = getWorkflow(publicClient!, orchestratorAddress!, walletClient)
+      return res
     },
     enabled:
       !!chainId &&
       !!orchestratorAddress &&
       (walletClient.isSuccess || walletClient.isError),
-    refetchOnWindowFocus: false,
   })
   return {
-    ...workflowConfig,
+    ...workflow,
     isConnected: walletClient.isSuccess,
     address,
     publicClient,

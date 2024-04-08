@@ -12,7 +12,19 @@ import { useTheme } from '@/hooks'
 import { useMemo } from 'react'
 import { sepolia } from '@/lib/constants/chains'
 
-const chains = [sepolia] as const
+const chains = [sepolia] as const,
+  config = createConfig({
+    chains: chains,
+    multiInjectedProviderDiscovery: false,
+    transports: chains.reduce(
+      (acc, chain) => {
+        acc[chain.id] = http()
+        return acc
+      },
+      {} as Record<number, HttpTransport>
+    ),
+    ssr: true,
+  })
 
 export default function ConnectorProvider({
   children,
@@ -23,25 +35,6 @@ export default function ConnectorProvider({
   const { cssOverrides, shadowDomOverWrites } = useMemo(
     () => getDynamicTheme(theme === 'light'),
     [theme]
-  )
-
-  console.log('FIRE AT CONNECTOR PROVIDER')
-
-  const config = useMemo(
-    () =>
-      createConfig({
-        chains: chains,
-        multiInjectedProviderDiscovery: false,
-        transports: chains.reduce(
-          (acc, chain) => {
-            acc[chain.id] = http()
-            return acc
-          },
-          {} as Record<number, HttpTransport>
-        ),
-        ssr: true,
-      }),
-    []
   )
 
   // RENDER

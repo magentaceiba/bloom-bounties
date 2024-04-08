@@ -16,7 +16,7 @@ export function useRole() {
   const { addToast } = useToast()
 
   const roles = useQuery({
-    queryKey: ['roles', workflow.dataUpdatedAt],
+    queryKey: ['roles', address],
     queryFn: () =>
       handleRoles({
         workflow: workflow.data!,
@@ -24,7 +24,6 @@ export function useRole() {
       }),
 
     enabled: workflow.isSuccess && !!address,
-    refetchOnWindowFocus: false,
   })
 
   const checkRole = useMutation({

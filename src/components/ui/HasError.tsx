@@ -9,7 +9,7 @@ export default function HasError({ error }: { error: any }) {
       <JsonView json={error} />
       <div className="divider" />
       <Link href="/">
-        <button className="btn btn-primary">Explore</button>
+        <button className="btn btn-primary">Home</button>
       </Link>
     </div>
   )

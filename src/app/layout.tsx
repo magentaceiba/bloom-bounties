@@ -4,16 +4,10 @@ import Providers from '../providers'
 import { RouteProgressBar, Navbar } from '../components'
 import { cookies } from 'next/headers'
 import { initialTheme } from '../styles'
-import { Open_Sans } from 'next/font/google'
 import Analytics from '../providers/Analytics'
 import '../styles/global.css'
 import 'swiper/css'
 import 'swiper/css/effect-cards'
-
-const openSans = Open_Sans({
-  subsets: ['cyrillic'],
-  display: 'swap',
-})
 
 const title = 'Inverter Network'
 const { description, applicationName, images } = {
@@ -46,12 +40,14 @@ export const metadata: Metadata = {
   },
 }
 
+console.log('RENDER AT LAYOUT')
+
 function RootLayout({ children }: { children: React.ReactNode }) {
   const theme =
     (cookies().get('theme')?.value as 'light' | 'dark' | undefined) ??
     initialTheme
   return (
-    <html lang="en" data-theme={theme} className={openSans.className}>
+    <html lang="en" data-theme={theme}>
       {/* PWA config */}
       <link rel="manifest" href="/manifest.json" />
       <meta name="apple-mobile-web-app-capable" content="yes" />

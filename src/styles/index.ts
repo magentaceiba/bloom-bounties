@@ -1,7 +1,7 @@
 const lightBase = {
-  primary: '#4ADE80',
-  // 'primary-focus': '#1949d0',
-  // 'primary-content': '#f2f2f2',
+  primary: '#2e5de8',
+  'primary-focus': '#1949d0',
+  'primary-content': '#f2f2f2',
 
   secondary: '#ffd139',
   'secondary-focus': '#ffbb1f',
@@ -38,9 +38,9 @@ const lightBase = {
 }
 
 const darkBase = {
-  primary: '#4ADE80',
-  // 'primary-focus': '#2E5CE8',
-  // 'primary-content': '#F7F7FF',
+  primary: '#547EFF',
+  'primary-focus': '#2E5CE8',
+  'primary-content': '#F7F7FF',
 
   secondary: '#fae28d',
   'secondary-focus': '#ffdb5a',
@@ -76,7 +76,7 @@ const darkBase = {
   '--border-btn': '1px',
 }
 
-export const initialTheme = 'dark' as 'light' | 'dark'
+export const initialTheme = 'light' as 'light' | 'dark'
 
 const extend = (base: typeof darkBase | typeof lightBase) => ({
   ...base,
@@ -85,7 +85,7 @@ const extend = (base: typeof darkBase | typeof lightBase) => ({
     'border-color': `var(--fallback-bc,oklch(var(--bc)/0.2))`,
   } as any,
   '.skeleton': {
-    'background-color': base['base-100'],
+    'background-color': base['base-content'],
     'background-image': `linear-gradient(105deg,transparent 0%,transparent 40%,${base['base-300']} 50%,transparent 60%,transparent 100%)`,
   } as any,
 })

@@ -1,3 +1,4 @@
+import { sepolia } from '@/lib/constants/chains'
 import type {
   Account,
   Chain,
@@ -5,7 +6,7 @@ import type {
   Transport,
   WalletClient,
 } from 'viem'
-import { createPublicClient, createWalletClient, defineChain, http } from 'viem'
+import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 export default function testConnectors(): {
@@ -14,7 +15,7 @@ export default function testConnectors(): {
 } {
   // Public Client: This is used to read from the blockchain.
   const publicClient = createPublicClient({
-    chain: goerli,
+    chain: sepolia,
     transport: http(),
   })
 
@@ -32,7 +33,7 @@ export default function testConnectors(): {
   // If need not be for it, non-owner can be used for deposits.
   const walletClient = createWalletClient({
     account: privateKeyToAccount(ownerPrivateKey),
-    chain: goerli,
+    chain: sepolia,
     transport: http(),
   })
 
@@ -41,50 +42,3 @@ export default function testConnectors(): {
     walletClient,
   }
 }
-
-export const goerli = /*#__PURE__*/ defineChain({
-  id: 5,
-  network: 'goerli',
-  name: 'Goerli',
-  nativeCurrency: { name: 'Goerli Ether', symbol: 'ETH', decimals: 18 },
-  rpcUrls: {
-    alchemy: {
-      http: ['https://eth-goerli.g.alchemy.com/v2'],
-      webSocket: ['wss://eth-goerli.g.alchemy.com/v2'],
-    },
-    infura: {
-      http: ['https://goerli.infura.io/v3'],
-      webSocket: ['wss://goerli.infura.io/ws/v3'],
-    },
-    default: {
-      http: ['https://goerli.gateway.tenderly.co'],
-    },
-    public: {
-      http: ['https://goerli.gateway.tenderly.co'],
-    },
-  },
-  blockExplorers: {
-    etherscan: {
-      name: 'Etherscan',
-      url: 'https://goerli.etherscan.io',
-    },
-    default: {
-      name: 'Etherscan',
-      url: 'https://goerli.etherscan.io',
-    },
-  },
-  contracts: {
-    ensRegistry: {
-      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-    },
-    ensUniversalResolver: {
-      address: '0x56522D00C410a43BFfDF00a9A569489297385790',
-      blockCreated: 8765204,
-    },
-    multicall3: {
-      address: '0xca11bde05977b3631167028862be2a173976ca11',
-      blockCreated: 6507670,
-    },
-  },
-  testnet: true,
-})

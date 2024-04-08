@@ -29,7 +29,7 @@ export const getDynamicTheme = (isLight: boolean) => {
 
   const shadowDomOverWrites = css`
     .dynamic-shadow-dom {
-      --dynamic-font-family-primary: 'Open Sans', sans-serif;
+      --dynamic-font-family-primary: 'Archivo', sans-serif;
 
       --dynamic-base-1: ${base1};
       --dynamic-base-2: ${base2};

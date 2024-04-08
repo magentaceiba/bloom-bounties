@@ -1,9 +1,7 @@
 'use client'
 
 import useIsHydratedHandler from '@/hooks/useIsHydratedHandler'
-import { setThemeCookie } from '@/lib/utils'
-import { createContext, useContext, useEffect } from 'react'
-import { useTheme } from '@/hooks'
+import { createContext, useContext } from 'react'
 import useWorkflowHandler from '@/hooks/useWorkflowHandler'
 import useHandleClientPathState from '@/hooks/useRefreshServerPaths'
 
@@ -20,7 +18,6 @@ export default function AppProvider({
   children: React.ReactNode
 }) {
   useHandleClientPathState()
-  const { theme } = useTheme()
   const isHydrated = useIsHydratedHandler()
   const workflow = useWorkflowHandler()
 
@@ -31,11 +28,6 @@ export default function AppProvider({
     workflow,
   }
 
-  // EFFECTS
-  //==============================================
-  useEffect(() => {
-    setThemeCookie(theme)
-  }, [theme])
   // RETURN
   //==============================================
   return (

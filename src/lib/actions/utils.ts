@@ -1,8 +1,8 @@
 'use server'
 
 import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
 import { getWorkflow } from '../getWorkflow'
+import { sepolia } from '../constants/chains'
 
 const defaultOrchestratorAddress = process.env
   .NEXT_PUBLIC_ORCHESTRATOR_ADDRESS as `0x${string}` | undefined

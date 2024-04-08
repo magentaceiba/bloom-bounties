@@ -2,7 +2,8 @@
 
 import { DynamicToast } from '@/components'
 import useToastHandler from '@/hooks/useToastHandler'
-import { createContext, useContext, useState } from 'react'
+import { setThemeCookie } from '@/lib/utils'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 export type TThemeContext = {
   themeHandler: {
@@ -34,6 +35,14 @@ export default function ThemeProvider({
     toastHandler: toastHandler,
   }
 
+  // EFFECTS
+  //==============================================
+  useEffect(() => {
+    setThemeCookie(theme)
+  }, [theme])
+
+  // RETURN
+  //==============================================
   return (
     <ThemeContext.Provider value={contextData}>
       {children}

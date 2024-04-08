@@ -28,7 +28,7 @@ export default function useWorkflowHandler(
   return {
     ...workflowConfig,
     isConnected: walletClient.isSuccess,
-    address: walletClient.data?.account.address,
+    address,
     publicClient,
   }
 }

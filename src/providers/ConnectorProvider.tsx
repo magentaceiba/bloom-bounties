@@ -26,13 +26,10 @@ const chains = [sepolia] as const,
     ssr: true,
   })
 
-console.log('CONFIG RESETTED')
-
 function ConnectorProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme(),
     // Get the styles for Dynamic Widgets
     { cssOverrides, shadowDomOverWrites } = useMemo(() => {
-      console.log('THEME', theme)
       return getDynamicTheme(theme === 'light')
     }, [theme])
 

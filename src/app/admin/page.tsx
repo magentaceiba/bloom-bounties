@@ -8,7 +8,6 @@ import { Alert, Button, Form, Loading, Toggle } from 'react-daisyui'
 import { isAddress, type Hex } from 'viem'
 import { WalletWidget } from '@/components'
 import { cn } from '@/styles/cn'
-import { useToast } from '@/hooks'
 
 const tabs = ['Owner', 'Claimer', 'Issuer', 'Verifier'] as const
 type Tabs = (typeof tabs)[number]
@@ -18,7 +17,6 @@ export default function AdminPage() {
   const [tab, setTab] = useState(0)
   const [walletAddress, setWalletAddress] = useState('')
   const [type, setType] = useState<'Grant' | 'Revoke'>('Grant')
-  const { addToast } = useToast()
 
   const toggleType = () => {
     setType((prev) => (prev === 'Grant' ? 'Revoke' : 'Grant'))
@@ -46,8 +44,6 @@ export default function AdminPage() {
     checkRole.mutate(walletAddress)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletAddress])
-
-  // console.log('IS CONNECTED', isConnected, 'ROLES IS PENDING', roles.isPending)
 
   if (!isConnected) return <WalletWidget />
 
@@ -101,16 +97,6 @@ export default function AdminPage() {
           Set Role
         </Button>
       </form>
-      <Button
-        onClick={() =>
-          addToast({
-            text: 'This is a toast',
-            status: 'info',
-          })
-        }
-      >
-        Add Toast
-      </Button>
     </>
   )
 }

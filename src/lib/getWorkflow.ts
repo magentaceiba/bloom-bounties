@@ -14,8 +14,6 @@ export const getWorkflow = (
     ? walletClientQuery.data!
     : undefined
 
-  console.log('GOT WORKFLOW')
-
   return init({
     publicClient,
     walletClient,

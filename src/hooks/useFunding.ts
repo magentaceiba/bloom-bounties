@@ -124,14 +124,10 @@ export function useFunding() {
   const approve = useMutation({
     mutationKey: ['approve'],
     mutationFn: async (formattedAmount: string) => {
-      console.log('Approving', formattedAmount!)
-
       const hash = await workflow.data?.erc20Module.write?.approve.run([
         fundingManagerAddress!,
         formattedAmount,
       ])
-
-      console.log('Approve hash', hash)
 
       addToast({
         text: `Waiting for approval confirmation`,
@@ -158,16 +154,6 @@ export function useFunding() {
   // Handle deposit and withdraw actions
   const allowanceIsEnough = Number(amount) <= Number(allowance.data!),
     handleDeposit = () => {
-      console.log(
-        'allowanceIsEnough',
-        allowanceIsEnough,
-        'Allowance',
-        allowance.data,
-        'Amount',
-        amount,
-        'Balance',
-        balance.data?.formatted
-      )
       if (allowanceIsEnough) deposit.mutate(amount)
       else approve.mutate(amount)
     },

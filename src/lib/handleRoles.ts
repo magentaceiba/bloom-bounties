@@ -81,7 +81,6 @@ export const getHasRoles = async ({
 }
 
 export const handleRoles = async ({ workflow, address }: HandleRoleProps) => {
-  console.log('HANDLING ROLES')
   // Initialize roleIds and generatedRoles as empty objects
   const { roleHexs, generatedRoles } = await getRoleHexes({
     workflow,

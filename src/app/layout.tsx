@@ -40,8 +40,6 @@ export const metadata: Metadata = {
   },
 }
 
-console.log('RENDER AT LAYOUT')
-
 function RootLayout({ children }: { children: React.ReactNode }) {
   const theme =
     (cookies().get('theme')?.value as 'light' | 'dark' | undefined) ??

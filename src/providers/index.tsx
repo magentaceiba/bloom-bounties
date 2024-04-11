@@ -17,8 +17,6 @@ const queryClient = new QueryClient({
   },
 })
 
-console.log('RENDER AT PROVIDERS')
-
 export default function Providers({
   children,
   theme,

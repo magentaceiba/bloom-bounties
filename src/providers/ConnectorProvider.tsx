@@ -9,7 +9,7 @@ import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import type { HttpTransport } from 'viem'
 import { useTheme } from '@/hooks'
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { sepolia } from '@/lib/constants/chains'
 
 const chains = [sepolia] as const,
@@ -26,16 +26,15 @@ const chains = [sepolia] as const,
     ssr: true,
   })
 
-export default function ConnectorProvider({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const { theme } = useTheme()
-  const { cssOverrides, shadowDomOverWrites } = useMemo(
-    () => getDynamicTheme(theme === 'light'),
-    [theme]
-  )
+console.log('CONFIG RESETTED')
+
+function ConnectorProvider({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme(),
+    // Get the styles for Dynamic Widgets
+    { cssOverrides, shadowDomOverWrites } = useMemo(() => {
+      console.log('THEME', theme)
+      return getDynamicTheme(theme === 'light')
+    }, [theme])
 
   // RENDER
   return (
@@ -58,3 +57,5 @@ export default function ConnectorProvider({
     </>
   )
 }
+
+export default memo(ConnectorProvider)

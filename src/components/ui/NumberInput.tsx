@@ -53,7 +53,7 @@ export default function NumberInput({
   const isInvalid = invalid || !scanValidity()
 
   return (
-    <>
+    <div className="form-control w-auto">
       <label className={cn('label', !label && 'hidden')}>
         <span className="label-text">{label}</span>
       </label>
@@ -91,6 +91,6 @@ export default function NumberInput({
           +
         </button>
       </div>
-    </>
+    </div>
   )
 }

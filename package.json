@@ -17,7 +17,7 @@
     "@dynamic-labs/sdk-react-core": "^2.0.0-alpha",
     "@dynamic-labs/wagmi-connector": "^2.0.0-alpha",
     "@emotion/react": "^11.11.1",
-    "@inverter-network/sdk": "0.0.6",
+    "@inverter-network/sdk": "0.0.7-alpha.0",
     "@reduxjs/toolkit": "^1.9.7",
     "@tanstack/react-query-devtools": "^5.29.0",
     "clsx": "^2.1.0",
@@ -62,7 +62,7 @@
     "lodash": "^4",
     "@tanstack/react-query": "^5",
     "viem": "2.7.6",
-    "wagmi": "2.5.7"
+    "wagmi": "^2.5.7"
   },
   "browser": {
     "fs": false,

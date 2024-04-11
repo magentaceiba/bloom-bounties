@@ -52,7 +52,7 @@ const TextInput = ({
   }
 
   return (
-    <>
+    <div className="form-control w-auto">
       <label className={cn('label', !label && 'hidden')}>
         <span className="label-text">{label}</span>
       </label>
@@ -66,7 +66,7 @@ const TextInput = ({
         {...(isTouched && isInvalid && { color: 'warning' })}
         {...props}
       />
-    </>
+    </div>
   )
 }
 

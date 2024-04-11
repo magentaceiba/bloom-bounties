@@ -37,6 +37,7 @@ export function useFunding() {
           address!,
           fundingManagerAddress!,
         ])
+
       return allowanceValue!
     },
     enabled: workflow.isSuccess && !!address,

@@ -2,7 +2,7 @@
 
 import { DynamicToast } from '@/components'
 import useToastHandler from '@/hooks/useToastHandler'
-import { setThemeCookie } from '@/lib/utils'
+import { setThemeCookie } from '@/styles/utils'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 export type TThemeContext = {

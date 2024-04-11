@@ -3,7 +3,7 @@
 import { NumberInput, Tabs, WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
 import { useFunding } from '@/hooks/useFunding'
-import { formatToCompactNumber } from '@/lib/utils'
+import { format } from '@/lib/utils'
 import { useState } from 'react'
 import { Button, Stats } from 'react-daisyui'
 
@@ -51,7 +51,7 @@ export default function FundsPage() {
           </Stats.Stat.Item>
           <Stats.Stat.Item variant="value">
             {ERC20Symbol}{' '}
-            {formatToCompactNumber(tab === 0 ? balance : withdrawable)}
+            {format.toCompactNumber(tab === 0 ? balance : withdrawable)}
           </Stats.Stat.Item>
         </Stats.Stat>
 
@@ -59,7 +59,7 @@ export default function FundsPage() {
           <Stats.Stat>
             <Stats.Stat.Item variant="title">Allowance</Stats.Stat.Item>
             <Stats.Stat.Item variant="value">
-              {formatToCompactNumber(allowance.data)}
+              {format.toCompactNumber(allowance.data)}
             </Stats.Stat.Item>
           </Stats.Stat>
         )}

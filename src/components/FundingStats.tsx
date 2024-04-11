@@ -1,7 +1,7 @@
 'use client'
 
 import useFundingStats from '@/hooks/useFundingStats'
-import { formatToCompactNumber } from '@/lib/utils'
+import { format } from '@/lib/utils'
 import { Stats } from 'react-daisyui'
 
 export function FundingStats() {
@@ -16,7 +16,7 @@ export function FundingStats() {
       <Stats.Stat>
         <Stats.Stat.Item variant="title">{symbol} TVL</Stats.Stat.Item>
         <Stats.Stat.Item variant="value">
-          {formatToCompactNumber(Number(totalSupply) * 1)} $
+          {format.toCompactNumber(Number(totalSupply) * 1)} $
         </Stats.Stat.Item>
       </Stats.Stat>
     </Stats>

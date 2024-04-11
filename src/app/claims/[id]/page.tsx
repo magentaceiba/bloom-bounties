@@ -1,6 +1,6 @@
 import { get } from '@/lib/actions/claim'
 import { ClientClaimPage } from './page.client'
-import { handlePageData } from '@/lib/utils'
+import { helper } from '@/lib/utils'
 import { HasError } from '@/components'
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 
 export default async function ClaimPage({ params }: Props) {
   const { id } = params
-  const { error, data } = await handlePageData(() => get(id))
+  const { error, data } = await helper.pageData(() => get(id))
 
   if (error !== null) return <HasError error={error} />
 

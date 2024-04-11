@@ -20,7 +20,10 @@ export default function useWorkflowHandler(
       const res = getWorkflow(publicClient!, orchestratorAddress!, walletClient)
       return res
     },
-    enabled: !!chainId && !!orchestratorAddress,
+    enabled:
+      !!chainId &&
+      !!orchestratorAddress &&
+      (walletClient.isError || walletClient.isSuccess),
   })
   return {
     ...workflow,

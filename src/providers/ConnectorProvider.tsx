@@ -11,6 +11,7 @@ import type { HttpTransport } from 'viem'
 import { useTheme } from '@/hooks'
 import { memo, useMemo } from 'react'
 import { sepolia } from '@/lib/constants/chains'
+import transform from '@/lib/utils/transform'
 
 const chains = [sepolia] as const,
   config = createConfig({
@@ -24,7 +25,8 @@ const chains = [sepolia] as const,
       {} as Record<number, HttpTransport>
     ),
     ssr: true,
-  })
+  }),
+  evmNetworks = transform.viemChainsToDynamic(chains)
 
 function ConnectorProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme(),
@@ -45,6 +47,9 @@ function ConnectorProvider({ children }: { children: React.ReactNode }) {
             EthereumWalletConnectors,
             MagicEvmWalletConnectors,
           ],
+          overrides: {
+            evmNetworks,
+          },
         }}
       >
         <WagmiProvider config={config}>

@@ -1,4 +1,4 @@
-export function formatAmountString(input: string): string {
+function amountString(input: string): string {
   // Remove any leading zeros
   let sanitizedInput = input.replace(/^0+(?=[1-9])/g, '')
   // Replace commas with periods
@@ -18,7 +18,7 @@ export function formatAmountString(input: string): string {
   return sanitizedInput
 }
 
-export function formatToCompactNumber(value?: string | number) {
+function toCompactNumber(value?: string | number) {
   const number = Number(value)
   if (isNaN(number)) return '...'
 
@@ -31,3 +31,10 @@ export function formatToCompactNumber(value?: string | number) {
 
   return formatter.format(number)
 }
+
+const main = {
+  amountString,
+  toCompactNumber,
+}
+
+export default main

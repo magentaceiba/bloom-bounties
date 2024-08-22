@@ -1,35 +1,37 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from 'react-daisyui'
-import Copy from './Copy'
+import { Button } from '@/react-daisyui'
+import { Copy, Input, TextInputProps } from '.'
 import { cn } from '@/styles/cn'
 import React from 'react'
-import NumberInput from './NumberInput'
-import TextInput, { TextInputProps } from './TextInput'
 
 type SubmitableFormProps = {
   rows: TextInputProps[]
   onSubmit: () => void
   header?: string
   buttonLabel?: string
+  submitLabel?: string
   data?: string
   isPending?: boolean
   defaultIsEditing?: boolean
-}
+} & React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>
 
-export default function SubmitableForm({
+export function SubmitableForm({
   rows,
   header,
   data,
   onSubmit,
   isPending,
   buttonLabel = 'Edit',
-  defaultIsEditing,
+  submitLabel = 'Submit',
+  defaultIsEditing = false,
+  ...props
 }: SubmitableFormProps) {
-  const [isEditing, setIsEditing] = useState(
-    !!header ? defaultIsEditing ?? false : true
-  )
+  const [isEditing, setIsEditing] = useState(!!header ? defaultIsEditing : true)
 
   const invalid = rows.some((i) => i.invalid)
 
@@ -50,12 +52,14 @@ export default function SubmitableForm({
 
   const Toggler = () => (
     <Button size={'sm'} variant="outline" onClick={toggle} loading={isPending}>
-      {!isEditing ? (!data ? 'Add' : buttonLabel ?? 'Edit') : 'Cancel'}
+      {!isEditing ? (!data ? 'Add' : (buttonLabel ?? 'Edit')) : 'Cancel'}
     </Button>
   )
 
+  const { className, ...rest } = props
+
   return (
-    <>
+    <div {...rest} className={cn('flex flex-col w-full gap-3', className)}>
       <div
         className={cn(
           'w-full flex justify-between items-center',
@@ -71,12 +75,12 @@ export default function SubmitableForm({
         onSubmit={handleSubmit}
       >
         {rows.map(({ ...props }, i) => {
-          if (props.type === 'number') return <NumberInput key={i} {...props} />
+          if (props.type === 'number') return <Input.Text key={i} {...props} />
 
-          return <TextInput key={i} {...props} />
+          return <Input.Text key={i} {...props} />
         })}
 
-        <Button className="mt-3" size={'sm'} color="primary" type="submit">
+        <Button className="mt-6" size={'sm'} color="primary" type="submit">
           Submit
         </Button>
       </form>
@@ -90,6 +94,6 @@ export default function SubmitableForm({
         <p>{data}</p>
         <Copy data={data} />
       </div>
-    </>
+    </div>
   )
 }

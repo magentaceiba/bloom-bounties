@@ -1,5 +1,5 @@
 import { Button } from 'react-daisyui'
-import { Frame, NumberInput, TextInput } from './ui'
+import { Frame, Input } from './ui'
 import { IoClose } from 'react-icons/io5'
 import { cn } from '@/styles/cn'
 import { InitialContributor } from '@/lib/types/claim'
@@ -50,7 +50,7 @@ export function ContributerInput({
   return (
     <div className="flex flex-col w-full max-w-xl">
       {!!onUrlChange && (
-        <TextInput
+        <Input.Text
           label="Proposal URL"
           type="url"
           onChange={onUrlChange}
@@ -84,7 +84,7 @@ export function ContributerInput({
             // @ts-ignore
             disabled={canEditContributor === false}
           />
-          <TextInput
+          <Input.Text
             label={`Contributer ${index + 1} Address`}
             onChange={(e) => {
               handleState({ uid: c.uid, addr: e as `0x${string}` })
@@ -93,7 +93,7 @@ export function ContributerInput({
             defaultValue={c.addr}
             required
           />
-          <NumberInput
+          <Input.Number
             label={`Proposal Amount ${symbol}`}
             onChange={(e) => {
               handleState({ uid: c.uid, claimAmount: e })

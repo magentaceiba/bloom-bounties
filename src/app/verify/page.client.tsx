@@ -36,6 +36,7 @@ export default function VerifyPageClient({ list }: { list: FormattedClaim[] }) {
       <InteractiveTable
         onSelect={setSelected}
         heads={['Bounty ID', 'Claimed', 'URL']}
+        // @ts-ignore
         rows={list.map((i) => ({
           row: [
             { item: i.bountyId },

@@ -4,14 +4,14 @@ import { FourOFour, NoAccess, WalletWidget } from '@/components'
 import { BountyDetails } from '@/components/BountyDetails'
 import { ContributerInput } from '@/components/ContributerInput'
 import useClaim from '@/hooks/useClaim'
-import { useRole, useToast, useWorkflow } from '@/hooks'
+import { useRole, useWorkflow } from '@/hooks'
 import { useState } from 'react'
 import { Button, Loading } from 'react-daisyui'
 import { FormattedBounty } from '@/lib/types/bounty'
 import { InitialContributor } from '@/lib/types/claim'
+import { toast } from 'sonner'
 
 export function ClientClaimPage({ claim }: { claim: FormattedBounty }) {
-  const { addToast } = useToast()
   const workflow = useWorkflow()
   const { roles, isConnected } = useRole()
 
@@ -33,11 +33,13 @@ export function ClientClaimPage({ claim }: { claim: FormattedBounty }) {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!isTotalValid)
-      return addToast({
-        text: `Total amount should be between ${bounty.minimumPayoutAmount} and ${bounty.maximumPayoutAmount},\n it was ${total}`,
-        status: 'warning',
-      })
+    if (!isTotalValid) {
+      toast.warning(
+        `Total amount should be between ${bounty.minimumPayoutAmount} and ${bounty.maximumPayoutAmount},\n it was ${total}`
+      )
+
+      return
+    }
 
     post.mutate({
       contributors: contributors.map((i) => ({
@@ -91,7 +93,7 @@ export function ClientClaimPage({ claim }: { claim: FormattedBounty }) {
               contributors={contributors}
               contributersStateHandler={setContributers}
               onUrlChange={setUrl}
-              symbol={workflow.data?.erc20Symbol}
+              symbol={workflow.data?.fundingToken.symbol}
             />
             <Button
               loading={post.isPending}

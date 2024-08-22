@@ -1,9 +1,16 @@
 import { cn } from '@/styles/cn'
 
-export default function Frame(props: React.HtmlHTMLAttributes<HTMLDivElement>) {
-  const classes = cn(
-    'container bg-base-100 rounded-box flex flex-col gap-3 mx-auto p-4 border rounded-box border-faint',
-    props.className
+export function Frame({
+  className,
+  children,
+  ...props
+}: React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>) {
+  return (
+    <div className={cn('frame', className)} {...props}>
+      {children}
+    </div>
   )
-  return <div className={classes}>{props.children}</div>
 }

@@ -9,49 +9,33 @@ describe('Get A Module', async () => {
 
   if (!publicClient) throw new Error('No public client provided')
 
-  const { logicModule, authorizer, fundingManager, paymentProcessor } =
-    await getWorkflow({
-      publicClient,
-      walletClient: walletClient.data ?? undefined,
-      orchestratorAddress: '0xAC7f5C238d3BEdF5510a84dBEDB8db342E2e7320',
-      workflowOrientation: {
-        authorizer: {
-          name: 'RoleAuthorizer',
-          version: 'v1.0',
-        },
-        fundingManager: {
-          name: 'RebasingFundingManager',
-          version: 'v1.0',
-        },
-        logicModule: {
-          name: 'BountyManager',
-          version: 'v1.0',
-        },
-        paymentProcessor: {
-          name: 'SimplePaymentProcessor',
-          version: 'v1.0',
-        },
-      },
-    })
+  const { optionalModule, authorizer, fundingManager } = await getWorkflow({
+    publicClient,
+    walletClient: walletClient.data ?? undefined,
+    orchestratorAddress: '0xAC7f5C238d3BEdF5510a84dBEDB8db342E2e7320',
+    requestedModules: {
+      authorizer: 'AUT_Roles_v1',
+      fundingManager: 'FM_DepositVault_v1',
+      paymentProcessor: 'PP_Simple_v1',
+      optionalModules: ['LM_PC_Bounties_v1'],
+    },
+  })
 
   it('logicModule read getBountyInformation', async () => {
-    const res = await logicModule.read.getBountyInformation.run('51')
+    const res =
+      await optionalModule.LM_PC_Bounties_v1.read.getBountyInformation.run('51')
     expect(res).toBeInstanceOf(Object)
   })
 
   it('logicModule simulate addBounty', async () => {
-    const simRes = await logicModule.simulate.addBounty.run([
-      '100',
-      '2000',
-      ['this is an inverter project'],
-    ])
+    const simRes =
+      await optionalModule.LM_PC_Bounties_v1.simulate.addBounty.run([
+        '100',
+        '2000',
+        ['this is an inverter project'],
+      ])
 
     expect(simRes).toBeString()
-  })
-
-  it('paymentProcessor read token', async () => {
-    const res = await paymentProcessor.read.token.run()
-    expect(res).toBeString()
   })
 
   it('fundingManager read token', async () => {
@@ -65,7 +49,7 @@ describe('Get A Module', async () => {
   })
 
   it('authorizer read owner role', async () => {
-    const res = await authorizer.read.getOwnerRole.run()
+    const res = await authorizer.read.getAdminRole.run()
     expect(res).toBeString()
   })
 

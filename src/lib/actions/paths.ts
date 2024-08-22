@@ -6,10 +6,11 @@ import {
   PathsCorrespondingTo,
   initialPathsState,
 } from '@/lib/types/paths'
-import { CalledFrom, serverActionWrapper } from '../utils/serverActionWrapper'
 import { CacheContainer } from 'node-ts-cache'
 import { MemoryStorage } from 'node-ts-cache-storage-memory'
 import { revalidatePath } from 'next/cache'
+import serverActionWrapper from '../utils/main/serverActionWrapper'
+import { CalledFrom } from '../types'
 
 const stateCache = new CacheContainer(new MemoryStorage())
 

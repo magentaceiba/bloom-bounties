@@ -1,31 +1,31 @@
 import { useMutation } from '@tanstack/react-query'
-import { useRefreshServerPaths, useToast, useWorkflow } from '.'
+import { useRefreshServerPaths, useWorkflow } from '.'
 import { BountyPostArgs, handleBountyPost } from '@/lib/handleBountyPost'
+import { toast } from 'sonner'
 
 export function useBounty() {
   const workflow = useWorkflow()
-  const { addToast } = useToast()
   const refreshServerPaths = useRefreshServerPaths()
 
   const post = useMutation({
     mutationKey: ['postBounty'],
     mutationFn: (data: BountyPostArgs) =>
-      handleBountyPost({ data, workflow, addToast }),
+      handleBountyPost({ data, workflow, toast }),
 
     onSuccess: () => {
-      addToast({ text: `Bounty post has been confirmed`, status: 'success' })
+      toast.success(`Bounty post has been confirmed`)
       refreshServerPaths.post(['bounties'])
     },
 
     onError: (err: any) => {
-      addToast({ text: err?.message, status: 'error' })
+      toast.error(err?.message)
     },
   })
 
   return {
     post,
     isConnected: workflow.isConnected,
-    ERC20Symbol: workflow.data?.erc20Symbol,
+    ERC20Symbol: workflow.data?.fundingToken.symbol,
     address: workflow?.address,
   }
 }

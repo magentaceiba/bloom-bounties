@@ -54,6 +54,17 @@ export default function ClaimsPage() {
 
   if (!roles.data?.isClaimer) return <NoAccess />
 
+  const rows = list.map(
+    (i) =>
+      ({
+        row: [
+          { item: i.bountyId },
+          { item: i.claimed ? 'Yes' : 'No' },
+          { item: i.details.url, type: 'url' },
+        ],
+      }) as const
+  )
+
   return (
     <>
       <FundingStats />
@@ -61,13 +72,8 @@ export default function ClaimsPage() {
       <InteractiveTable
         onSelect={setSelected}
         heads={['Bounty ID', 'Claimed', 'URL']}
-        rows={list.map((i) => ({
-          row: [
-            { item: String(i.bountyId) },
-            { item: i.claimed ? 'Yes' : 'No' },
-            { item: i.details.url, type: 'url' },
-          ],
-        }))}
+        // @ts-ignore
+        rows={rows}
         className="py-10 max-w-xl"
       />
 

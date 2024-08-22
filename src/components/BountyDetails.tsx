@@ -1,4 +1,4 @@
-import { compressAddress } from '@/lib/utils'
+import utils from '@/lib/utils'
 import { Frame } from '@/components'
 import { Divider, Badge } from 'react-daisyui'
 
@@ -30,7 +30,7 @@ export const BountyDetails = {
         <Badge>
           Max Payout | {maximumPayoutAmount} {symbol}
         </Badge>
-        <Badge>Creator | {compressAddress(creatorAddress)}</Badge>
+        <Badge>Creator | {utils.format.compressAddress(creatorAddress)}</Badge>
       </div>
     </div>
   ),
@@ -79,7 +79,7 @@ export const BountyDetails = {
         <Badge>
           Max Payout | {maximumPayoutAmount} {symbol}
         </Badge>
-        <Badge>Creator | {compressAddress(creatorAddress)}</Badge>
+        <Badge>Creator | {utils.format.compressAddress(creatorAddress)}</Badge>
       </div>
     </Frame>
   ),

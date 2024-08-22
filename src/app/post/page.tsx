@@ -1,8 +1,8 @@
 'use client'
 
-import { compressAddress, firstLetterToUpper } from '@/lib/utils'
+import utils from '@/lib/utils'
 import { Badge, Button, Divider, Loading } from 'react-daisyui'
-import { WalletWidget, NoAccess, TextInput, NumberInput } from '@/components'
+import { WalletWidget, NoAccess, Input } from '@/components'
 import { useBounty } from '@/hooks/useBounty'
 import { Fragment, useState } from 'react'
 import { useRole } from '@/hooks'
@@ -44,8 +44,8 @@ export default function PostPage() {
       <div className="flex flex-col justify-center p-3">
         {fields.map((i, index) => (
           <Fragment key={index}>
-            <TextInput
-              label={firstLetterToUpper(i)}
+            <Input.Text
+              label={utils.format.firstLetterToUpperCase(i)}
               onChange={(value) =>
                 setDetails((prev) => ({ ...prev, [i]: value }))
               }
@@ -65,7 +65,7 @@ export default function PostPage() {
           </Badge>
           <Badge>
             Creator |{' '}
-            {compressAddress(
+            {utils.format.compressAddress(
               address ?? '0x0000000000000000000000000000000000000000'
             )}
           </Badge>
@@ -73,14 +73,14 @@ export default function PostPage() {
       </div>
 
       <div className="flex flex-col gap-6 h-max my-auto items-center">
-        <NumberInput
+        <Input.Number
           label="Minimum Payment Amount"
           onChange={(e) => setMinimumPayoutAmount(e)}
           required
           min={0}
         />
 
-        <NumberInput
+        <Input.Number
           label="Maximum Payment Amount"
           onChange={(e) => setMaximumPayoutAmount(e)}
           required

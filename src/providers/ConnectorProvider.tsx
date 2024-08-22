@@ -1,20 +1,25 @@
 'use client'
 
 import { Global } from '@emotion/react'
-import { getDynamicTheme } from '@/styles/dynamicTheme'
+import { dynamicTheme } from '@/styles/dynamicTheme'
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum'
-import { MagicEvmWalletConnectors } from '@dynamic-labs/magic'
-import { DynamicContextProvider } from '@dynamic-labs/sdk-react-core'
+import {
+  DynamicContextProvider,
+  DynamicUserProfile,
+  mergeNetworks,
+} from '@dynamic-labs/sdk-react-core'
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { WagmiProvider, createConfig, http } from 'wagmi'
-import type { HttpTransport } from 'viem'
-import { useTheme } from '@/hooks'
-import { memo, useMemo } from 'react'
-import { sepolia } from '@/lib/constants/chains'
-import transform from '@/lib/utils/transform'
+import { Chain, HttpTransport } from 'viem'
+import { optimismSepolia, polygonAmoy } from 'viem/chains'
+import utils from '@/lib/utils'
+import { useMemo, useState } from 'react'
+import { isEqual } from 'lodash'
 
-const chains = [sepolia] as const,
-  config = createConfig({
+const chains = [polygonAmoy, optimismSepolia] as const
+
+const getConfig = (chains: readonly [Chain, ...Chain[]]) =>
+  createConfig({
     chains: chains,
     multiInjectedProviderDiscovery: false,
     transports: chains.reduce(
@@ -25,15 +30,22 @@ const chains = [sepolia] as const,
       {} as Record<number, HttpTransport>
     ),
     ssr: true,
-  }),
-  evmNetworks = transform.viemChainsToDynamic(chains)
+  })
 
-function ConnectorProvider({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme(),
-    // Get the styles for Dynamic Widgets
-    { cssOverrides, shadowDomOverWrites } = useMemo(() => {
-      return getDynamicTheme(theme === 'light')
-    }, [theme])
+export default function ConnectorProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const [evmNetworks, setEvmNetworks] = useState(
+    utils.transform.viemChainsToDynamic(chains)
+  )
+  const { shadowDomOverWrites, cssOverrides } = dynamicTheme
+
+  const config = useMemo(
+    () => getConfig(utils.transform.dynamicChainsToViem(evmNetworks)),
+    [evmNetworks]
+  )
 
   // RENDER
   return (
@@ -43,21 +55,30 @@ function ConnectorProvider({ children }: { children: React.ReactNode }) {
         settings={{
           environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ID || '',
           cssOverrides,
-          walletConnectors: [
-            EthereumWalletConnectors,
-            MagicEvmWalletConnectors,
-          ],
+          walletConnectors: [EthereumWalletConnectors],
+          initialAuthenticationMode: 'connect-only',
           overrides: {
-            evmNetworks,
+            evmNetworks: (dashboardNetworks) => {
+              const newEvmNetworks = mergeNetworks(
+                dashboardNetworks,
+                evmNetworks
+              )
+
+              if (!isEqual(newEvmNetworks, evmNetworks))
+                setEvmNetworks(newEvmNetworks)
+
+              return evmNetworks
+            },
           },
         }}
       >
-        <WagmiProvider config={config}>
-          <DynamicWagmiConnector>{children}</DynamicWagmiConnector>
+        <WagmiProvider config={config} reconnectOnMount>
+          <DynamicWagmiConnector>
+            {children}
+            <DynamicUserProfile variant="modal" />
+          </DynamicWagmiConnector>
         </WagmiProvider>
       </DynamicContextProvider>
     </>
   )
 }
-
-export default memo(ConnectorProvider)

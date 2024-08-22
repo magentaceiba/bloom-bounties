@@ -1,9 +1,9 @@
 'use client'
 
-import NoAccess from '@/components/ui/NoAccess'
+import { NoAccess } from '@/components/ui'
 import { useRole } from '@/hooks'
 import { useEffect, useMemo, useState } from 'react'
-import { Tabs, TextInput } from '@/components/ui'
+import { Tabs, Input } from '@/components/ui'
 import { Alert, Button, Form, Loading, Toggle } from 'react-daisyui'
 import { isAddress, type Hex } from 'viem'
 import { WalletWidget } from '@/components'
@@ -71,7 +71,7 @@ export default function AdminPage() {
         tabs={tabs as unknown as string[]}
       />
       <form className="flex flex-col w-full max-w-xl gap-3" onSubmit={onSubmit}>
-        <TextInput
+        <Input.Text
           label="Wallet Address"
           onChange={setWalletAddress}
           type="address"

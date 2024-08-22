@@ -1,18 +1,17 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useToast, useWorkflow } from '.'
+import { useWorkflow } from '.'
 import { useBalance } from 'wagmi'
-import { waitUntilConfirmation } from '@/lib/utils'
+import { toast } from 'sonner'
 
 export function useFunding() {
   const [amount, setAmount] = useState('')
   const queryClient = useQueryClient()
-  const { addToast } = useToast()
   const workflow = useWorkflow()
   const address = workflow.address
 
   const onError = (err: any) => {
-    addToast({ text: err?.message, status: 'error' })
+    toast.error(err?.message)
   }
 
   const refetchTotalSupply = () => {
@@ -24,7 +23,7 @@ export function useFunding() {
   // Balance and allowance queries
   const balance = useBalance({
     address,
-    token: workflow.data?.erc20Module.address,
+    token: workflow.data?.fundingToken.address,
   })
 
   const fundingManagerAddress = workflow.data?.fundingManager.address
@@ -33,7 +32,7 @@ export function useFunding() {
     queryKey: ['allowance', address, fundingManagerAddress],
     queryFn: async () => {
       const allowanceValue =
-        await workflow.data?.erc20Module.read.allowance.run([
+        await workflow.data?.fundingToken.module.read.allowance.run([
           address!,
           fundingManagerAddress!,
         ])
@@ -47,9 +46,10 @@ export function useFunding() {
   const withdrawable = useQuery({
     queryKey: ['balanceInFunding', workflow.dataUpdatedAt],
     queryFn: async () => {
-      const formatted = await workflow.data?.fundingManager.read.balanceOf.run(
-        workflow.address!
-      )!
+      const formatted =
+        await workflow.data!.fundingToken.module.read.balanceOf.run(
+          workflow.data?.fundingManager.address!
+        )
 
       return formatted
     },
@@ -61,23 +61,17 @@ export function useFunding() {
     mutationKey: ['deposit'],
     mutationFn: async (formatted: string) => {
       const hash =
-        await workflow.data?.fundingManager.write?.deposit.run(formatted)
+        await workflow.data?.fundingManager.write?.deposit.run(formatted)!
 
-      addToast({
-        text: `Waiting for deposit confirmation`,
-        status: 'info',
-      })
+      toast.info(`Waiting for deposit confirmation`)
 
-      await waitUntilConfirmation(workflow.publicClient, hash)
+      await workflow.publicClient?.waitForTransactionReceipt({ hash })
 
       return hash
     },
 
     onSuccess: () => {
-      addToast({
-        text: `Deposit confirmed`,
-        status: 'success',
-      })
+      toast.success(`Deposit confirmed`)
 
       refetchTotalSupply()
       balance.refetch()
@@ -95,14 +89,11 @@ export function useFunding() {
       if (!withdrawable.data) throw new Error('No withdrawable balance found')
 
       const hash =
-        await workflow.data?.fundingManager.write?.withdraw.run(formattedAmount)
+        await workflow.data?.fundingManager.write?.deposit.run(formattedAmount)!
 
-      addToast({
-        text: `Waiting for withdrawal confirmation`,
-        status: 'info',
-      })
+      toast.info(`Waiting for withdrawal confirmation`)
 
-      await waitUntilConfirmation(workflow.publicClient, hash)
+      await workflow.publicClient?.waitForTransactionReceipt({ hash })
 
       return hash
     },
@@ -111,10 +102,7 @@ export function useFunding() {
       withdrawable.refetch()
       refetchTotalSupply()
       balance.refetch()
-      addToast({
-        text: `Withdrawal confirmed`,
-        status: 'success',
-      })
+      toast.success(`Withdrawal confirmed`)
     },
 
     onError,
@@ -124,26 +112,20 @@ export function useFunding() {
   const approve = useMutation({
     mutationKey: ['approve'],
     mutationFn: async (formattedAmount: string) => {
-      const hash = await workflow.data?.erc20Module.write?.approve.run([
+      const hash = await workflow.data?.fundingToken.module.write?.approve.run([
         fundingManagerAddress!,
         formattedAmount,
-      ])
+      ])!
 
-      addToast({
-        text: `Waiting for approval confirmation`,
-        status: 'info',
-      })
+      toast.info(`Waiting for approval confirmation`)
 
-      await waitUntilConfirmation(workflow.publicClient, hash)
+      await workflow.publicClient?.waitForTransactionReceipt({ hash })
 
       return { hash, formattedAmount }
     },
 
     onSuccess: ({ formattedAmount }) => {
-      addToast({
-        text: `Approval confirmed`,
-        status: 'success',
-      })
+      toast.success(`Approval confirmed`)
       allowance.refetch()
       deposit.mutate(formattedAmount)
     },
@@ -175,7 +157,7 @@ export function useFunding() {
       withdrawable.isSuccess && Number(withdrawable.data) >= Number(amount)
 
   return {
-    ERC20Symbol: workflow.data?.erc20Symbol,
+    ERC20Symbol: workflow.data?.fundingToken.symbol,
     balance: balance.data?.formatted,
     withdrawable: withdrawable.data,
     allowance,

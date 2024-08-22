@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useToast, useWorkflow } from '.'
+import { useWorkflow } from '.'
 import { useAccount } from 'wagmi'
 import {
   RoleKeys,
@@ -7,13 +7,12 @@ import {
   grantOrRevokeRole,
   handleRoles,
 } from '@/lib/handleRoles'
-import { waitUntilConfirmation } from '@/lib/utils'
 import { isAddress, type Hex } from 'viem'
+import { toast } from 'sonner'
 
 export function useRole() {
   const { address } = useAccount()
   const workflow = useWorkflow()
-  const { addToast } = useToast()
 
   // Roles query: fetches roles and roleHexs for the connected address
   // Enabled only when workflow and address are available
@@ -63,13 +62,10 @@ export function useRole() {
       })
 
       // Add a toast to notify the user that the role is being set
-      addToast({
-        text: `${props.type}ng role ${props.role} to ${props.walletAddress}`,
-        status: 'info',
-      })
+      toast.info(`${props.type}ng role ${props.role} to ${props.walletAddress}`)
 
       // Wait for the transaction to be confirmed
-      await waitUntilConfirmation(workflow.publicClient!, hash)
+      await workflow.publicClient?.waitForTransactionReceipt({ hash })
 
       // Return the transaction hash and the address and type of the role
       return { hash, address: props.walletAddress!, type: props.type }
@@ -77,10 +73,7 @@ export function useRole() {
 
     onSuccess: ({ hash, address: anyAddress, type }) => {
       // Add a toast to notify the user that the role has been set
-      addToast({
-        text: `Role ${type.toLowerCase()}ed with hash ${hash}`,
-        status: 'success',
-      })
+      toast.success(`Role ${type.toLowerCase()}ed with hash ${hash}`)
       // if the address is the connected address, refetch the roles
       if (address === anyAddress) roles.refetch()
       // run the checkRole mutation to notify the UI of the change
@@ -89,10 +82,7 @@ export function useRole() {
 
     onError: (error) => {
       // Add a toast to notify the user of the error
-      addToast({
-        text: error.message,
-        status: 'error',
-      })
+      toast.error(error.message)
     },
   })
 

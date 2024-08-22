@@ -6,7 +6,8 @@ import { getServerWorkflow } from './utils'
 
 export async function getList() {
   const workflow = await getServerWorkflow()
-  const ids = await workflow.logicModule.read.listClaimIds.run()
+  const ids =
+    await workflow.optionalModule.LM_PC_Bounties_v1.read.listClaimIds.run()
   const list = await handleClaimList(workflow, ids)
   return list
 }

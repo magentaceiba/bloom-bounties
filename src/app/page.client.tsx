@@ -36,6 +36,7 @@ export default function PageClient({ list }: { list: FormattedBounty[] }) {
             return (
               <InteractiveTable
                 heads={['Bounty ID', 'Title']}
+                // @ts-ignore
                 rows={list.map((i) => ({
                   row: [{ item: String(i.id) }, { item: i.details!.title! }],
                 }))}

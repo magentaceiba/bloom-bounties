@@ -1,9 +1,9 @@
 'use client'
 
-import { NumberInput, Tabs, WalletWidget } from '@/components'
+import { Input, Tabs, WalletWidget } from '@/components'
 import { FundingStats } from '@/components/FundingStats'
 import { useFunding } from '@/hooks/useFunding'
-import { format } from '@/lib/utils'
+import utils from '@/lib/utils'
 import { useState } from 'react'
 import { Button, Stats } from 'react-daisyui'
 
@@ -51,7 +51,7 @@ export default function FundsPage() {
           </Stats.Stat.Item>
           <Stats.Stat.Item variant="value">
             {ERC20Symbol}{' '}
-            {format.toCompactNumber(tab === 0 ? balance : withdrawable)}
+            {utils.format.toCompactNumber(tab === 0 ? balance : withdrawable)}
           </Stats.Stat.Item>
         </Stats.Stat>
 
@@ -59,14 +59,14 @@ export default function FundsPage() {
           <Stats.Stat>
             <Stats.Stat.Item variant="title">Allowance</Stats.Stat.Item>
             <Stats.Stat.Item variant="value">
-              {format.toCompactNumber(allowance.data)}
+              {utils.format.toCompactNumber(allowance.data)}
             </Stats.Stat.Item>
           </Stats.Stat>
         )}
       </Stats>
 
       <form onSubmit={onSubmit} className="form-control items-center gap-6">
-        <NumberInput
+        <Input.Number
           label={`${tabs[tab]} Amount`}
           onChange={setAmount}
           max={tab === 0 ? balance : withdrawable}

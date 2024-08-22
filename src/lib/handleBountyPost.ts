@@ -1,7 +1,6 @@
 import { FormattedBountyDetails } from './types/bounty'
 import { WorkflowQuery } from '@/hooks'
-import { waitUntilConfirmation } from './utils'
-import { AddToast } from '@/hooks/useToastHandler'
+import type { toast as Toast } from 'sonner'
 
 export type BountyPostArgs = {
   details: {
@@ -16,11 +15,11 @@ export type BountyPostArgs = {
 export const handleBountyPost = async ({
   data,
   workflow,
-  addToast,
+  toast,
 }: {
   data: BountyPostArgs
   workflow: WorkflowQuery
-  addToast: AddToast
+  toast: typeof Toast
 }) => {
   if (!workflow.data) return
 
@@ -32,18 +31,16 @@ export const handleBountyPost = async ({
     date: new Date().toISOString(),
   } satisfies FormattedBountyDetails
 
-  const bounty = await workflow.data.logicModule.write.addBounty.run([
-    minimumPayoutAmount,
-    maximumPayoutAmount,
-    newDetails,
-  ])
+  const bounty =
+    await workflow.data.optionalModule.LM_PC_Bounties_v1.write.addBounty.run([
+      minimumPayoutAmount,
+      maximumPayoutAmount,
+      newDetails,
+    ])
 
-  addToast({
-    text: 'Waiting for bounty post confirmation',
-    status: 'success',
-  })
+  toast.success('Waiting for bounty post confirmation')
 
-  await waitUntilConfirmation(workflow.publicClient, bounty)
+  await workflow.publicClient?.waitForTransactionReceipt({ hash: bounty })
 
   return bounty
 }

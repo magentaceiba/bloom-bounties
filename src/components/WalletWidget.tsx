@@ -1,42 +1,85 @@
 'use client'
 
-import { compressAddress } from '@/lib/utils'
-import { useAppContext } from '@/providers'
-import {
-  DynamicUserProfile,
-  useDynamicContext,
-} from '@dynamic-labs/sdk-react-core'
-import { Button, Loading } from 'react-daisyui'
+import { useChainSpecs, useIsHydrated } from '@/hooks'
+import utils from '@/lib/utils'
+import { Button, ButtonProps, Loading } from '@/react-daisyui'
+import Image from 'next/image'
+import { cn } from '@/styles/cn'
+import { GiClick } from 'react-icons/gi'
+import { MdErrorOutline } from 'react-icons/md'
+import { MdOutlineWallet } from 'react-icons/md'
 
-export default function WalletWidget() {
-  const { isHydrated } = useAppContext()
-  const {
-    setShowDynamicUserProfile,
-    setShowAuthFlow,
-    primaryWallet,
-    isAuthenticated,
-  } = useDynamicContext()
-  const address = primaryWallet?.address
+export function WalletWidget(
+  props: Omit<ButtonProps, 'color' | 'onClick'> & {
+    text?: string
+    applyClassToLoading?: boolean
+  }
+) {
+  const { size, className, text, applyClassToLoading = true, ...rest } = props
+  const isHydrated = useIsHydrated()
+  const { dynamicContext, isConnected, address, iconSrc, isUnsupportedChain } =
+    useChainSpecs()
 
-  if (!isHydrated || (isAuthenticated && !address))
-    return <Loading variant="dots" />
-
-  if (isAuthenticated)
+  if (!isHydrated || (isConnected && !address))
     return (
-      <div>
-        <Button
-          size="sm"
-          color="accent"
-          onClick={() => setShowDynamicUserProfile(true)}
-        >
-          {compressAddress(address)}
-        </Button>
-        <DynamicUserProfile />
-      </div>
+      <Loading
+        variant="spinner"
+        className={cn('m-auto', applyClassToLoading && className)}
+      />
     )
+
+  const getStartIcon = () => {
+    if (!isConnected) return <MdOutlineWallet size={20} />
+
+    if (!!iconSrc)
+      return (
+        <Image
+          src={iconSrc}
+          alt="icon"
+          width={20}
+          height={20}
+          className="max-h-full rounded-full"
+        />
+      )
+
+    if (text === undefined && isUnsupportedChain)
+      return <MdErrorOutline size={20} fill="red" />
+
+    return null
+  }
+
+  const getEndIcon = () => {
+    if (!!isConnected && !!text) return <GiClick size={20} />
+
+    return null
+  }
+
+  const getChildren = () => {
+    if (!isConnected) return 'Connect Wallet'
+
+    if (!!text) return text
+
+    return utils.format.compressAddress(address)
+  }
+
   return (
-    <Button size="sm" color="primary" onClick={() => setShowAuthFlow(true)}>
-      Connect Wallet
+    <Button
+      {...rest}
+      {...((!isConnected || !!text || isUnsupportedChain) && {
+        color: 'primary',
+      })}
+      startIcon={getStartIcon()}
+      endIcon={getEndIcon()}
+      className={cn(className, 'leading-[unset]')}
+      type="button"
+      size={!size ? 'sm' : size}
+      onClick={() =>
+        dynamicContext[
+          !isConnected ? 'setShowAuthFlow' : 'setShowDynamicUserProfile'
+        ](true)
+      }
+    >
+      {getChildren()}
     </Button>
   )
 }

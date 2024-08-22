@@ -1,18 +1,15 @@
 import { WorkflowQuery } from '@/hooks'
 import { VerifyArgs } from './types/claim'
-import { waitUntilConfirmation } from './utils'
-import { AddToast } from '@/hooks/useToastHandler'
+import { toast } from 'sonner'
 
 export async function handleVerify({
   data: { claimId, contributors },
   workflow,
-  addToast,
 }: {
   data: VerifyArgs
   workflow: WorkflowQuery
-  addToast: AddToast
 }) {
-  const { logicModule } = workflow.data!
+  const { optionalModule } = workflow.data!
 
   const parsedContributors = contributors.map(({ addr, claimAmount }) => ({
     addr,
@@ -21,14 +18,12 @@ export async function handleVerify({
 
   const config = [claimId, parsedContributors] as const
 
-  const hash = await logicModule.write.verifyClaim.run(config)
+  const hash =
+    await optionalModule.LM_PC_Bounties_v1.write.verifyClaim.run(config)
 
-  addToast({
-    text: `Waiting for verify confirmation`,
-    status: 'success',
-  })
+  toast.success(`Waiting for verify confirmation`)
 
-  await waitUntilConfirmation(workflow.publicClient, hash)
+  await workflow.publicClient?.waitForTransactionReceipt({ hash })
 
   return hash
 }

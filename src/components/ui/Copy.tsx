@@ -1,22 +1,21 @@
-'use client'
-
-import { useToast } from '@/hooks'
-import { Button } from 'react-daisyui'
+import { Button, ButtonProps } from '@/react-daisyui'
 import { BsCopy } from 'react-icons/bs'
+import { toast } from 'sonner'
 
-export default function Copy({ data }: { data: any }) {
-  const { addToast } = useToast()
+export function Copy({
+  data,
+  color = 'primary',
+  variant = 'outline',
+  size = 'sm',
+  ...rest
+}: { data: any } & Omit<ButtonProps, 'onClick'>) {
   return (
     <Button
-      variant="outline"
-      color={'primary'}
-      size={'sm'}
+      {...{ ...rest, color, variant, size }}
+      type="button"
       onClick={() => {
         navigator.clipboard.writeText(data)
-        addToast({
-          text: `Copied ${data} to clipboard`,
-          status: 'success',
-        })
+        toast.success(`Copied ${data} to clipboard`)
       }}
     >
       <BsCopy />

@@ -1,16 +1,13 @@
 import { WorkflowQuery } from '@/hooks'
 import { EditContributersArgs } from './types/claim'
-import { AddToast } from '@/hooks/useToastHandler'
-import { waitUntilConfirmation } from './utils'
+import { toast } from 'sonner'
 
 export async function handleEditContributers({
   data: { claimId, contributors },
   workflow,
-  addToast,
 }: {
   data: EditContributersArgs
   workflow: WorkflowQuery
-  addToast: AddToast
 }) {
   const parsedContributors = contributors.map((c) => c)
 
@@ -19,17 +16,13 @@ export async function handleEditContributers({
   }
 
   const hash =
-    await workflow.data!.logicModule.write.updateClaimContributors.run([
-      claimId,
-      parsedContributors,
-    ])
+    await workflow.data!.optionalModule.LM_PC_Bounties_v1.write.updateClaimContributors.run(
+      [claimId, parsedContributors]
+    )
 
-  addToast({
-    text: `Waiting for edit contibutors confirmation`,
-    status: 'info',
-  })
+  toast.info(`Waiting for edit contibutors confirmation`)
 
-  await waitUntilConfirmation(workflow.publicClient, hash)
+  await workflow.publicClient?.waitForTransactionReceipt({ hash })
 
   return hash
 }

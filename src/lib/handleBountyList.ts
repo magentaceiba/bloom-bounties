@@ -9,7 +9,9 @@ export const handleBountyList = async (
     await Promise.all(
       ids.map(async (bountyId) => {
         const bounty =
-          await workflow.logicModule.read.getBountyInformation.run(bountyId)
+          await workflow.optionalModule.LM_PC_Bounties_v1.read.getBountyInformation.run(
+            bountyId
+          )
 
         if (bounty.locked || !bounty.details?.title) return null
 
@@ -17,7 +19,7 @@ export const handleBountyList = async (
           ...bounty,
           id: bountyId,
           details: bounty.details as FormattedBountyDetails,
-          symbol: workflow.erc20Symbol,
+          symbol: workflow.fundingToken.symbol,
         }
 
         return newBounty

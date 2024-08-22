@@ -1,4 +1,11 @@
-export * from './basics'
-export * from './waitUntilConfirmation'
-export { default as helper } from './helper'
-export { default as format } from './format'
+import misc from './misc'
+import main from './main'
+import format from './format'
+import transform from './transform'
+
+export default {
+  ...misc,
+  ...main,
+  format,
+  transform,
+}

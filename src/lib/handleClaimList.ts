@@ -9,7 +9,9 @@ export const handleClaimList = async (
     await Promise.all(
       ids.map(async (claimId) => {
         const claim =
-          await workflow.logicModule.read.getClaimInformation.run(claimId)
+          await workflow.optionalModule.LM_PC_Bounties_v1.read.getClaimInformation.run(
+            claimId
+          )
 
         const contributors = claim.contributors.map((c) => c)
 
@@ -18,7 +20,7 @@ export const handleClaimList = async (
           claimId,
           details: claim.details as FormattedClaimDetails,
           contributors,
-          symbol: workflow.erc20Symbol,
+          symbol: workflow.fundingToken.symbol,
         }
 
         return formattedClaim
@@ -40,7 +42,7 @@ export async function handleClaimListForContributorAddress({
   address: `0x${string}`
 }) {
   const ids =
-    await workflow.logicModule.read.listClaimIdsForContributorAddress.run(
+    await workflow.optionalModule.LM_PC_Bounties_v1.read.listClaimIdsForContributorAddress.run(
       address!
     )
   const list = await handleClaimList(workflow, ids)

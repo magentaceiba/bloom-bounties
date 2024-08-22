@@ -32,9 +32,31 @@ function toCompactNumber(value?: string | number) {
   return formatter.format(number)
 }
 
-const main = {
-  amountString,
-  toCompactNumber,
+const compressAddress = (address?: string) =>
+  !address ? '...' : address.slice(0, 4) + '...' + address.slice(-4)
+
+const firstLetterToUpperCase = (text?: string) =>
+  !text ? '...' : text.charAt(0).toUpperCase() + text.slice(1)
+
+const unixTimeToDisplay = (date: number) =>
+  new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date * 1000)
+
+function extractError(errorMessage?: string) {
+  if (!errorMessage) return 'Error: Unknown error'
+  const regex = /(Error|Details): .*/
+  const match = errorMessage.match(regex)
+  return match ? match[0] : errorMessage
 }
 
-export default main
+export default {
+  extractError,
+  amountString,
+  toCompactNumber,
+  compressAddress,
+  firstLetterToUpperCase,
+  unixTimeToDisplay,
+}

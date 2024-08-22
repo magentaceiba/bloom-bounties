@@ -25,16 +25,17 @@ type RoleHexs = Record<RoleKeys, Hex>
 type GeneratedRoles = Record<BountyRoleKeys, Hex>
 
 export const getRoleHexes = async ({
-  workflow: { authorizer, logicModule },
+  workflow: { authorizer, optionalModule },
 }: Omit<HandleRoleProps, 'address'>) => {
-  const logicAddress = logicModule.address
+  const logicAddress = optionalModule.LM_PC_Bounties_v1.address
   // Initialize roleIds and generatedRoles as empty objects
   const roleHexs = {} as RoleHexs
   const generatedRoles = {} as GeneratedRoles
 
   // Set role HEXs for each role in BountyRoles
   for (const [key, value] of Object.entries(BountyRoles)) {
-    roleHexs[key as BountyRoleKeys] = await logicModule.read[value].run()
+    roleHexs[key as BountyRoleKeys] =
+      await optionalModule.LM_PC_Bounties_v1.read[value].run()
   }
 
   // Generate role IDs for each role in roleHexs
@@ -49,7 +50,7 @@ export const getRoleHexes = async ({
   }
 
   // Add the owner role HEX to roleHexs
-  roleHexs.Owner = await authorizer.read.getOwnerRole.run()
+  roleHexs.Owner = await authorizer.read.getAdminRole.run()
 
   return { roleHexs, generatedRoles }
 }
@@ -121,7 +122,9 @@ export const grantOrRevokeRole = async ({
 
   if (action === 'grantRole' || action === 'revokeRole')
     hash = await workflow.authorizer.write[action].run(args)
-  else hash = await workflow.logicModule.write[action].run(args)
+  else
+    hash =
+      await workflow.optionalModule.LM_PC_Bounties_v1.write[action].run(args)
 
   return hash
 }

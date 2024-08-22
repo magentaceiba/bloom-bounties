@@ -14,7 +14,7 @@ const borderRadius = 'var(--rounded-box, 1rem);'
 
 const shadowDomOverWrites = css`
   .dynamic-shadow-dom {
-    --dynamic-font-family-primary: 'Archivo';
+    --dynamic-font-family-primary: 'OpenSans';
 
     --dynamic-base-1: ${base1};
     --dynamic-base-2: ${base2};

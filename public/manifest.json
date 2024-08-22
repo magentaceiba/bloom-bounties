@@ -1,12 +1,13 @@
 {
+  "id": "/",
   "theme_color": "#000000",
   "background_color": "#000000",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Inverter Network",
-  "short_name": "Inverter",
-  "description": "Inverter Network Next.js App Router Web3",
+  "name": "Bloom Network Bounties",
+  "short_name": "BloomBounty",
+  "description": "Bloom Bounties by Inverter Network",
   "icons": [
     {
       "src": "/icon-192x192.png",

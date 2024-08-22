@@ -13,15 +13,10 @@ const title = 'Inverter Network'
 const { description, applicationName, images } = {
   applicationName: `${title} | Bounty Dapp`,
   description: 'Create Bounty => View => Submit Claim => Get Verified.',
-  images: [
-    {
-      url: 'InverterNetwork/media/main/inverter-dark-banner.png',
-    },
-  ],
+  images: 'https://bloomnetwork.earth/img/bloomBannerBounties.png',
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://raw.githubusercontent.com/'),
   title,
   applicationName,
   description,

@@ -31,8 +31,8 @@ export default function Navbar() {
         <Image
           className={cn(theme === 'light' && 'invert')}
           priority
-          src="/inverter-light-logo.svg"
-          alt="inverter_logo"
+          src="/bloom-light-logo.svg"
+          alt="bloom_logo"
           width={42}
           height={42}
         />

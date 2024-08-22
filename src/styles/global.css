@@ -7,19 +7,14 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Archivo';
-  src: url('/Archivo-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'PowerGrotesk';
-  src: url('/PowerGrotesk-Regular.ttf') format('truetype');
+  font-family: 'OpenSans';
+  src: url('/OpenSans-Regular.ttf') format('truetype');
 }
 
 html {
   @apply scrollbar-none;
   overflow-x: hidden;
-  font-family: 'Archivo';
+  font-family: 'OpenSans';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -36,13 +31,6 @@ body {
 
 .page {
   @apply flex flex-col max-w-5xl w-full flex-grow mx-auto;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  font-family: 'PowerGrotesk';
 }
 
 h1 {

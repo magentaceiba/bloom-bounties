@@ -1,28 +1,28 @@
 const base = {
-  primary: '#389fff',
-  'primary-focus': '#0e64aa',
-  'primary-content': '#ffffff',
+  primary: '#547EFF',
+  'primary-focus': '#2E5CE8',
+  'primary-content': '#F7F7FF',
 
-  secondary: '#24c285',
-  'secondary-focus': '#1c825b',
-  'secondary-content': '#ffffff',
+  secondary: '#fae28d',
+  'secondary-focus': '#ffdb5a',
+  'secondary-content': '#1a171b',
 
-  accent: '#FF7F50',
-  'accent-focus': '#E65E2D',
-  'accent-content': '#ffffff',
+  accent: '#fff9f0',
+  'accent-focus': '#DDD6CB',
+  'accent-content': '#1a171b',
 
-  neutral: '#797A85',
-  'neutral-focus': '#383C46',
-  'neutral-content': '#ffffff',
+  neutral: '#9d9a90',
+  'neutral-focus': '#53514E',
+  'neutral-content': '#F7F7FF',
 
-  info: '#2F67A7',
-  success: '#22C340',
-  warning: '#AF7431',
-  error: '#BD2837',
+  info: '#5FA7FB',
+  success: '#53DD6C',
+  warning: '#FFDB5A',
+  error: '#D30C54',
 
-  '--rounded-box': '6px',
-  '--rounded-btn': '4px',
-  '--rounded-badge': '12px',
+  '--rounded-box': '0.5rem',
+  '--rounded-btn': '.25rem',
+  '--rounded-badge': '0.8rem',
 
   '--animation-btn': '.25s',
   '--animation-input': '.2s',
@@ -33,18 +33,18 @@ const base = {
 }
 
 const lightBase = {
-  'base-100': '#ffffff',
-  'base-200': '#fffbf4',
-  'base-300': '#fef6e9',
-  'base-content': '#1A171B',
+  'base-100': '#1a171b',
+  'base-200': '#1a171b',
+  'base-300': '#0d0c0d',
+  'base-content': '#F7F7FF',
   ...base,
 }
 
 const darkBase = {
-  'base-300': '#1C202B',
-  'base-200': '#151720',
-  'base-100': '#050609',
-  'base-content': '#F2EEEE',
+  'base-100': '#1a171b',
+  'base-200': '#1a171b',
+  'base-300': '#0d0c0d',
+  'base-content': '#F7F7FF',
   ...base,
 }
 

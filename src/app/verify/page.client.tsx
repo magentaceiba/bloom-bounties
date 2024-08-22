@@ -36,14 +36,11 @@ export default function VerifyPageClient({ list }: { list: FormattedClaim[] }) {
       <InteractiveTable
         onSelect={setSelected}
         heads={['Bounty ID', 'Claimed', 'URL']}
-        // @ts-ignore
-        rows={list.map((i) => ({
-          row: [
-            { item: i.bountyId },
-            { item: i.claimed ? 'Yes' : 'No' },
-            { item: i.details.url, type: 'url' },
-          ],
-        }))}
+        rows={list.map((i) => [
+          { item: i.bountyId },
+          { item: i.claimed ? 'Yes' : 'No' },
+          { item: i.details.url, type: 'url' },
+        ])}
         className="max-w-xl"
       />
 

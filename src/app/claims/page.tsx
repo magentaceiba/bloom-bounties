@@ -56,13 +56,11 @@ export default function ClaimsPage() {
 
   const rows = list.map(
     (i) =>
-      ({
-        row: [
-          { item: i.bountyId },
-          { item: i.claimed ? 'Yes' : 'No' },
-          { item: i.details.url, type: 'url' },
-        ],
-      }) as const
+      [
+        { item: i.bountyId },
+        { item: i.claimed ? 'Yes' : 'No' },
+        { item: i.details.url, type: 'url' },
+      ] as any
   )
 
   return (
@@ -72,7 +70,6 @@ export default function ClaimsPage() {
       <InteractiveTable
         onSelect={setSelected}
         heads={['Bounty ID', 'Claimed', 'URL']}
-        // @ts-ignore
         rows={rows}
         className="py-10 max-w-xl"
       />

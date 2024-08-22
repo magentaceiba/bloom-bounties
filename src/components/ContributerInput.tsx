@@ -70,14 +70,11 @@ export function ContributerInput({
       {contributors.map((c, index) => (
         <Frame key={index} className="mt-6 relative">
           <IoClose
-            // @ts-ignore
             className={cn(
               'rounded-box cursor-pointer btn-ghost p-0 absolute right-3 top-3',
               index === 0 && 'hidden'
             )}
-            // @ts-ignore
             size={30}
-            // @ts-ignore
             onClick={() => {
               removeContributer(c.uid)
             }}

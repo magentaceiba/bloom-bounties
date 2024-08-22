@@ -43,18 +43,18 @@ export function useFunding() {
   })
 
   // Withdrawable funds query
-  const withdrawable = useQuery({
-    queryKey: ['balanceInFunding', workflow.dataUpdatedAt],
-    queryFn: async () => {
-      const formatted =
-        await workflow.data!.fundingToken.module.read.balanceOf.run(
-          workflow.data?.fundingManager.address!
-        )
+  // const withdrawable = useQuery({
+  //   queryKey: ['balanceInFunding', workflow.dataUpdatedAt],
+  //   queryFn: async () => {
+  //     const formatted =
+  //       await workflow.data!.fundingToken.module.read.balanceOf.run(
+  //         workflow.data?.fundingManager.address!
+  //       )
 
-      return formatted
-    },
-    enabled: workflow.isSuccess && !!workflow.address,
-  })
+  //     return formatted
+  //   },
+  //   enabled: workflow.isSuccess && !!workflow.address,
+  // })
 
   // Deposit mutation
   const deposit = useMutation({
@@ -76,37 +76,37 @@ export function useFunding() {
       refetchTotalSupply()
       balance.refetch()
       allowance.refetch()
-      withdrawable.refetch()
+      // withdrawable.refetch()
       setAmount('')
     },
     onError,
   })
 
   // Withdraw mutation
-  const withdraw = useMutation({
-    mutationKey: ['withdraw'],
-    mutationFn: async (formattedAmount: string) => {
-      if (!withdrawable.data) throw new Error('No withdrawable balance found')
+  // const withdraw = useMutation({
+  //   mutationKey: ['withdraw'],
+  //   mutationFn: async (formattedAmount: string) => {
+  //     if (!withdrawable.data) throw new Error('No withdrawable balance found')
 
-      const hash =
-        await workflow.data?.fundingManager.write?.deposit.run(formattedAmount)!
+  //     const hash =
+  //       await workflow.data?.fundingManager.write?.deposit.run(formattedAmount)!
 
-      toast.info(`Waiting for withdrawal confirmation`)
+  //     toast.info(`Waiting for withdrawal confirmation`)
 
-      await workflow.publicClient?.waitForTransactionReceipt({ hash })
+  //     await workflow.publicClient?.waitForTransactionReceipt({ hash })
 
-      return hash
-    },
+  //     return hash
+  //   },
 
-    onSuccess: () => {
-      withdrawable.refetch()
-      refetchTotalSupply()
-      balance.refetch()
-      toast.success(`Withdrawal confirmed`)
-    },
+  //   onSuccess: () => {
+  //     withdrawable.refetch()
+  //     refetchTotalSupply()
+  //     balance.refetch()
+  //     toast.success(`Withdrawal confirmed`)
+  //   },
 
-    onError,
-  })
+  //   onError,
+  // })
 
   // Approval mutation for deposit
   const approve = useMutation({
@@ -138,36 +138,33 @@ export function useFunding() {
     handleDeposit = () => {
       if (allowanceIsEnough) deposit.mutate(amount)
       else approve.mutate(amount)
-    },
-    handleWithdraw = () => withdraw.mutate(amount)
+    }
+  // ,handleWithdraw = () => withdraw.mutate(amount)
 
   // Loading and enabled states
-  const loading =
-      deposit.isPending ||
-      allowance.isPending ||
-      approve.isPending ||
-      withdraw.isPending ||
-      withdrawable.isPending,
-    isConnected = workflow.isConnected,
+  const loading = deposit.isPending || allowance.isPending || approve.isPending
+  // || withdraw.isPending ||
+  // withdrawable.isPending,
+  const isConnected = workflow.isConnected,
     isDepositable =
       allowance.isSuccess &&
       balance.isSuccess &&
-      Number(amount) <= Number(balance.data?.formatted!),
-    isWithdrawable =
-      withdrawable.isSuccess && Number(withdrawable.data) >= Number(amount)
+      Number(amount) <= Number(balance.data?.formatted!)
+  // ,isWithdrawable =
+  // withdrawable.isSuccess && Number(withdrawable.data) >= Number(amount)
 
   return {
     ERC20Symbol: workflow.data?.fundingToken.symbol,
     balance: balance.data?.formatted,
-    withdrawable: withdrawable.data,
+    // withdrawable: withdrawable.data,
     allowance,
     isConnected,
     setAmount,
     loading,
     handleDeposit,
-    handleWithdraw,
+    // handleWithdraw,
     amount,
     isDepositable,
-    isWithdrawable,
+    // isWithdrawable,
   }
 }

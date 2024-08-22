@@ -11,12 +11,12 @@ import {
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { Chain, HttpTransport } from 'viem'
-import { optimismSepolia, polygonAmoy } from 'viem/chains'
+import { optimismSepolia } from 'viem/chains'
 import utils from '@/lib/utils'
 import { useMemo, useState } from 'react'
 import { isEqual } from 'lodash'
 
-const chains = [polygonAmoy, optimismSepolia] as const
+const chains = [optimismSepolia] as const
 
 const getConfig = (chains: readonly [Chain, ...Chain[]]) =>
   createConfig({

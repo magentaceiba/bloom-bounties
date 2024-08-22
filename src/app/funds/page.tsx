@@ -14,24 +14,25 @@ export default function FundsPage() {
   const {
     ERC20Symbol,
     handleDeposit,
-    handleWithdraw,
+    // handleWithdraw,
     loading,
     balance,
     allowance,
     isConnected,
     setAmount,
     isDepositable,
-    isWithdrawable,
-    withdrawable,
+    // isWithdrawable,
+    // withdrawable,
   } = useFunding()
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (tab === 0) handleDeposit()
-    else handleWithdraw()
+    // else handleWithdraw()
   }
 
-  const disabled = (tab === 0 ? !isDepositable : !isWithdrawable) || loading
+  const disabled =
+    /* tab === 0 ?  */ !isDepositable /*  : !isWithdrawable */ || loading
 
   return (
     <>
@@ -39,7 +40,7 @@ export default function FundsPage() {
         variant="boxed"
         setTab={setTab}
         tab={tab}
-        tabs={tabs as unknown as string[]}
+        tabs={[tabs[0]] as unknown as string[]}
       />
 
       <FundingStats />
@@ -51,7 +52,9 @@ export default function FundsPage() {
           </Stats.Stat.Item>
           <Stats.Stat.Item variant="value">
             {ERC20Symbol}{' '}
-            {utils.format.toCompactNumber(tab === 0 ? balance : withdrawable)}
+            {utils.format.toCompactNumber(
+              /* tab === 0 ?  */ balance /* : withdrawable */
+            )}
           </Stats.Stat.Item>
         </Stats.Stat>
 
@@ -69,7 +72,7 @@ export default function FundsPage() {
         <Input.Number
           label={`${tabs[tab]} Amount`}
           onChange={setAmount}
-          max={tab === 0 ? balance : withdrawable}
+          max={/* tab === 0 ?  */ balance /*  : withdrawable */}
           required
         />
 

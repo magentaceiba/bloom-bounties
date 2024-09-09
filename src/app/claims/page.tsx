@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Loading } from 'react-daisyui'
 import { WalletWidget } from '@/components'
-import { FundingStats } from '@/components/FundingStats'
+// import { FundingStats } from '@/components/FundingStats'
 import useClaim from '@/hooks/useClaim'
 import { InitialContributor } from '@/lib/types/claim'
 import { useRole } from '@/hooks'
@@ -26,7 +26,7 @@ export default function ClaimsPage() {
         claim.contributors.map((i) => ({ ...i, uid: crypto.randomUUID() }))
       )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [claim?.bountyId])
+  }, [selected, claim?.bountyId])
 
   // const total = contributors.reduce((acc, i) => acc + Number(i.claimAmount), 0)
 
@@ -57,7 +57,7 @@ export default function ClaimsPage() {
   const rows = list.map(
     (i) =>
       [
-        { item: i.bountyId },
+        { item: i.claimId },
         { item: i.claimed ? 'Yes' : 'No' },
         { item: i.details.url, type: 'url' },
       ] as any
@@ -65,14 +65,24 @@ export default function ClaimsPage() {
 
   return (
     <>
-      <FundingStats />
+      {/* <FundingStats /> */}
 
       <InteractiveTable
-        onSelect={setSelected}
-        heads={['Bounty ID', 'Claimed', 'URL']}
+        onSelect={(index) => setSelected(index)}
+        heads={['Claim ID', 'Verified?', 'URL']}
         rows={rows}
         className="py-10 max-w-xl"
       />
+
+      {/* Display claim.claimId */}
+      {claim && (
+        <div className="my-4 p-4 bg-gray-800 text-gray-100 rounded-md w-full max-w-xl flex justify-between gap-5">
+          <h2 className="text-base font-normal ">
+            Selected Claim ID: {claim.claimId}
+          </h2>
+          <h2 className="text-base font-normal">URL: {claim.details.url}</h2>
+        </div>
+      )}
 
       {(() => {
         if (!isConnected) return <WalletWidget />

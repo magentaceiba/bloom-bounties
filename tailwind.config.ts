@@ -22,8 +22,14 @@ const config: Config = {
   daisyui: {
     themes: [
       {
-        light,
-        dark,
+        light: {
+          ...require('daisyui/src/theming/themes')['light'],
+          ...light,
+        },
+        dark: {
+          ...require('daisyui/src/theming/themes')['dark'],
+          ...dark,
+        },
       },
     ],
   },

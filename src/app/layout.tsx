@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Metadata } from 'next'
+import BloomHeader from '../components/BloomHeader'
 import Providers from '../providers'
 import { RouteProgressBar, Navbar } from '../components'
 import { cookies } from 'next/headers'
@@ -50,7 +51,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <link rel="manifest" href="/manifest.json" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-      <meta name="apple-mobile-web-app-title" content="Inverter PWA" />
+      <meta
+        name="apple-mobile-web-app-title"
+        content="Bloom Network Local Action Rewards"
+      />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta
         name="viewport"
@@ -63,6 +67,8 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <Analytics />
         <Providers theme={theme}>
           <RouteProgressBar />
+          {/* Add the Header component */}
+          <BloomHeader />
           {/* CONTENT */}
           <Navbar />
           <div className="flex flex-col items-center gap-6 mx-auto">

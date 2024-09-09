@@ -10,6 +10,7 @@ import { BountyDetails } from '../components/BountyDetails'
 import Link from 'next/link'
 import { FormattedBounty } from '../lib/types/bounty'
 import { useAccount } from 'wagmi'
+import { FloTitle } from '@/components/FloTitle'
 
 const tabs = ['List', 'Card'] as const
 
@@ -22,8 +23,12 @@ export default function PageClient({ list }: { list: FormattedBounty[] }) {
   return (
     <>
       {/* <FundingStats /> */}
+      <FloTitle />
 
       <div className="flex flex-col items-center gap-6 w-full max-w-xl">
+        <div className="text-white text-xl font-bold text-center mt-4">
+          Available Bounties
+        </div>
         <Tabs
           variant="boxed"
           setTab={setTab}

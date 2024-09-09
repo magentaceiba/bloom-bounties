@@ -10,7 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       borderColor: {
-        faint: 'var(--fallback-bc,oklch(var(--bc)/0.2))',
+        // faint: 'var(--fallback-bc,oklch(var(--bc)/0.2))',
+        faint: '#591278',
+      },
+      colors: {
+        'head-color': '#A5B9F6',
       },
     },
   },

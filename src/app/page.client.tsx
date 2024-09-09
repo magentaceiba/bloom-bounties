@@ -14,6 +14,8 @@ import { FloTitle } from '@/components/FloTitle'
 
 const tabs = ['List', 'Card'] as const
 
+const headClass = 'text-{3E839B7} font-bold'
+
 export default function PageClient({ list }: { list: FormattedBounty[] }) {
   const { isConnected } = useAccount()
   const [tab, setTab] = useState(0)

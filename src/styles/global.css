@@ -1,6 +1,8 @@
 @import './react-select.css';
 @import './components.css';
 @import './utilities.css';
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -19,7 +21,7 @@
 html {
   @apply scrollbar-none;
   overflow-x: hidden;
-  font-family: 'Archivo';
+  font-family: 'Exo 2', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -38,11 +40,14 @@ body {
   @apply flex flex-col max-w-5xl w-full flex-grow mx-auto;
 }
 
-h1,
-h2,
-h3,
+h1 h2 {
+  font-family: 'Exo 2';
+}
+h3 {
+  font-family: 'Exo 2';
+}
 h4 {
-  font-family: 'PowerGrotesk';
+  font-family: 'Exo 2';
 }
 
 h1 {

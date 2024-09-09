@@ -9,13 +9,13 @@ import '../styles/global.css'
 import 'swiper/css'
 import 'swiper/css/effect-cards'
 
-const title = 'Inverter Network'
+const title = 'Bloom Network'
 const { description, applicationName, images } = {
   applicationName: `${title} | Bounty Dapp`,
   description: 'Create Bounty => View => Submit Claim => Get Verified.',
   images: [
     {
-      url: 'InverterNetwork/media/main/inverter-dark-banner.png',
+      url: 'img/bloomBannerBounties.png',
     },
   ],
 }

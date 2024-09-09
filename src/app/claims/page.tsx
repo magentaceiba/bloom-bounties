@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Loading } from 'react-daisyui'
 import { WalletWidget } from '@/components'
-// import { FundingStats } from '@/components/FundingStats'
+import { FundingStats } from '@/components/FundingStats'
 import useClaim from '@/hooks/useClaim'
 import { InitialContributor } from '@/lib/types/claim'
 import { useRole } from '@/hooks'
@@ -65,7 +65,7 @@ export default function ClaimsPage() {
 
   return (
     <>
-      {/* <FundingStats /> */}
+      <FundingStats />
 
       <InteractiveTable
         onSelect={setSelected}

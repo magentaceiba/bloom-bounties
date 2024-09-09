@@ -5,7 +5,7 @@ import { EffectCards } from 'swiper/modules'
 import { useState } from 'react'
 import { Button } from 'react-daisyui'
 import { InteractiveTable, NoData, Tabs, WalletWidget } from '../components'
-import { FundingStats } from '../components/FundingStats'
+// import { FundingStats } from '../components/FundingStats'
 import { BountyDetails } from '../components/BountyDetails'
 import Link from 'next/link'
 import { FormattedBounty } from '../lib/types/bounty'
@@ -21,7 +21,7 @@ export default function PageClient({ list }: { list: FormattedBounty[] }) {
 
   return (
     <>
-      <FundingStats />
+      {/* <FundingStats /> */}
 
       <div className="flex flex-col items-center gap-6 w-full max-w-xl">
         <Tabs

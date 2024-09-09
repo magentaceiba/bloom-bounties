@@ -44,8 +44,12 @@ export const BountyDetails = {
     <Frame className="max-w-xl">
       <h4>Description</h4>
       <p>{description}</p>
-      <h4>URL</h4>
-      <a href={url} target="_blank" className="link">
+      <h4>How to do your impact report:</h4>
+      <a
+        href={url}
+        target="_blank"
+        className="link whitespace-normal break-all"
+      >
         {url}
       </a>
     </Frame>
@@ -68,8 +72,12 @@ export const BountyDetails = {
     <Frame className="max-w-xl">
       <h4>Description</h4>
       <p>{description}</p>
-      <h4>URL</h4>
-      <a href={url} target="_blank" className="link">
+      <h4>How to do your impact report:</h4>
+      <a
+        href={url}
+        target="_blank"
+        className="link whitespace-normal break-all mb-4"
+      >
         {url}
       </a>
       <div className="flex flex-wrap gap-3 justify-center">

@@ -14,7 +14,9 @@ export function FundingStats() {
       </Stats.Stat> */}
 
       <Stats.Stat>
-        <Stats.Stat.Item variant="title">{symbol} TVL</Stats.Stat.Item>
+        <Stats.Stat.Item variant="title">
+          {symbol} Total FLO Available Now
+        </Stats.Stat.Item>
         <Stats.Stat.Item variant="value">
           {utils.format.toCompactNumber(Number(totalSupply) * 1)} $
         </Stats.Stat.Item>

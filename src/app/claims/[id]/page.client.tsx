@@ -103,18 +103,25 @@ export function ClientClaimPage({ claim }: { claim: FormattedBounty }) {
             >
               Submit
             </Button>
+            <div className="text-sm italic font-light">
+              You can add more participants to the claim when they join Bloom,
+              up until the claim is verified at the end of the grant cycle.
+            </div>
             <div className="mt-6 font-bold">
               What happens after I submit my bounty claim?
             </div>
             <div className="text-gray200">
               Once you submit your bounty claim, it will go to the verification
               team for review. If approved, you will receive Bloom tokens. Bloom
-              tokens are a `reputation token` and not directly tradable for
-              money - they signify your value contribution to our collective
-              mission. As Bloom Network grows a grants pool, people who received
-              Bloom tokens will periodically receive a payout from the grants
-              pool, proportional to the amount of Bloom tokens they have. This
-              is similar to a grocery cooperative member dividend.
+              tokens are a reputation token and not directly tradable for money
+              - they signify your value contribution to our collective mission.
+              As Bloom Network grows a grants pool, people who received Bloom
+              tokens will periodically receive a payout from the grants pool,
+              proportional to the amount of Bloom tokens they have. This is
+              similar to a grocery cooperative member dividend. Final
+              verification will not be done until after the round closes, so you
+              can still add people who participated in this action until then,
+              once they join Bloom Network.
             </div>
           </form>
         )

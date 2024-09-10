@@ -120,7 +120,7 @@ export function ContributerInput({
         />
       )}
       {/* Instructions for adding participant addresses */}
-      <div className="mt-6">
+      <div className="">
         Paste impact participants wallet addresses for payout. <br />
         <span className="italic">
           *Only members of BloomNetwork.earth are eligible.*{' '}

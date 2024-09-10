@@ -71,7 +71,7 @@ export default function ClaimsPage() {
         onSelect={(index) => setSelected(index)}
         heads={['Claim ID', 'Verified?', 'URL']}
         rows={rows}
-        className="py-10 max-w-xl"
+        className="pt-10 max-w-xl"
       />
 
       {/* Display claim.claimId */}
@@ -83,7 +83,9 @@ export default function ClaimsPage() {
           <h2 className="text-base font-normal">URL: {claim.details.url}</h2>
         </div>
       )}
-
+      <h4 className="flex place-self-start text-left ml-0 font-bold">
+        View/Edit Your Claim
+      </h4>
       {(() => {
         if (!isConnected) return <WalletWidget />
 

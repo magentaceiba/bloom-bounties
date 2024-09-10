@@ -42,7 +42,7 @@ export const BountyDetails = {
     url?: string
   }) => (
     <Frame className="max-w-xl">
-      <h4>Description</h4>
+      <h4>Regenerative Actions</h4>
       <p>{description}</p>
       <a
         href={url}
@@ -69,7 +69,7 @@ export const BountyDetails = {
     creatorAddress?: string
   }) => (
     <Frame className="max-w-xl">
-      <h4>Description</h4>
+      <h4>Regenerative Actions</h4>
       <p>{description}</p>
       <a
         href={url}

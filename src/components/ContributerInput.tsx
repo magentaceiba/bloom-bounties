@@ -3,7 +3,7 @@ import { Frame, Input } from './ui'
 import { IoClose } from 'react-icons/io5'
 import { cn } from '@/styles/cn'
 import { InitialContributor } from '@/lib/types/claim'
-// import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 // import axios from 'axios'
 
 // Define a new type extending InitialContributor with validationError
@@ -26,30 +26,21 @@ export function ContributerInput({
   maximumPayoutAmount?: string
   canEditContributor?: boolean
 }) {
-  // const [validAddresses, setValidAddresses] = useState<string[]>([])
-  // const [formValid, setFormValid] = useState<boolean>(true)
+  const [totalClaimAmount, setTotalClaimAmount] = useState<number>(0)
 
-  // useEffect(() => {
-  //   async function fetchValidAddresses() {
-  //     try {
-  //       const response = await axios.get(
-  //         'https://dev-bloomnetwork.netlify.app/.netlify/functions/bountyapi'
-  //       )
-  //       // Filter out null values from the response
-  //       const addresses = response.data.filter(
-  //         (address: string | null) => address !== null
-  //       )
-  //       setValidAddresses(addresses)
-  //     } catch (error) {
-  //       console.error(
-  //         'Error fetching wallet addresses:',
-  //         (error as Error).message
-  //       )
-  //     }
-  //   }
+  useEffect(() => {
+    calculateTotalClaimAmount()
+  }, [contributors])
 
-  //   fetchValidAddresses()
-  // }, [])
+  const calculateTotalClaimAmount = () => {
+    const total = contributors.reduce((sum, contributor) => {
+      return (
+        sum +
+        (contributor.claimAmount ? parseFloat(contributor.claimAmount) : 0)
+      )
+    }, 0)
+    setTotalClaimAmount(total * 1.2)
+  }
 
   const addContributer = () => {
     contributersStateHandler([
@@ -66,19 +57,8 @@ export function ContributerInput({
   const handleState = ({ uid, addr, claimAmount }: InitialContributor) => {
     const newContributers = contributors.map((c) => {
       if (c.uid === uid) {
-        // let validationError = ''
         let updatedClaimAmount =
           claimAmount !== undefined ? claimAmount : c.claimAmount
-
-        // Validation logic for address
-        // if (addr !== undefined) {
-        //   if (!addr.trim()) {
-        //     validationError = 'Please enter a wallet address'
-        //   } else if (!validAddresses.includes(addr.trim())) {
-        //     validationError =
-        //       'Invalid wallet address - if you know this is the address of one of your Local Bloom members, you need to ask them to add it to their BloomNetwork.earth profile, before you are able to include them in a bounty claim.'
-        //   }
-        // }
 
         const contributorWithValidation: ContributorWithValidation = {
           ...c,
@@ -95,12 +75,6 @@ export function ContributerInput({
       return c
     })
 
-    // const isFormValid = newContributers.every(
-    //   (c) => !c.validationError || c.validationError === ''
-    // )
-
-    // // Update state
-    // setFormValid(isFormValid)
     contributersStateHandler(newContributers)
   }
 
@@ -263,6 +237,15 @@ export function ContributerInput({
       >
         Add Contributor
       </Button>
+      <div className="flex-grow flex items-center justify-between mt-10 -mb-1 mx-4">
+        <div className="ml-1">
+          <div>Your collective treasury will receive</div>
+          <div>1.2x the total FLO of this claim</div>
+        </div>
+        <div className="mt-6">
+          {totalClaimAmount} {symbol}
+        </div>
+      </div>
     </div>
   )
 }

@@ -93,7 +93,6 @@ const NavItems = ({
   })
 
   if (reverse) arr.reverse()
-
   return arr.map((i, index) => {
     if (reverse) {
       return (

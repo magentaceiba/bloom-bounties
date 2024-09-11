@@ -1,19 +1,19 @@
 const base = {
-  primary: '#547EFF',
-  'primary-focus': '#2E5CE8',
-  'primary-content': '#F7F7FF',
+  primary: '#A5B9F6', // Vibrant purple
+  'primary-focus': '#832083', // Darker vibrant purple
+  'primary-content': '#000000', // White text on primary
 
-  secondary: '#fae28d',
-  'secondary-focus': '#ffdb5a',
-  'secondary-content': '#1a171b',
+  secondary: '#703070', // Muted purple
+  'secondary-focus': '#562256', // Darker muted purple
+  'secondary-content': '#000000', // White text on secondary
 
-  accent: '#fff9f0',
-  'accent-focus': '#DDD6CB',
-  'accent-content': '#1a171b',
+  accent: '#ff7f50', // Coral accent
+  'accent-focus': '#e65e2d', // Darker coral accent
+  'accent-content': '#000000', // White text on accent
 
-  neutral: '#9d9a90',
-  'neutral-focus': '#53514E',
-  'neutral-content': '#F7F7FF',
+  neutral: '#4d316c', // Neutral purple (base 3 from your theme)
+  'neutral-focus': '#3c245a', // Darker neutral purple (base 2)
+  'neutral-content': '#A5B9F6', // Light text on neutral
 
   info: '#5FA7FB',
   success: '#53DD6C',
@@ -41,10 +41,10 @@ const lightBase = {
 }
 
 const darkBase = {
-  'base-100': '#1a171b',
-  'base-200': '#1a171b',
-  'base-300': '#0d0c0d',
-  'base-content': '#F7F7FF',
+  'base-100': '#1B0D2A', // Dark purple (base 1)
+  'base-200': '#261942', // Darker purple (base 2)
+  'base-300': '#4d316c', // Even darker purple (base 3)
+  'base-content': '#e0d7f3', // Light text color
   ...base,
 }
 

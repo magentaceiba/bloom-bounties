@@ -1,7 +1,7 @@
 'use client'
 
 import { Input, Tabs, WalletWidget } from '@/components'
-import { FundingStats } from '@/components/FundingStats'
+// import { FundingStats } from '@/components/FundingStats'
 import { useFunding } from '@/hooks/useFunding'
 import utils from '@/lib/utils'
 import { useState } from 'react'
@@ -43,7 +43,7 @@ export default function FundsPage() {
         tabs={[tabs[0]] as unknown as string[]}
       />
 
-      <FundingStats />
+      {/* <FundingStats /> */}
 
       <Stats className="bg-base-200 scale-75">
         <Stats.Stat>

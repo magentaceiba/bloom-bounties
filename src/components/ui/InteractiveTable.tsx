@@ -53,7 +53,9 @@ export function InteractiveTable({
       <Table {...tableProps}>
         <Table.Head>
           {heads.map((head, index) => (
-            <span key={index}>{head}</span>
+            <span key={index} className="text-head-color">
+              {head}
+            </span>
           ))}
         </Table.Head>
 

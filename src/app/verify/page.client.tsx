@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Button, Divider, Loading } from 'react-daisyui'
 import { WalletWidget } from '@/components'
-import { FundingStats } from '@/components/FundingStats'
+// import { FundingStats } from '@/components/FundingStats'
 import useClaim from '@/hooks/useClaim'
 import { FormattedClaim } from '@/lib/types/claim'
 import { useRole } from '@/hooks'
@@ -31,7 +31,7 @@ export default function VerifyPageClient({ list }: { list: FormattedClaim[] }) {
 
   return (
     <>
-      <FundingStats />
+      {/* <FundingStats /> */}
 
       <InteractiveTable
         onSelect={setSelected}

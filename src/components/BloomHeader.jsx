@@ -6,7 +6,7 @@ const Header = () => {
       <img
         src="/bloomBannerBounties.png"
         alt="Bloom Logo"
-        class="max-w-[200px] md:max-w-[300px] mx-auto"
+        className="max-w-[200px] md:max-w-[300px] mx-auto"
       />
       {/* Other header elements */}
     </header>
